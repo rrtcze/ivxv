@@ -1,26 +1,26 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Kasutajate haldus
-=================
+User management
+================
 
-Kasutajate halduse leht avaneb menüüvalikust ``Kasutajad``.
+The user management page opens from the menu option ``Kasutajad``.
 
 
-Kasutajate nimekiri
--------------------
+User list
+----------
 
-Kasutajate nimekirjas kuvatakse kõigi haldusteenuses registreeritud kasutajate
-andmeid sordituna kasutaja ID-kaardi üldnime (CN - *Common Name*) järgi:
+The user list displays the data of all users registered in the management service,
+sorted by the user's ID card common name (CN - *Common Name*):
 
-#. Järjekorranumber nimekirjas;
+#. Sequence number in the list;
 
-#. Üldnimi;
+#. Common name;
 
-#. Kasutaja rollid.
+#. User roles.
 
-Kasutaja volituste laadimise vorm
----------------------------------
+User permissions loading form
+------------------------------
 
-Kasutaja volituste laadimiseks kogumisteenusesse on lehe allosas laadimisvorm.
-Laadida on lubatud ainult volitatud kasutajate poolt digitaalselt signeeritud
-volitusi.
+To load user permissions into the collector service, there is a loading form at the
+bottom of the page. Only permissions digitally signed by authorized users are
+allowed to be loaded.

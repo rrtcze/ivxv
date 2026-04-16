@@ -13,8 +13,8 @@
    Conference on Electronic Voting E-Vote-ID 2016, 18-21 October 2016,
    Lochau/Bregenz, Austria, TUT Press, pp. 213-229, ISBN 978-9949-83-022-0
 
-.. [TK2016] Tehniline kirjeldus. Elektroonilise hääletamise infosüsteemi
-   arenduse hange, Vabariigi Valimiskomisjon, 2016
+.. [TK2016] Technical description. Procurement of the electronic voting
+   information system development, National Electoral Committee, 2016
 
-.. [ÜK2016] Elektroonilise hääletamise üldraamistik ja selle kasutamine Eesti
-   riiklikel valimistel. Elektroonilise Hääletamise Komisjon, Tallinn 2016
+.. [ÜK2016] General framework for electronic voting and its use in Estonian
+   national elections. Electronic Voting Committee, Tallinn 2016

@@ -1,85 +1,86 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
 
 .. _ivxv-rakendused:
 
-IVXV rakendused
-===============
+IVXV Applications
+=================
 
 .. _app-install:
 
-Rakenduste paigaldamine
+Installing Applications
 --------------------------------------------------------------------------------
 
-IVXV rakendused on:
+IVXV applications are:
 
-* võtmerakendus `key` (:numref:`app-key`),
-* töötlemisrakendus `processor` (:numref:`app-processor`),
-* auditirakendus `auditor` (:numref:`app-auditor`).
+* key application `key` (:numref:`app-key`),
+* processing application `processor` (:numref:`app-processor`),
+* audit application `auditor` (:numref:`app-auditor`).
 
-IVXV rakendused on arendatud programmeerimiskeeles Java, kasutusel on Java 21.
-Rakendused on testitud Windows 11 ja Ubuntu 22.04 platvormil kasutades OpenJDK'd
-või Oracle Javat.
+IVXV applications are developed in the Java programming language, using Java 21.
+The applications have been tested on Windows 11 and Ubuntu 22.04 platforms using OpenJDK
+or Oracle Java.
 
-Rakendused tarnitakse ZIP-vormingus failidena::
+Applications are delivered as ZIP format files::
 
-  <rakendus>-<tarnenumber>.zip
+  <application>-<delivery_number>.zip
 
-Peale ZIP-faili lahti pakkimist tekib kataloogipuu::
+After unpacking the ZIP file, the following directory tree is created::
 
-   <rakendus>-<tarnenumber>
+   <application>-<delivery_number>
    |-- bin
-   |   |-- <rakendus>
-   |   |-- <rakendus.bat>
+   |   |-- <application>
+   |   |-- <application.bat>
    |-- lib
    |   |-- *.jar
 
-Kui kataloogitee `<rakendus>-<tarnenumber>/bin` panna keskkonnamuutujasse `PATH`, saab rakendust
-edaspidi käivitada käsurealt::
+If the directory path `<application>-<delivery_number>/bin` is added to the `PATH` environment variable, the application
+can subsequently be launched from the command line::
 
-  $ <rakendus>
+  $ <application>
 
-Rakendusi paigaldades tuleb arvestada, et kesksüsteemi protokollides kirjeldatud
-raportid kasutavad ilma ajavööndita aja vormingut (`yyyymmddhhmmss`).
-Ajavööndiga ajamärgendi (näiteks hääletamise aeg kogumisteenuselt saadud
-e-valimiskastis) esitamiseks raportis teisendavad Java rakendused ajamärgendi esmalt
-operatsioonisüsteemi ajavööndisse ning seejärel eemaldavad ajavööndi info.
-Seetõttu tuleb rakendusi käivitavates masinates seadistada ajavöönd selliseks,
-millise kohalikus ajas soovitakse ajamärgendeid näha.
+When installing applications, it should be noted that the reports described in
+the central system protocols use a time format without a time zone (`yyyymmddhhmmss`).
+To display a time-stamped value with a time zone (for example, the voting time from
+the e-ballot box received from the collector service) in a report, Java applications
+first convert the timestamp to the operating system's time zone and then remove
+the time zone information.
+Therefore, the time zone must be configured on the machines running the applications
+to match the local time in which timestamps are desired to be displayed.
 
 .. _app-trust:
 
-Rakenduste usaldusjuure kirjeldamine
-------------------------------------
+Describing the Application Trust Root
+--------------------------------------
 
-Rakenduste kasutamine eeldab digitaalselt allkirjastatud seadistuste kasutamist.
-Allkirjade verifitseerimiseks vajalikud sertifikaadid tuleb rakendusele ette
-anda usaldusjuure koosseisus. Usaldusjuur on samuti digitaalselt allkirjastatud.
+The use of applications requires the use of digitally signed configurations.
+The certificates required for verifying signatures must be provided to the
+application as part of the trust root. The trust root is also digitally signed.
 
-Usaldusjuure seadistuse koostab valimiste korraldaja.
+The trust root configuration is prepared by the election organizer.
 
 :ca:
 
-    Komadega eraldatud loetelu konteineris sisalduvatest CA sertifikaatidest ja
-    vahesertifikaatidest.
+    Comma-separated list of CA certificates and intermediate certificates
+    contained in the container.
 
 :ocsp:
 
-    Komadega eraldatud loetelu konteineris sisalduvatest OCSP sertifikaatidest.
+    Comma-separated list of OCSP certificates contained in the container.
 
 :tsa:
 
-    Komadega eraldatud loetelu konteineris sisalduvatest ATO sertifikaatidest.
+    Comma-separated list of TSA certificates contained in the container.
 
-Kõik sertifikaadid antakse PEM vormingus.
+All certificates are provided in PEM format.
 
-Rakendusele esitatakse usaldusjuur BDOC konteineris, kus usaldusjuure
-spetsifikatsioon on kirjeldatud failis `ivxv.properties` ning kõik juure
-elemendid on konteinerisse laaditud.
+The trust root is presented to the application in a BDOC container, where the
+trust root specification is described in the file `ivxv.properties` and all
+root elements are loaded into the container.
 
 
-Näide
-*****
+Example
+*******
 
 :file:`ivxv.properties`:
 
@@ -87,148 +88,150 @@ Näide
    :linenos:
 
 
-Rakenduste käivitamine
+Launching Applications
 --------------------------------------------
 
-Rakendusi käivitatakse käsurealt, nende toimimist juhitakse käsureaparameetrite
-ja digitaalselt allkirjastatud seadistustega. Kõik rakendused väljastavad
-vajadusel abiinfot::
+Applications are launched from the command line, and their operation is
+controlled by command-line parameters and digitally signed configurations. All
+applications display help information when needed::
 
-  $ <rakendus> --help
+  $ <application> --help
 
-  Rakendus 'rakendus'        - Rakendus
+  Application 'application'        - Application
 
-  Kasutamine:
-    <rakendus> <tööriist> --conf <conf> [--params <params>] [--force <force>] [--quiet <quiet>] [--lang <lang>] [--container_threads <container_threads>] [--threads <threads>]
-    <rakendus> <tööriist> -h | --help
-    <rakendus> -h | --help
+  Usage:
+    <application> <tool> --conf <conf> [--params <params>] [--force <force>] [--quiet <quiet>] [--lang <lang>] [--container_threads <container_threads>] [--threads <threads>]
+    <application> <tool> -h | --help
+    <application> -h | --help
 
-  Tööriistad:
-    tool_foo         - Tegevuse FOO teostamine
-    tool_bar         - Tegevuse BAR teostamine
+  Tools:
+    tool_foo         - Perform action FOO
+    tool_bar         - Perform action BAR
 
-  Käsurea argumendid:
-    -h --help             - Abi
-    -c --conf (*)         - Konfiguratsioon
-    -p --params           - Tööriista parameetrid
-    -f --force            - Ära küsi kasutajalt kinnitust
-    -q --quiet            - Vaikne käivitusrežiim
-    --lang                - Keel
-    -ct --container_threads - Allkirjastatud konteinerite teegi poolt kasutatav lõimede arv (<= 0 korral dünaamiline)
-    -t --threads          - Rakenduse poolt paralleeltöötluse korral kasutatav lõimede arv (<= 0 korral dünaamiline)
-  Rakendus lõpetas töö ilma vigadeta
+  Command-line arguments:
+    -h --help             - Help
+    -c --conf (*)         - Configuration
+    -p --params           - Tool parameters
+    -f --force            - Do not ask for user confirmation
+    -q --quiet            - Quiet launch mode
+    --lang                - Language
+    -ct --container_threads - Number of threads used by the signed containers library (<= 0 for dynamic)
+    -t --threads          - Number of threads used by the application for parallel processing (<= 0 for dynamic)
+  Application completed without errors
 
-Rakenduste kasutamisel tuleb määrata konkreetne tööriist, usaldusjuur ning
-seadistusfail::
+When using applications, a specific tool, trust root, and configuration file
+must be specified::
 
-  $ <rakendus> tool_foo --conf usaldusjuur.asice --params tool_foo.conf.asice
+  $ <application> tool_foo --conf trustroot.asice --params tool_foo.conf.asice
 
-  Konfiguratsiooni laadimine failist usaldusjuur.asice
-  Konfiguratsiooni allkirja kontrollimine
-  Konfiguratsiooni allkirja on andnud NIMI NIMESTE
-  Konfiguratsiooni allkirja andmise aeg on 24.12.2018 18:00
-  Konfiguratsiooni allkiri on korrektne ja kehtiv
+  Loading configuration from file trustroot.asice
+  Verifying configuration signature
+  Configuration signature was given by NAME LASTNAME
+  Configuration signature time is 24.12.2018 18:00
+  Configuration signature is correct and valid
 
   FOO!
 
-  Rakendus lõpetas töö ilma vigadeta
+  Application completed without errors
 
-Juhised rakenduste tööriistade ning nende seadistusfailide koostamise kohta
-antakse järgmistes peatükkides. Käsureaargumendid on kõigil rakendustel samad:
+Instructions for preparing application tools and their configuration files
+are given in the following chapters. Command-line arguments are the same for
+all applications:
 
 :-h --help:
-    Abiinfo kuvamine kas rakenduse või konkreetse tööriista kohta.
+    Display help information for the application or a specific tool.
 
 :-c --conf (*):
-    Digitaalselt allkirjastatud fail usaldusjuurega. Kohustuslik parameeter.
+    Digitally signed file with trust root. Mandatory parameter.
 
 :-p --params:
-    Digitaalselt allkirjastatud tööriista parameetrid.
+    Digitally signed tool parameters.
 
 :-f --force:
-    Ära küsi kasutajalt kinnitust.
+    Do not ask for user confirmation.
 
 :-q --quiet:
-    Vaikne käivitusrežiim.
+    Quiet launch mode.
 
 :--lang:
-    Juhul kui rakendus on kompileeritud mitmekeelsena, siis keele valik.
-    Vaikimisi on rakendustes võimaldatud ainult eesti keel.
+    If the application is compiled as multilingual, then language selection.
+    By default, only Estonian language is enabled in applications.
 
 :-ct --container_threads:
-    Allkirjastatud konteinerite teegi poolt kasutatav lõimede arv. Vaikimisi
-    valitakse lõimede arv teegi poolt dünaamiliselt lähtudes saadaolevate
-    tuumade arvust.
+    Number of threads used by the signed containers library. By default,
+    the number of threads is selected dynamically by the library based on the
+    available number of cores.
 
 :-t --threads:
-    Rakenduse poolt paralleeltöötluse korral kasutatav lõimede arv. Vaikimisi
-    valitakse lõimede arv rakenduse poolt dünaamiliselt lähtudes saadaolevate
-    tuumade arvust.
+    Number of threads used by the application for parallel processing. By default,
+    the number of threads is selected dynamically by the application based on the
+    available number of cores.
 
 
-Rakendustest eksisteerivad nii tooteversioonid kui testversioonid.
-Testrakendused on kohaldatud protseduuride efektiivseks testimiseks, kuid ei
-sobi valimiste tegelikuks läbiviimiseks. Näiteks ei võimalda võtmerakenduse
-testversioon kasutada kiipkaarte. Testversioonid rakendustest kuvavad
-käivitamisel hoiatuse::
+Both production versions and test versions of applications exist.
+Test applications are adapted for efficient testing of procedures but are not
+suitable for conducting actual elections. For example, the test version of the
+key application does not allow the use of smart cards. Test versions of
+applications display a warning upon launch::
 
   ********************************************************************
-  *                           !!! HOIATUS !!!                        *
+  *                           !!! WARNING !!!                        *
   *                                                                  *
-  * Rakendus on käivitatud arendusrežiimis ning rakenduse käitumine  *
-  * võib erineda tavarežiimist.                                      *
-  * Rakenduse käivitamiseks tavarežiimis tuleb rakendus ümber        *
-  * kompileerida.                                                    *
+  * The application has been launched in development mode and the     *
+  * application behavior may differ from normal mode.                *
+  * To launch the application in normal mode, the application must   *
+  * be recompiled.                                                   *
   ********************************************************************
 
-Rakenduste käivituskeskkonna parameetrid
-----------------------------------------
+Application Runtime Environment Parameters
+--------------------------------------------
 
-Suure e-valimiskasti auditeerimisel, töötlemisel või dekrüpteerimisel, võib olla
-tarvilik suurendada protsessi mälupiirangut.
+When auditing, processing, or decrypting a large e-ballot box, it may be
+necessary to increase the process memory limit.
 
-Seda saab teha kasutades rakendusespetsiifilist keskkonnamuutujat
-``{RAKENDUS}_OPTS``, mis defineerib täiendavad argumendid Java virtuaalmasinale.
-``{RAKENDUS}`` on üks kolmest ``AUDITOR``, ``KEY`` või ``PROCESSOR``. Protsessi
-mälupiirangu suurendamiseks tuleb kasutada argumenti ``-Xmx{N}G``, kus ``{N}``
-on mälupiirangu suurus gigabaitides.
+This can be done using the application-specific environment variable
+``{APPLICATION}_OPTS``, which defines additional arguments for the Java virtual machine.
+``{APPLICATION}`` is one of ``AUDITOR``, ``KEY``, or ``PROCESSOR``. To increase
+the process memory limit, use the argument ``-Xmx{N}G``, where ``{N}``
+is the memory limit size in gigabytes.
 
-Näiteks 10 gigabaidi mälu eraldamiseks töötlemisrakendusele tuleb seada
-``PROCESSOR_OPTS=-Xmx10G``.
+For example, to allocate 10 gigabytes of memory to the processing application,
+set ``PROCESSOR_OPTS=-Xmx10G``.
 
 
-.. list-table:: Rakenduste mälupiirangu parameetrid
+.. list-table:: Application Memory Limit Parameters
    :header-rows: 1
 
-   * - Rakendus
-     - Vaikimisi mälupiirang
-     - Keskkonnamuutuja
-   * - Auditirakendus
+   * - Application
+     - Default memory limit
+     - Environment variable
+   * - Audit application
      - 8GB
      - ``AUDITOR_OPTS``
-   * - Töötlemisrakendus
+   * - Processing application
      - 8GB
      - ``PROCESSOR_OPTS``
-   * - Võtmerakendus
-     - Puudub
+   * - Key application
+     - None
      - ``KEY_OPTS``
 
 
-Rakendused töötavad nii 32-bitise kui 64-bitise Java andmemudeliga, samas
-efektiivseimaks toimimiseks tuleb rakendusi kasutada 64-bitisel platvormil
-64-bitise Java andmemudeliga. Juhul kui rakendus ei suuda käivitamisel 64-bitist
-mudelit tuvastada kuvatakse hoiatus::
+Applications work with both 32-bit and 64-bit Java data models, however
+for the most efficient operation, applications should be used on a 64-bit
+platform with a 64-bit Java data model. If the application is unable to detect
+a 64-bit model upon launch, a warning is displayed::
 
   ********************************************************************
-  *                           !!! HOIATUS !!!                        *
+  *                           !!! WARNING !!!                        *
   *                                                                  *
-  * 64-bitise Java andmemudeli tuvastamine ebaõnnestus. Rakendus on  *
-  * vähemefektiivsem. Rakenduse jõudluse suurendamiseks tuleb        *
-  * kasutada 64-bitise andmemudeliga Java keskkonda.                 *
+  * Detection of the 64-bit Java data model failed. The application  *
+  * will be less efficient. To increase application performance,     *
+  * use a Java environment with a 64-bit data model.                 *
   ********************************************************************
 
-Juhul kui rakenduse mälupiirang on 4GB või rohkem, ei ole 32-bitise
-andmemudeliga Java võimeline rakendust käivitama. Kuvatakse järgmine veateade::
+If the application memory limit is 4GB or more, a 32-bit data model
+Java is unable to launch the application. The following error message is
+displayed::
 
   Invalid maximum heap size: -Xmx4G
   The specified size exceeds the maximum representable size.

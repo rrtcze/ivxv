@@ -1,87 +1,86 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
 .. _kontroll:
 
-Kontrollrakenduse seadistamine
-==============================
+Verification Application Configuration
+=======================================
 
-Kontrollrakenduste seadistus on JSON formaadis.
+The verification application configuration is in JSON format.
 
-Reaalne sisu võib kahel seadistusel olla samasugune ka siis kui
-võimalike erinevuste tekkimise jaoks kasutatakse ennetavalt erinevaid
-URLe. Varasemalt on erinevate URLide kasutamist õigustanud nt. iOS
-rakenduste pikem tarnetsükkel, mis nõuab testseadistuste
-avalikustamist.
+The actual content of the two configurations may be identical even when
+different URLs are proactively used to anticipate possible differences.
+Previously, the use of different URLs has been justified by, e.g., the longer
+delivery cycle of iOS applications, which requires publishing test
+configurations.
 
-Seadistus koosneb viiest peamisest rühmast
+The configuration consists of five main groups
 
-* :token:`versions` - Rakenduse nõutud versioon
-* :token:`texts` - Kasutajaliideses kasutatavad tekstid
-* :token:`errors` - Kasutajaliideses kasutatavad veateated
-* :token:`colors` - Kasutajaliidese värvide koodid
-* :token:`params` - Rakenduse tööks vajalikud parameetrid
-* :token:`elections` - Igale küsimuse identifikaatorile vastav tekst
-  kasutajaliideses
+* :token:`versions` - Required application version
+* :token:`texts` - Texts used in the user interface
+* :token:`errors` - Error messages used in the user interface
+* :token:`colors` - User interface color codes
+* :token:`params` - Parameters required for application operation
+* :token:`elections` - Text corresponding to each question identifier in
+  the user interface
 
-Kõiki seadistatavaid väärtusi näeb näidisseadistusest. Kõik väärtused
-on kohustuslikud.
+All configurable values can be seen in the example configuration. All values
+are mandatory.
 
-Versioonide seadistamine
-------------------------
-
-Kontrollrakenduse versioon peab olema suurem või võrdne seadistuses määratud
-versiooniga. Versioonid kuuluvad rühma :token:`versions`:
-
-* :token:`android_version_code` - Android-rakenduse minimaalne versioonikood.
-  Väärtus peab olema positiivne JSON täisarv.
-* :token:`ios_bundle_version` - iOS-rakenduse minimaalne versioonisõne. Väärtus
-  peab olema JSON sõne, mis koosneb punktidega eraldatud positiivsetest
-  täisarvudest.
-
-Parameetrite seadistamine
--------------------------
-
-Rakenduse tööks vajalikud parameetrid kuuluvad rühma :token:`params`:
-
-* :token:`verification_url` - Nimekiri kogumisteenuse hostinimedest
-  või IP-aadressidest koos pordiga. Järjekord pole oluline. Väärtus
-  peab olema JSON loend ka ühe URLi puhul.
-* :token:`verification_tls` - Nimekiri kogumisteenuse TLS
-  sertifikaatidest PEM vormingus. Järjekord pole oluline. Väärtus peab
-  olema JSON loend ka ühe sertifikaadi puhul.
-* :token:`help_url` - Abiinfo vaate URL
-* :token:`close_timeout` - Ajaaken, mil on kasutajal võimalik oma
-  valikut näha enne rakenduse sulgumist. Millisekundites.
-* :token:`close_interval` - Intervall, millega uuendatakse
-  :token:`close_timeout` väärtust kasutajaliideses. Millisekundites.
-* :token:`con_timeout_1` - Kogumisteenusega ühenduse saamise esimese
-  katse ajapiirang. Millisekundites.
-* :token:`con_timeout_2` - Kui esimese ringiga ei saadud ühendust
-  ühegi kogumisteenuse instantsiga, proovitakse uuesti selle
-  ajapiiranguga. Millisekundites.
-* :token:`public_key` - Valimiste avalik võti, millega krüpteeritakse
-  valijate hääli. PEM vormingus.
-* :token:`tspreg_service_cert` - Ajatembeldusteenuse sertifikaat PEM
-  vormingus.
-* :token:`ocsp_service_cert` - OCSP-teenuse sertifikaadid PEM
-  vormingus. Järjekord pole oluline. Väärtus peab olema JSON loend ka
-  ühe väärtuse puhul. Kui väli on tühi, siis tuvastatakse OCSP
-  responderi sertifikaat automaatselt.
-* :token:`tspreg_client_cert` - Kogumisteenuse sertifikaat
-  registreerimispäringute tegemiseks PEM vormingus.
-
-Tekstide seadistamine
+Version Configuration
 ---------------------
 
-Kasutajaliideses kasutatavad tekstid kuuluvad rühma :token:`texts`. Järgmised
-tekstid on parametriseeritavad:
+The verification application version must be greater than or equal to the
+version specified in the configuration. Versions belong to the group :token:`versions`:
 
-* :token:`lbl_close_timeout` - Kontrollrakenduse sulgemisteade koos
-  loenduriga. Tekst peab sisaldama märgendit XX, mis asendatakse automaatselt
-  rakenduse sulgemiseni jäänud ajaga sekundites.
+* :token:`android_version_code` - Minimum version code for the Android application.
+  The value must be a positive JSON integer.
+* :token:`ios_bundle_version` - Minimum version string for the iOS application. The
+  value must be a JSON string consisting of positive integers separated by dots.
 
-Näide
------
+Parameter Configuration
+-----------------------
+
+Parameters required for application operation belong to the group :token:`params`:
+
+* :token:`verification_url` - List of collector service hostnames
+  or IP addresses with port. Order is not important. The value
+  must be a JSON list even for a single URL.
+* :token:`verification_tls` - List of collector service TLS
+  certificates in PEM format. Order is not important. The value must
+  be a JSON list even for a single certificate.
+* :token:`help_url` - Help information view URL
+* :token:`close_timeout` - Time window during which the user can see
+  their choice before the application closes. In milliseconds.
+* :token:`close_interval` - Interval at which the
+  :token:`close_timeout` value is updated in the user interface. In milliseconds.
+* :token:`con_timeout_1` - Timeout for the first connection attempt
+  to the collector service. In milliseconds.
+* :token:`con_timeout_2` - If no connection was established with any
+  collector service instance in the first round, retry with this
+  timeout. In milliseconds.
+* :token:`public_key` - Election public key used to encrypt
+  voters' ballots. In PEM format.
+* :token:`tspreg_service_cert` - Time-stamping service certificate in PEM
+  format.
+* :token:`ocsp_service_cert` - OCSP service certificates in PEM
+  format. Order is not important. The value must be a JSON list even
+  for a single value. If the field is empty, the OCSP
+  responder certificate is detected automatically.
+* :token:`tspreg_client_cert` - Collector service certificate
+  for making registration requests in PEM format.
+
+Text Configuration
+------------------
+
+Texts used in the user interface belong to the group :token:`texts`. The following
+texts are parameterizable:
+
+* :token:`lbl_close_timeout` - Verification application closing message with
+  counter. The text must contain the marker XX, which is automatically replaced
+  with the time remaining until the application closes in seconds.
+
+Example
+-------
 
 .. literalinclude:: config-examples/android-ios-config.json
    :language: json

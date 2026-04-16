@@ -1,63 +1,63 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
 .. _app-auditor:
 
-Auditirakendus
-==============
+Audit Application
+=================
 
-IVXV võtmerakendus võimaldab kasutada tõestatavat dekrüpteerimist -
-koos tulemusega väljastatakse lugemistõend e-häälte korrektse avamise
-kohta. Vältimaks häälte salajasuse rikkumist lugemistõendi kontrollil
-võimaldab IVXV kasutada häälte miksimist, mis säilitab häälte sisu
-kuid eemaldab krüptograafiliselt seose konkreetse hääle ja selle hääle
-andnud isiku vahel.
+The IVXV key application enables the use of provable decryption -
+along with the result, a decryption proof of correct opening of e-votes
+is issued. To avoid compromising vote secrecy during decryption proof
+verification, IVXV enables the use of vote mixing, which preserves
+the content of votes but cryptographically removes the link between
+a specific vote and the person who cast that vote.
 
-IVXV kasutab e-häälte miksimiseks tarkvara Verificatum, mis võtab
-sisendiks krüpteeritud hääled ning annab väljundiks miksitud
-krüpteeritud hääled ja miksimistõendi.
+IVXV uses the Verificatum software for mixing e-votes, which takes
+encrypted votes as input and produces mixed encrypted votes and a
+mixing proof as output.
 
-Miksimistõendi ja lugemistõendi kontroll toimub auditirakenduse tööriistadega
-*convert*, *mixer* ja *decrypt*.
+The verification of the mixing proof and decryption proof is performed using
+the audit application tools *convert*, *mixer* and *decrypt*.
 
-Töötlemisrakenduse toimingute kontroll toimub auditirakenduse tööriistaga
-*integrity*.
+The verification of the processing application operations is performed using
+the audit application tool *integrity*.
 
-#. Tööriist *convert* kontrollib, teisenduste korrektsust IVXV
-   andmevormingute ja Verificatumi andmevormingute vahel.
-#. Tööriist *mixer* kontrollib miksimistõendi korrektsust.
-#. Tööriist *decrypt* kontrollib lugemistõendi korrektsust.
-#. Tööriist *integrity* kontrollib töötlemisrakenduse logide korrektsust.
+#. The *convert* tool verifies the correctness of conversions between IVXV
+   data formats and Verificatum data formats.
+#. The *mixer* tool verifies the correctness of the mixing proof.
+#. The *decrypt* tool verifies the correctness of the decryption proof.
+#. The *integrity* tool verifies the correctness of the processing application logs.
 
-E-häälte korrektse kokkulugemise kontrolliks on vajalik ja piisav
-kasutada kõiki nelja auditirakenduse tööriista.
+For verifying the correct tallying of e-votes, it is necessary and sufficient
+to use all four audit application tools.
 
-Kõigi tööriistade kasutamine eeldab allkirjastatud usaldusjuure ja
-konkreetse tööriista seadistuste olemasolu. Alljärgnevalt kirjeldame
-konkreetsete tööriistade seadistusi.
+All tools require the presence of a signed trust root and the specific
+tool's configuration. Below we describe the configurations of the
+specific tools.
 
 .. _auditor-convert:
 
-E-häälte korrektse teisendamise kontroll
-----------------------------------------
+Verification of Correct E-vote Conversion
+------------------------------------------
 
-Verificatumi poolt koostatud miksimistõendi formaat on erinev IVXV raamistikus
-kasutatavast formaadist, samuti erinevad IVXV ning Verificatumi
-krüpteeritud häälte formaadid. IVXV raamistikku on pakendatud
-adapterid formaaditeisendusteks, auditirakendus pakub võimalust nende
-teisenduste korrektsuse kontrolliks.
+The mixing proof format produced by Verificatum is different from the format
+used in the IVXV framework, as are the IVXV and Verificatum encrypted vote
+formats. Adapters for format conversions are packaged into the IVXV framework,
+and the audit application provides the ability to verify the correctness of
+these conversions.
 
-Tööriist *convert* kontrollib, et Verificatumi poolt väljastatud
-miksimistõend vastab failidele IVXV raamistikus.
+The *convert* tool verifies that the mixing proof issued by Verificatum
+corresponds to the files in the IVXV framework.
 
-:convert.input_bb: IVXV miksimiseelse e-valimiskasti asukoht.
+:convert.input_bb: Location of the IVXV pre-mixing e-ballot box.
 
-:convert.output_bb: IVXV miksimisjärgse e-valimiskasti asukoht.
+:convert.output_bb: Location of the IVXV post-mixing e-ballot box.
 
-:convert.pub: IVXV avaliku võtme asukoht.
+:convert.pub: Location of the IVXV public key.
 
-:convert.protinfo: Verificatumi miksimise protokollifaili asukoht.
+:convert.protinfo: Location of the Verificatum mixing protocol file.
 
-:convert.proofdir: Verificatumi miksimistõendi asukoht.
+:convert.proofdir: Location of the Verificatum mixing proof.
 
 :file: `auditor.convert.yaml`:
 
@@ -67,20 +67,20 @@ miksimistõend vastab failidele IVXV raamistikus.
 
 .. _auditor-mix:
 
-E-häälte miksimistõendi kontroll
---------------------------------
+E-vote Mixing Proof Verification
+---------------------------------
 
-Tööriist *mixer* kontrollib Verificatumi miksimistõendi korrektsust.
+The *mixer* tool verifies the correctness of the Verificatum mixing proof.
 
-:mixer.protinfo: Verificatumi miksimistõendi protokollifaili asukoht.
+:mixer.protinfo: Location of the Verificatum mixing proof protocol file.
 
-:mixer.proofdir: Verificatumi miksimistõendi asukoht.
+:mixer.proofdir: Location of the Verificatum mixing proof.
 
-:mixer.threaded: Kasuta mitmelõimelist implementatsiooni. Vaikimisi
-                 väärtus on väär. Kasutatavate lõimede arv sõltub
-                 käsurea-argumentidest. Käsurea-argumentide puudumise
-                 korral valitakse optimaalne lõimede arv lähtudes
-                 tuvastatud tuumade arvust.
+:mixer.threaded: Use multi-threaded implementation. Default value
+                 is false. The number of threads used depends on
+                 the command-line arguments. If command-line arguments
+                 are absent, the optimal number of threads is selected
+                 based on the detected number of cores.
 
 :file:`auditor.mixer.yaml`:
 
@@ -90,38 +90,38 @@ Tööriist *mixer* kontrollib Verificatumi miksimistõendi korrektsust.
 
 .. _auditor-decrypt:
 
-E-häälte lugemistõendi kontroll
--------------------------------
+E-vote Decryption Proof Verification
+--------------------------------------
 
-Tööriist *decrypt* kontrollib lugemistõendi korrektsust.
+The *decrypt* tool verifies the correctness of the decryption proof.
 
-:decrypt.proofs: Kehtivate sedelite lugemistõendi asukoht.
+:decrypt.proofs: Location of the decryption proof for valid ballots.
 
-:decrypt.pub: Dekrüpteerimiseks kasutatud salajasele võtmele vastava avaliku
-              võtme asukoht.
+:decrypt.pub: Location of the public key corresponding to the secret key
+              used for decryption.
 
-:decrypt.discarded: Loend kehtetutest sedelitest.
+:decrypt.discarded: List of invalid ballots.
 
-:decrypt.anon_bb: Töötlemisrakenduse või miksimisrakenduse poolt loodud
-                  e-valimiskast anonüümistatud häältega.
+:decrypt.anon_bb: E-ballot box with anonymized votes created by the
+                  processing application or mixing application.
 
-:decrypt.plain_bb: Dekrüpteeritud valimiskast.
+:decrypt.plain_bb: Decrypted ballot box.
 
-:decrypt.tally: Elektroonilise hääletamise tulemus.
+:decrypt.tally: Electronic voting result.
 
-:decrypt.candidates: Valimise valikute nimekiri allkirjastatud kujul.
+:decrypt.candidates: Election choices list in signed form.
 
-:decrypt.districts: Valimise ringkondade nimekiri allkirjastatud kujul.
+:decrypt.districts: Election districts list in signed form.
 
-:decrypt.out: Lugemistõendi kontrolli tulemuste asukoht. Tegemist on
-              kataloogiga kuhu salvestatakse sedelid, mille
-              lugemistõend oli kehtetu.
+:decrypt.out: Location of decryption proof verification results. This is
+              a directory where ballots whose decryption proof was invalid
+              are saved.
 
-:decrypt.invalidity_proofs: Valikuline kehtetute sedelite lugemistõendi
-                            asukoht.
+:decrypt.invalidity_proofs: Optional location of the decryption proof for
+                            invalid ballots.
 
-:decrypt.abort_early: Valikuline auditirakenduse peatamine esimese läbikukutud
-                      kontrolli korral. Vaikimisi väärtus on tõene.
+:decrypt.abort_early: Optional termination of the audit application upon the
+                      first failed verification. Default value is true.
 
 :file:`auditor.decrypt.yaml`:
 
@@ -131,31 +131,30 @@ Tööriist *decrypt* kontrollib lugemistõendi korrektsust.
 
 .. _auditor-integrity:
 
-Töötlemisrakenduse logide kontroll
-----------------------------------
+Processing Application Log Verification
+-----------------------------------------
 
-Tööriist *integrity* kontrollib, et töötlemisrakenduse poolt väljastatud
-logid ühendavad e-valimiskasti anonüümitud e-valimiskastiga.
+The *integrity* tool verifies that the logs issued by the processing
+application connect the e-ballot box with the anonymized e-ballot box.
 
-:integrity.ballotbox: Kogumisteenusest väljastatud e-valimiskast.
+:integrity.ballotbox: E-ballot box issued from the collector service.
 
-:integrity.anon_bb: Töötlemisrakenduse poolt loodud e-valimiskast
-                    anonüümistatud häältega.
+:integrity.anon_bb: E-ballot box with anonymized votes created by the
+                    processing application.
 
-:integrity.log_accepted: Vastuvõetud häälte *log1* fail.
+:integrity.log_accepted: Accepted votes *log1* file.
 
-:integrity.log_squashed: Tühistatud korduvhäälte häälte *log2* fail.
+:integrity.log_squashed: Cancelled repeated votes *log2* file.
 
-:integrity.log_revoked: Jaoskonnainfo põhjal tühistatud ja ennistatud häälte
-                        *log2* fail.
+:integrity.log_revoked: Votes revoked and restored based on polling station
+                        info *log2* file.
 
-:integrity.log_anonymised: Lugemisele läinud häälte *log3* fail.
+:integrity.log_anonymised: Votes sent for tallying *log3* file.
 
-:integrity.bb_errors: E-valimiskasti töötlemisvigade raport.
+:integrity.bb_errors: E-ballot box processing errors report.
 
-:integrity.abort_early: Valikuline auditirakenduse peatamine esimese
-                        läbikukutud kontrolli korral. Vaikimisi
-                        väärtus on tõene.
+:integrity.abort_early: Optional termination of the audit application upon the
+                        first failed verification. Default value is true.
 
 :file: `auditor.integrity.yaml`:
 

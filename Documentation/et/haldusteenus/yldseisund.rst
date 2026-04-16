@@ -1,37 +1,37 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Üldseisund
-==========
+General status
+===============
 
-Üldseisundi leht avaneb menüüvalikust ``Üldseisund``.
+The general status page opens from the menu option ``Üldseisund``.
 
-Kogumisteenuse üldseisund
--------------------------
+Collector service general status
+---------------------------------
 
-Kogumisteenuse üldseisundi vaates kuvatakse järgnevaid andmeid:
+The collector service general status view displays the following data:
 
-#. Valimiste identifikaator;
+#. Election identifier;
 
-#. Kogumisteenuse seisund;
+#. Collector service status;
 
-#. Käimasolev hääletusetapp;
+#. Current voting phase;
 
-#. Kogumisteenusele rakendatud seadistuste ja nimekirjade versioonid;
+#. Versions of configurations and lists applied to the collector service;
 
-#. Mikroteenuste seisundite kokkuvõte;
+#. Summary of microservice statuses;
 
-#. Kogumisteenuse tarkvarapakkide seisund;
+#. Status of collector service software packages;
 
-#. Kogumisteenuses registreeritud kasutajate arv;
+#. Number of users registered in the collector service;
 
-#. Kogumisteenusesse laaditud korralduste arv.
+#. Number of commands loaded into the collector service.
 
-Kogumisteenuse üldseisundi tuvastamiseks kogub haldusteenus korrapäraselt
-alamteenustelt nende seisundi kohta andmeid ja peab selle üle arvestust.
+To determine the collector service general status, the management service regularly
+collects status data from subservices and maintains records of it.
 
 .. note::
 
-   Kogumisteenusesse laaditud korraldused jagunevad aktiivseteks ja
-   arhiveeritud korraldusteks. Aktiivsed korraldused on hetkel teenusele
-   rakendatud. Arhiveeritud korraldused on süsteemi laaditud, kuid pole
-   rakendatud - näiteks uuema versiooniga asendatud korraldused.
+   Commands loaded into the collector service are divided into active and
+   archived commands. Active commands are currently applied to the service.
+   Archived commands have been loaded into the system but are not applied
+   — for example, commands replaced by a newer version.

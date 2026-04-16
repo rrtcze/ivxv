@@ -1,78 +1,78 @@
-..  IVXV kasutusmallid
+..  IVXV use cases
 
-Sissejuhatus
+Introduction
 ============
 
-Dokument kirjeldab elektroonilise hääletamise süsteemi kasutusmallimudeli. Dokument on jaotatud kaheks osaks: tegijad ja kasutusmallid. Esimeses osas on kirjeldatud kasutusmallimudeli tegijad. Teises osas on kirjeldatud elektroonilise hääletamise süsteemi kasutusmallid.
+This document describes the use case model of the electronic voting system. The document is divided into two parts: actors and use cases. The first part describes the actors of the use case model. The second part describes the use cases of the electronic voting system.
 
-Viited
-------
-1.  [UML] – UMLi kontsentraat. Objektmodelleerimise standardkeele UML 2.0 lühijuhend. Martin Fowler. Cybernetica AS.
+References
+----------
+1.  [UML] – UML Distilled. A Brief Guide to the Standard Object Modeling Language UML 2.0. Martin Fowler. Cybernetica AS.
 
-Kasutatud metoodika
--------------------
+Methodology Used
+----------------
 
-Kasutusmallimudel
-`````````````````
-    Kasutusmallid on abivahend, mis aitab aru saada süsteemi talitlusnõuetest. Kasutusmallid esitavad süsteemi välisvaate kirjeldades süsteemi kasutajate ja süsteemi vahelisi interaktsioone kasutajate eesmärkide täitmiseks. Kasutusmallimudel koondab endas kõik analüüsitava süsteemi olulised kasutusmallid [UML].
+Use Case Model
+``````````````
+    Use cases are a tool that helps understand the functional requirements of a system. Use cases present an external view of the system by describing interactions between system users and the system for fulfilling user goals. The use case model consolidates all significant use cases of the system being analyzed [UML].
 
-Tegija
-``````
-    Tegija on roll, mida kasutaja mängib süsteemi suhtes. Tegija ei pea olema inimene. Kui modelleeritav süsteem annab mingit teenust teisele arvutisüsteemile, on see teine süsteem tegija.
+Actor
+`````
+    An actor is a role that a user plays in relation to the system. An actor does not have to be a human. If the system being modeled provides a service to another computer system, that other system is an actor.
 
-Kasutusmall
-```````````
+Use Case
+````````
 
-Kirjeldus
-'''''''''
-
-Kasutusmall on kogum stsenaariume, mida omavahel ühendab ühine kasutaja eesmärk. Iga stsenaarium on süsteemis tehtavate toimingute jada, mis annab tegijale nähtava ja kasuliku tulemuse.
-
-Eeltingimus
+Description
 '''''''''''
 
-Eeltingimus kirjeldab tingimusi, mille täidetuse peab süsteem tagama, enne kui ta laseb alustada kasutusmalli täitmist.
+A use case is a collection of scenarios united by a common user goal. Each scenario is a sequence of actions performed in the system that produces a visible and useful result for the actor.
 
-Päästik
-'''''''
-
-Päästik spetsifitseerib sündmuse, mis käivitab kasutusmalli.
-
-Põhiprotsess
+Precondition
 ''''''''''''
 
-Põhiprotsess kirjeldab kasutusmalli peastsenaariumi.
+A precondition describes the conditions that the system must ensure are met before it allows the execution of the use case to begin.
 
-Laiendid
-''''''''
+Trigger
+'''''''
 
-Laiend kasutusmallis nimetab oleku, mis tuleneb teistsugustest interaktsioonidest kui need, mis on kirjeldatud õnnestumise peastsenaariumis, ja ütleb, millised on need erinevused.
+A trigger specifies the event that initiates the use case.
 
-Järeltingimus
+Main Process
+''''''''''''
+
+The main process describes the primary scenario of the use case.
+
+Extensions
+''''''''''
+
+An extension in a use case names a condition that results from different interactions than those described in the success main scenario, and states what those differences are.
+
+Postcondition
 '''''''''''''
 
-Järeltingimuse täidetus garanteeritakse süsteemi poolt kasutusmalli täitmise lõpus.
+The fulfillment of the postcondition is guaranteed by the system at the end of the use case execution.
 
-E-hääletamise etapid
---------------------
+E-voting Stages
+---------------
 
-E-hääletamine jaguneb korralduslikult viieks etapiks:
+E-voting is organizationally divided into five stages:
 
-- hääletamiseelne etapp
-- hääletamisetapp
-- töötlusetapp
-- lugemisetapp
-- auditeerimisetapp
+- pre-voting stage
+- voting stage
+- processing stage
+- counting stage
+- auditing stage
 
-Mõisted
--------
+Definitions
+-----------
 
-Mõiste *isik* võib tähistada nii füüsilist kui juriidilist isikut. Eeldame, et konkreetsete toimingute läbiviija on alati üheselt indentifitseeritav füüsiline isik, kes võib tegutseda juriidilise isiku volitatud esindajana.
+The term *person* may denote both a natural person and a legal person. We assume that the person carrying out specific actions is always a uniquely identifiable natural person who may act as an authorized representative of a legal person.
 
-Mõiste *serverisüsteem* tähistab terviklikku kogumit tarkvaralisi ja riistvaralisi komponente, mis koostoimes realiseerivad konkreetset protokolli ning osutavad pikema aja vältel teenust paljudele kasutajatele.
+The term *server system* denotes a complete set of software and hardware components that together implement a specific protocol and provide a service to many users over an extended period of time.
 
-Mõiste *liides* tähistab selgelt spetsifitseeritud kokkupuutepunkti süsteemi komponentide vahel, mis võimaldab komponentide vahelist infovahetust.
+The term *interface* denotes a clearly specified point of contact between system components that enables information exchange between components.
 
-Mõiste *rakendus* tähistab tarkvaralist komponenti, mida käivitatakse konkreetsel ajahetkel ühel riistvaralisel komponendil ühe kasutaja poolt. Rakendus võib oma ülesande täitmiseks suhelda servrisüsteemiga.
+The term *application* denotes a software component that is launched at a specific point in time on a single hardware component by a single user. An application may communicate with a server system to fulfill its task.
 
-Mõiste *teenus* tähistab süsteemivälist komponenti, millega süsteem oma ülesannete täitmiseks konkreetsete liideste kaudu andmeid vahetab.
+The term *service* denotes a component external to the system with which the system exchanges data through specific interfaces to fulfill its tasks.

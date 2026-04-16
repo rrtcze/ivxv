@@ -1,19 +1,19 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Annotatsioon
-------------
+Annotation
+----------
 
-IVXV kogumisteenuse haldusteenuse
-kasutajaliidese kasutusjuhend.
+IVXV collector service management service
+user interface user guide.
 
-Käesolev juhend on mõeldud kogumisteenuse haldamisega tegelevatele kasutajatele
-ning katab järgnevaid valdkondi:
+This guide is intended for users involved in the management of the collector service
+and covers the following areas:
 
-* Kogumisteenusele seadistuste, nimekirjade ja volituste rakendamine;
+* Applying configurations, lists, and permissions to the collector service;
 
-* Kogumisteenuse seisundi jälgimine;
+* Monitoring the status of the collector service;
 
-* Kogumisteenuse väljavõtete allalaadimine
-  (e-valimiskast, hääletamise detailstatistika, hääletamisseansside nimekiri);
+* Downloading extracts from the collector service
+  (e-ballot box, detailed voting statistics, voting sessions list);
 
-* Kogumisteenuse haldussündmuste logi jälgimine.
+* Monitoring the collector service management event log.

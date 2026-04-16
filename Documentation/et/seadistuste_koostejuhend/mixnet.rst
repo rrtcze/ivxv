@@ -1,70 +1,70 @@
-..  IVXV juhend Verificatumi miksneti ettevalmistamiseks ning kasutamiseks
+..  IVXV guide for preparing and using the Verificatum mixnet
 
-E-häälte miksimine
+E-vote Mixing
 ====================================================
 
 .. _mix-install:
 
-Miksneti Verificatum paigaldamine
+Installing the Verificatum Mixnet
 ---------------------------------
 
-Eeldused
-^^^^^^^^
+Prerequisites
+^^^^^^^^^^^^^
 
-Juhend on kasutamiseks distributsiooniga Ubuntu 20.04 LTS (Bionic Beaver) ja
-see eeldab, et käske käivitatakse lihtkasutaja õigustest, kellel on õigus
-privileegide eskaleerimiseks `sudo` käsu abil. Lisaks on eeldatud järgmiste
-failide olemasolu kasutaja kodukaustas:
+This guide is intended for use with the Ubuntu 20.04 LTS (Bionic Beaver) distribution and
+assumes that commands are executed with regular user privileges, with the right to
+escalate privileges using the `sudo` command. Additionally, the following
+files are expected to be present in the user's home directory:
 
-Github repositooriumist (https://github.com/vvk-ehk/intcheck):
+From the Github repository (https://github.com/vvk-ehk/intcheck):
 
-* :file:`intcheck.py` - tööriist kataloogide täielikkuse kontrolliks
+* :file:`intcheck.py` - tool for verifying directory integrity
 
-IVXV tarnefailist:
+From the IVXV delivery file:
 
-* :file:`gmpmee.dirsha256sum` - ``gmpmee`` kataloogi räsi;
+* :file:`gmpmee.dirsha256sum` - ``gmpmee`` directory hash;
 
-* :file:`vmgj.dirsha256sum` - ``vmgj`` kataloogi räsi;
+* :file:`vmgj.dirsha256sum` - ``vmgj`` directory hash;
 
-* :file:`vcr.dirsha256sum` - ``vcr`` kataloogi räsi;
+* :file:`vcr.dirsha256sum` - ``vcr`` directory hash;
 
-* :file:`vmn.dirsha256sum` - ``vmn`` kataloogi räsi;
+* :file:`vmn.dirsha256sum` - ``vmn`` directory hash;
 
-* :file:`ivxv-verificatum-1.10.3-runner.zip` - IVXV adapter Verificatumi
-  kasutamiseks.
+* :file:`ivxv-verificatum-1.10.3-runner.zip` - IVXV adapter for
+  using Verificatum.
 
-Valimise korraldaja käest:
+From the election organizer:
 
-* :file:`data/bb-4.json` - anonüümitud e-valimiskast;
+* :file:`data/bb-4.json` - anonymized e-ballot box;
 
-* :file:`data/pub.pem` - häälte krüpteerimiseks kasutatud võti.
+* :file:`data/pub.pem` - key used for encrypting votes.
 
-Kataloogis :file:`data/` ei tohi olla ühtegi teist faili.
+There must be no other files in the :file:`data/` directory.
 
-Pärast protsessi lõppu on kataloogis :file:`data/` vajalikud järgnevad failid:
+After the process is completed, the following files are needed in the :file:`data/` directory:
 
-* :file:`shuffled.json` - miksitud e-valimiskast;
+* :file:`shuffled.json` - mixed e-ballot box;
 
-* :file:`proof.zip` - korrektse miksimise tõend.
+* :file:`proof.zip` - proof of correct mixing.
 
 
-Verificatumi ehitamine
-^^^^^^^^^^^^^^^^^^^^^^
+Building Verificatum
+^^^^^^^^^^^^^^^^^^^^
 
-Ehitamiseks vajalike pakkide paigaldamine::
+Installing packages required for building::
 
     sudo apt-get install --no-install-recommends -y autoconf autoconf automake \
     build-essential libgmp-dev libtool git openjdk-11-jdk-headless \
     python unzip wget
 
-Verificatumi lähtekoodi allalaadimine::
+Downloading Verificatum source code::
 
     git clone https://github.com/verificatum/verificatum-gmpmee gmpmee
     git clone https://github.com/verificatum/vmgj
     git clone https://github.com/verificatum/vcr
     git clone https://github.com/verificatum/vmn
 
-Lähtekoodist puhaste arhiivide loomine täielikkuse kontrolliks::
+Creating clean archives from source code for integrity verification::
 
     cd gmpmee
     git checkout 4aafc31
@@ -80,7 +80,7 @@ Lähtekoodist puhaste arhiivide loomine täielikkuse kontrolliks::
     rm -rf .git/
     cd ..
 
-Verificatumi lähtekoodi täielikkuse kontrollimine::
+Verifying Verificatum source code integrity::
 
     chmod +x ./intcheck.py
     ./intcheck.py verify gmpmee gmpmee.dirsha256sum
@@ -88,7 +88,7 @@ Verificatumi lähtekoodi täielikkuse kontrollimine::
     ./intcheck.py verify vcr vcr.dirsha256sum
     ./intcheck.py verify vmn vmn.dirsha256sum
 
-`gmpmee` ehitamine::
+Building `gmpmee`::
 
     cd gmpmee/
     make -f Makefile.build
@@ -96,7 +96,7 @@ Verificatumi lähtekoodi täielikkuse kontrollimine::
     make
     sudo make install
 
-`vmgj` ehitamine::
+Building `vmgj`::
 
     cd ../vmgj/
     make -f Makefile.build
@@ -104,7 +104,7 @@ Verificatumi lähtekoodi täielikkuse kontrollimine::
     make
     sudo make install
 
-`vcr` ehitamine::
+Building `vcr`::
 
     cd ../vcr/
     make -f Makefile.build
@@ -112,7 +112,7 @@ Verificatumi lähtekoodi täielikkuse kontrollimine::
     make
     sudo make install
 
-`vmn` ehitamine::
+Building `vmn`::
 
     cd ../vmn/
     make -f Makefile.build
@@ -121,12 +121,12 @@ Verificatumi lähtekoodi täielikkuse kontrollimine::
     sudo make install
 
 
-IVXV Verificatumi adapteri ja käivitusskripti lahtipakkimine::
+Unpacking the IVXV Verificatum adapter and launch script::
 
     cd ..
     unzip ivxv-verificatum-1.10.3-runner.zip
 
-Verificatumi teekide kopeerimine adapteri väliste teekide kataloogi::
+Copying Verificatum libraries to the adapter's external libraries directory::
 
     cp /usr/local/share/java/verificatum-vmgj-1.2.2.jar mixer/lib/verificatum-vmgj.jar
     cp /usr/local/share/java/verificatum-vcr-vmgj-3.0.4.jar mixer/lib/verificatum-vcr-vmgj.jar
@@ -139,16 +139,16 @@ Verificatumi teekide kopeerimine adapteri väliste teekide kataloogi::
 .. _mix-mix:
 
 
-E-häälte miksimine
+E-vote Mixing
 ----------------------------------------
 
-Verificatumi miksneti käivitamine::
+Starting the Verificatum mixnet::
 
     cd data
     ../mixer/bin/mix.py --pubkey pub.pem --ballotbox bb-4.json \
     --shuffled shuffled.json --proof-zipfile proof.zip shuffle
 
-Verificatumi miksneti käivitamine koos entroopiaallika eelneva tühjendamisega::
+Starting the Verificatum mixnet with prior emptying of the entropy source::
 
     cd data
     ../mixer/bin/mix.py --pubkey pub.pem --ballotbox bb-4.json \
@@ -157,10 +157,10 @@ Verificatumi miksneti käivitamine koos entroopiaallika eelneva tühjendamisega:
 
 .. _mix-verify:
 
-Miksimistõendi verifitseerimine
+Verifying the Mixing Proof
 -------------------------------
 
-Verificatumi adapteri abil saab miksimistõendit ka verifitseerida::
+The mixing proof can also be verified using the Verificatum adapter::
 
     cd ..
     mkdir verify

@@ -1,53 +1,52 @@
-3. Kehtestada elektroonilise hääle vorm järgmiselt (skeem lisatud).
+3. Establish the form of the electronic vote as follows (schema attached).
 
-  3.1. Valijarakenduses elektrooniliselt allkirjastatud elektrooniline
-    hääl on digitaalselt allkirjastatud fail, mille nimi on teksti
-    kujul e-hääletamise aeg (ajatempel). Faili sees asub punktis 3.2
-    nimetatud salastatud (krüpteeritud) elektrooniline hääl ja valija
-    elektrooniline allkiri. Elektroonilise allkirja sertifikaatide
-    kehtivuskinnitus ja ajatempel saadakse usaldusteenuse pakkujalt
-    kogujasse eraldi ning valijarakenduse faili ennast ei muudeta,
-    vaid kehtivuskinnitus ja ajatempel hoiustatakse valijarakenduses
-    loodud allkirjastatud failist lahus.
+  3.1. The electronic vote digitally signed in the voter application is a
+    digitally signed file whose name is the e-voting time (timestamp) in text
+    form. Inside the file is the encrypted electronic vote specified in
+    point 3.2 and the voter's digital signature. The validity confirmation
+    of the electronic signature certificates and the timestamp are obtained
+    from the trust service provider to the collector separately, and the
+    voter application file itself is not modified — the validity confirmation
+    and timestamp are stored separately from the signed file created in the
+    voter application.
 
-  3.2. Elektrooniline hääl on krüpteeritud Riigikogu valimiste seaduse
-    §483 lõike 3 alusel hääletamiseks loodud elektrooniliste häälte
-    salastamise võtmega andmefail. Faili nimi algab valimiste või
-    rahvahääletuse identifikaatoriga ja lõpeb küsimuse
-    identifikaatoriga. Faili laiend on .ballot. Faili sees on
-    krüpteeritud kujul punktides 3.4, 3.5, 3.6 või 3.7 nimetatud
-    andmeelemendid vastavalt sellele, kas tegemist on Euroopa
-    Parlamendi, Riigikogu või kohaliku omavalitsuse volikogu valimiste
-    või rahvahääletusega.
+  3.2. The electronic vote is a data file encrypted with the electronic vote
+    encryption key created for voting pursuant to § 483, subsection 3 of
+    the Riigikogu Election Act. The file name starts with the election or
+    referendum identifier and ends with the question identifier. The file
+    extension is .ballot. Inside the file, the data elements specified in
+    points 3.4, 3.5, 3.6, or 3.7 are in encrypted form, depending on
+    whether it is a European Parliament, Riigikogu, or local government
+    council election or a referendum.
 
-  3.3. Avatud (dekrüpteeritud) elektrooniline hääl on elektrooniliste
-    häälte avamise arvuti (võtmeprotseduurideks mõeldud arvuti) mälus
-    olev andmehulk, mis koosneb kahest andmeelemendist ja neid
-    eraldavatest märgenditest.
+  3.3. The opened (decrypted) electronic vote is a data set in the memory
+    of the electronic vote opening computer (the computer intended for key
+    procedures), consisting of two data elements and the delimiters
+    separating them.
 
-  3.4. Euroopa Parlamendi valimiste andmeelementide ja märgendite
-    järjekord on:
+  3.4. The order of data elements and delimiters for European Parliament
+    elections is:
 
-    3.4.1. sõne 0000 ja märgend ASCII kuueteistkümnendkood 2E;
+    3.4.1. string 0000 and delimiter ASCII hexadecimal code 2E;
 
-    3.4.2. kandidaadi registreerimisnumber.
+    3.4.2. candidate registration number.
 
-  3.5. Riigikogu valimiste andmeelementide ja märgendite järjekord on:
+  3.5. The order of data elements and delimiters for Riigikogu elections is:
 
-    3.5.1. sõne 0000 ja märgend ASCII kuueteistkümnendkood 2E;
+    3.5.1. string 0000 and delimiter ASCII hexadecimal code 2E;
 
-    3.5.2. kandidaadi registreerimisnumber.
+    3.5.2. candidate registration number.
 
-  3.6. Kohaliku omavalitsuse volikogu valimiste andmeelementide ja
-    märgendite järjekord on:
+  3.6. The order of data elements and delimiters for local government
+    council elections is:
 
-    3.6.1. kohaliku omavalitsuse üksuse EHAK kood ja märgend ASCII
-      kuueteistkümnendkood 2E;
+    3.6.1. EHAK code of the local government unit and delimiter ASCII
+      hexadecimal code 2E;
 
-    3.6.2. kandidaadi registreerimisnumber.
+    3.6.2. candidate registration number.
 
-  3.7. Rahvahääletuse andmeelementide ja märgendite järjekord on:
+  3.7. The order of data elements and delimiters for a referendum is:
 
-    3.7.1. sõne 0000 ja märgend ASCII kuueteistkümnendkood 2E;
+    3.7.1. string 0000 and delimiter ASCII hexadecimal code 2E;
 
-    3.7.2. vastuse kood.
+    3.7.2. response code.

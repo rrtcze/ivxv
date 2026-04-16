@@ -1,32 +1,32 @@
 ..  IVXV arhitektuur
 
-Lisa - ETCD Andmemudel
+Appendix - ETCD Data Model
 ======================
 
-ETCD on võti-väärtus andmebaas, kus talletatakse e-hääletamise
-sisendnimekirju, e-hääli ning statistikat.
+ETCD is a key-value database where e-voting input lists, e-votes, and
+statistics are stored.
 
-Ringkondade nimekiri
+Districts List
 --------------------
 
-.. table:: Ringkondade nimekiri
+.. table:: Districts List
    :widths: 30 35 35
 
    +----------------------------+---------------------------+-----------------------+
-   | **Võti**                   | **Väärtus**               | **Näide**             |
+   | **Key**                    | **Value**                 | **Example**           |
    +============================+===========================+=======================+
-   | /districts                 | Juurvõti                  |                       |
+   | /districts                 | Root key                  |                       |
    +----------------------------+---------------------------+-----------------------+
-   | /districts/<EHAK-district> | Seab valija               | /districts/05241      |
-   |                            | EHAK-ringkond paarile     |                       |
-   |                            | vastavusse                | 0000.1                |
-   |                            | ringkonnaidentifikaatori, |                       |
-   |                            | mis viitab /choices       |                       |
-   |                            | harusse                   |                       |
+   | /districts/<EHAK-district> | Maps the voter's          | /districts/05241      |
+   |                            | EHAK district to the      |                       |
+   |                            | corresponding             | 0000.1                |
+   |                            | district identifier,      |                       |
+   |                            | which references the      |                       |
+   |                            | /choices branch           |                       |
    +----------------------------+---------------------------+-----------------------+
-   | /districts/counties        | Väli counties             | {                     |
-   |                            | ringkondade               |                       |
-   |                            | nimekirjast               | "0068": [             |
+   | /districts/counties        | Counties field            | {                     |
+   |                            | from the districts        |                       |
+   |                            | list                      | "0068": [             |
    |                            |                           |                       |
    |                            |                           | "0809",               |
    |                            |                           |                       |
@@ -54,26 +54,26 @@ Ringkondade nimekiri
    |                            |                           |                       |
    |                            |                           | }                     |
    +----------------------------+---------------------------+-----------------------+
-   | /districts/version         | Nimekirja                 | ["NIMESTE,NIMI,123456 |
-   |                            | allkirjastajad            | 78912                 |
+   | /districts/version         | List signers              | ["NIMESTE,NIMI,123456 |
+   |                            |                           | 78912                 |
    |                            |                           | 2019-02-22T13:58:48Z" |
    |                            |                           | ]                     |
    +----------------------------+---------------------------+-----------------------+
 
-Valikute nimekiri
+Choices List
 -----------------
 
-.. table:: Valikute nimekiri
+.. table:: Choices List
    :widths: 30 35 35
 
    +------------------------+-----------------------+-----------------------+
-   | **Võti**               | **Väärtus**           | **Näide**             |
+   | **Key**                | **Value**             | **Example**           |
    +========================+=======================+=======================+
-   | /choices               | Juurvõti              |                       |
+   | /choices               | Root key              |                       |
    +------------------------+-----------------------+-----------------------+
-   | /choices/<district-id> | Ringkonnale           | /choices/0000.1       |
-   |                        | district-id vastav    |                       |
-   |                        | valikute nimekiri.    | {                     |
+   | /choices/<district-id> | Choices list          | /choices/0000.1       |
+   |                        | corresponding to the  |                       |
+   |                        | district district-id.  | {                     |
    |                        |                       |                       |
    |                        |                       | "Erakond 1":{         |
    |                        |                       |                       |
@@ -107,161 +107,159 @@ Valikute nimekiri
    |                        |                       |                       |
    |                        |                       | }                     |
    +------------------------+-----------------------+-----------------------+
-   | /choices/version       | Nimekirja             | ["NIMESTE,NIMI,123456 |
-   |                        | allkirjastajad        | 78912                 |
+   | /choices/version       | List signers          | ["NIMESTE,NIMI,123456 |
+   |                        |                       | 78912                 |
    |                        |                       | 2019-02-22T13:58:59Z" |
    |                        |                       | ]                     |
    +------------------------+-----------------------+-----------------------+
 
-Valijate nimekiri
+Voter List
 -----------------
 
-.. table:: Valijate nimekiri
+.. table:: Voter List
    :widths: 30 35 35
 
    +---------------------------------+-----------------------+-----------------------+
-   | **Võti**                        | **Väärtus**           | **Näide**             |
+   | **Key**                         | **Value**             | **Example**           |
    +=================================+=======================+=======================+
-   | /voters                         | Juurvõti              |                       |
+   | /voters                         | Root key              |                       |
    +---------------------------------+-----------------------+-----------------------+
-   | /voters/<version-id>            | Valijanimekirja       | /voters/1             |
-   |                                 | versiooni juurvõti    |                       |
+   | /voters/<version-id>            | Voter list            | /voters/1             |
+   |                                 | version root key      |                       |
    +---------------------------------+-----------------------+-----------------------+
-   | /voters/<version-id>/<voter-id> | Valija                | /voters/1/12345678912 |
-   |                                 | <EHAK-district> antud |                       |
-   |                                 | nimekirjas            | 05241                 |
+   | /voters/<version-id>/<voter-id> | Voter's               | /voters/1/12345678912 |
+   |                                 | <EHAK-district> in    |                       |
+   |                                 | the given list        | 05241                 |
    +---------------------------------+-----------------------+-----------------------+
-   | /voters/<version-id>/version    | Valijatenimekirja     | ["NIMESTE,NIMI,123456 |
-   |                                 | versioon              | 78912                 |
+   | /voters/<version-id>/version    | Voter list            | ["NIMESTE,NIMI,123456 |
+   |                                 | version               | 78912                 |
    |                                 |                       | 2019-02-22T13:58:59Z" |
    |                                 |                       | ]                     |
    +---------------------------------+-----------------------+-----------------------+
-   | /voters/version                 | Aktuaalse             | 1                     |
-   |                                 | valijatenimekirja     |                       |
-   |                                 | versiooni ID          |                       |
+   | /voters/version                 | ID of the current     | 1                     |
+   |                                 | voter list version    |                       |
    +---------------------------------+-----------------------+-----------------------+
-   | /voters/previous                | Eelmise               | 0                     |
-   |                                 | valijanimekirja       |                       |
-   |                                 | versiooni ID          |                       |
+   | /voters/previous                | ID of the previous    | 0                     |
+   |                                 | voter list version    |                       |
    +---------------------------------+-----------------------+-----------------------+
 
-Talletatud e-hääl
+Stored E-Vote
 -----------------
 
-.. table:: Talletatud e-hääl
+.. table:: Stored E-Vote
    :widths: 30 35 35
 
    +-------------------------+------------------------+-----------------------+
-   | **Võti**                | **Väärtus**            | **Näide**             |
+   | **Key**                 | **Value**              | **Example**           |
    +=========================+========================+=======================+
-   | /vote                   | Juurvõti               |                       |
+   | /vote                   | Root key               |                       |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>         | Hääle juurvõti,        | 16 baiti binaarandmed |
-   |                         | unikaalne              |                       |
-   |                         | identifikaator         |                       |
+   | /vote/<vote-id>         | Vote root key,         | 16 bytes binary data  |
+   |                         | unique identifier      |                       |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>/count   | Hääle kontrollimise    | 0                     |
-   |                         | loendur                |                       |
+   | /vote/<vote-id>/count   | Vote verification      | 0                     |
+   |                         | counter                |                       |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>/ocsp    | Kehtivuskinnitus       | DER kodeeringus OCSP  |
-   |                         |                        | vastus                |
+   | /vote/<vote-id>/ocsp    | Validity confirmation  | DER-encoded OCSP      |
+   |                         |                        | response              |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>/time    | Hääle talletamise      | 2019-03-03T10:56:28.8 |
-   |                         | kellaaeg               | 99925926Z             |
+   | /vote/<vote-id>/time    | Vote storage           | 2019-03-03T10:56:28.8 |
+   |                         | timestamp              | 99925926Z             |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>/tspreg  | Registreerimiskinnitus | DER kodeeringus PKIX  |
-   |                         |                        | ajatempel             |
+   | /vote/<vote-id>/tspreg  | Registration           | DER-encoded PKIX      |
+   |                         | confirmation           | timestamp             |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>/type    | Allkirjastatud hääle   | BDOC                  |
-   |                         | konteineri tüüp        |                       |
+   | /vote/<vote-id>/type    | Signed vote            | BDOC                  |
+   |                         | container type         |                       |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>/version | Hääle andmisel         | 0                     |
-   |                         | kehtinud valijate      |                       |
-   |                         | nimekirja versiooni    |                       |
-   |                         | ID                     |                       |
+   | /vote/<vote-id>/version | ID of the voter list   | 0                     |
+   |                         | version that was       |                       |
+   |                         | active when the vote   |                       |
+   |                         | was cast               |                       |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>/vote    | E-hääl allkirjastatud  | BDOC vormingus        |
-   |                         | konteineris            | allkirjastatud hääl   |
+   | /vote/<vote-id>/vote    | E-vote in a signed     | Signed vote in BDOC   |
+   |                         | container              | format                |
    +-------------------------+------------------------+-----------------------+
-   | /vote/<vote-id>/voter   | Valija isikukood       | 12345678912           |
+   | /vote/<vote-id>/voter   | Voter's personal       | 12345678912           |
+   |                         | identification code    |                       |
    +-------------------------+------------------------+-----------------------+
 
-Statistikaliidesed
+Statistics Interfaces
 ------------------
 
-.. table:: Statistikaliidesed
+.. table:: Statistics Interfaces
    :widths: 30 35 35
 
    +-------------------------------+-----------------------+-----------------------+
-   | **Võti**                      | **Väärtus**           | **Näide**             |
+   | **Key**                       | **Value**             | **Example**           |
    +===============================+=======================+=======================+
-   | /votes                        | Juurvõti              |                       |
+   | /votes                        | Root key              |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /votes/order                  | Hääletamisfaktide     |                       |
-   |                               | järjestuse juurvõti   |                       |
+   | /votes/order                  | Voting facts          |                       |
+   |                               | order root key        |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /votes/order/<seq>            | Konkreetse            | /votes/order/1        |
-   |                               | hääletamisfakti       |                       |
-   |                               | juurvõti              |                       |
+   | /votes/order/<seq>            | Specific voting       | /votes/order/1        |
+   |                               | fact root key         |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /votes/order/<seq>/admincode  | Hääletamisfaktiga     | 0796                  |
-   |                               | seotud EHAK           |                       |
+   | /votes/order/<seq>/admincode  | EHAK associated       | 0796                  |
+   |                               | with the voting fact  |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /votes/order/<seq>/district   | Hääletamisfaktiga     | 10                    |
-   |                               | seotud ringkonna      |                       |
-   |                               | number                |                       |
+   | /votes/order/<seq>/district   | District number       | 10                    |
+   |                               | associated with the   |                       |
+   |                               | voting fact           |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /votes/order/<seq>/voterid    | Hääletaja isikukood   | 12345678901           |
+   | /votes/order/<seq>/voterid    | Voter's personal      | 12345678901           |
+   |                               | identification code   |                       |
+   +-------------------------------+-----------------------+-----------------------+
+   | /votes/order/<seq>/votername  | Voter's name          | NIMI NIMESTE          |
    |                               |                       |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /votes/order/<seq>/votername  | Hääletaja nimi        | NIMI NIMESTE          |
-   |                               |                       |                       |
+   | /votes/stats                  | Sequence number       | 12                    |
+   |                               | of the last           |                       |
+   |                               | voting fact           |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /votes/stats                  | Viimase               | 12                    |
-   |                               | hääletamisfakti       |                       |
-   |                               | järjekorranumber      |                       |
+   | /voted                        | Root key              |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /voted                        | Juurvõti              |                       |
+   | /voted/latest                 | Index root key of     |                       |
+   |                               | most recently cast    |                       |
+   |                               | votes                 |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /voted/latest                 | Viimati antud häälte  |                       |
-   |                               | indeksi juurvõti      |                       |
-   +-------------------------------+-----------------------+-----------------------+
-   | /voted/latest/<voter-id>      | Hääletaja poolt       | /voted/latest/1234567 |
-   |                               | viimati antud hääle   | 8901                  |
-   |                               | aeg ja identifikaator |                       |
-   |                               | binaarkujul           | <2019-03-03T12:15:59Z |
+   | /voted/latest/<voter-id>      | Time and identifier   | /voted/latest/1234567 |
+   |                               | of the most recently  | 8901                  |
+   |                               | cast vote by the      |                       |
+   |                               | voter in binary form  | <2019-03-03T12:15:59Z |
    |                               |                       | ><vote-id>            |
    +-------------------------------+-----------------------+-----------------------+
-   | /voted/stats                  | Jaoskonnapõhise       |                       |
-   |                               | statistika indeksi    |                       |
-   |                               | juurvõti              |                       |
+   | /voted/stats                  | Polling station-based |                       |
+   |                               | statistics index      |                       |
+   |                               | root key              |                       |
    +-------------------------------+-----------------------+-----------------------+
-   | /voted/stats/<voter-id>       | Hääle andmise         | /voted/stats/12345678 |
-   |                               | kellaaeg koos         | 901                   |
-   |                               | jaoskonnainfoga       |                       |
+   | /voted/stats/<voter-id>       | Vote casting          | /voted/stats/12345678 |
+   |                               | timestamp with        | 901                   |
+   |                               | polling station info  |                       |
    |                               |                       | <0796><2019-02-22T14: |
    |                               |                       | 17:23Z>               |
    +-------------------------------+-----------------------+-----------------------+
-   | /votes/voter/stats/<voter-id> | Tühi baitide massiiv  | /votes/voter/stats/   |
-   |                               | (kasutatakse väärtuse | 394091044211          |
-   |                               | versiooni, ning mitte |                       |
-   |                               | väärtust ennast)      |                       |
+   | /votes/voter/stats/<voter-id> | Empty byte array      | /votes/voter/stats/   |
+   |                               | (the value's version  | 394091044211          |
+   |                               | is used, not the      |                       |
+   |                               | value itself)         |                       |
    +-------------------------------+-----------------------+-----------------------+
 
-Hääletamisseansid
+Voting Sessions
 -----------------
 
-.. table:: Hääletamisseansid
+.. table:: Voting Sessions
    :widths: 30 35 35
 
    +-----------------------+-----------------------+---------------------------+
-   | **Võti**              | **Väärtus**           | **Näide**                 |
+   | **Key**               | **Value**             | **Example**               |
    +=======================+=======================+===========================+
-   | /session              | Juurvõti              |                           |
+   | /session              | Root key              |                           |
    +-----------------------+-----------------------+---------------------------+
-   | /session/<session-id> | RPC meetod, mis       | ``/session/0149468d2866`` |
-   |                       | kutsus antud          | ``6fced7d73b32cc16225d``  |
-   |                       | funktsiooni välja +   |                           |
-   |                       | ``x1F`` + kasutaja    |                           |
-   |                       | autentimismeetod      |                           |
+   | /session/<session-id> | RPC method that       | ``/session/0149468d2866`` |
+   |                       | invoked the given     | ``6fced7d73b32cc16225d``  |
+   |                       | function +            |                           |
+   |                       | ``x1F`` + user        |                           |
+   |                       | authentication method |                           |
    +-----------------------+-----------------------+---------------------------+

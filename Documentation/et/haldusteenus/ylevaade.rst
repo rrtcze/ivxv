@@ -1,73 +1,73 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Ülevaade
+Overview
 ========
 
-Haldusliidese funktsionaalsus
------------------------------
+Management interface functionality
+-----------------------------------
 
-Haldusliides on kogumisteenuse haldamise teenuse veebipõhine kasutajaliides ja
-sellel on järgmised funktsioonid:
+The management interface is the web-based user interface of the collector service
+management service and has the following functions:
 
-* Kogumisteenuse seisundi ja ajaloo kohta ülevaate esitamine:
+* Presenting an overview of the collector service status and history:
 
-   * Koondülevaade;
+   * General overview;
 
-   * Teenuste seisund;
+   * Service status;
 
-   * Valmisnimekirjade seisund;
+   * Status of prepared lists;
 
-   * Üldstatistika;
+   * General statistics;
 
-   * Kogumisteenuse haldussündmuste logi;
+   * Collector service management event log;
 
-* Korralduste laadimine kogumisteenusesse;
+* Loading commands into the collector service;
 
-* Kasutajate haldamine;
+* User management;
 
-* Väljavõtete allalaadimine:
+* Downloading extracts:
 
-  * Hääletamise detailstatistika allalaadimine;
+  * Downloading detailed voting statistics;
 
-  * Hääletamisseansside nimekirja allalaadimine;
+  * Downloading the voting sessions list;
 
-  * E-valimiskasti allalaadimine.
-
-
-Ligipääse haldusliidesele
--------------------------
-
-Kogumisteenuse haldusliides on kasutatav veebisirviku abil. Haldusliidesele
-ligipääsuks vajaliku ``URL-i`` annab kasutajatele IVXV süsteemihaldur.
-
-Haldusliidesele pääsevad ligi ainult volitatud kasutajad, kes on ennast
-autentinud ID-kaardiga. Kasutajale pakutavate funktsioonide hulk sõltub
-kasutaja volitustest.
+  * Downloading the e-ballot box.
 
 
-Kasutajaliidese ülevaade
+Access to the management interface
+-----------------------------------
+
+The collector service management interface is accessible using a web browser. The
+``URL`` required to access the management interface is provided to users by the IVXV system administrator.
+
+Only authorized users who have authenticated themselves with an ID card can access
+the management interface. The set of functions available to a user depends on
+the user's permissions.
+
+
+User interface overview
 ------------------------
 
-Lehe ülaosas asub lehe päis, kus on kirjas haldusliidese nimi ja ikoon
-sisselogitud kasutaja andmete vaatamiseks.
+At the top of the page is the page header, which contains the name of the management
+interface and an icon for viewing the logged-in user's details.
 
-Lehe vasakus servas asub menüüriba, mille abil saab navigeerida alamlehtede vahel.
+On the left side of the page is the menu bar, which can be used to navigate between subpages.
 
 .. note::
 
-   Kasutajaliides skaleerub ka madala resolutsiooniga ekraanidele, siis
-   peidetakse menüüosa vaikimisi vaatest ja see on avatav lehe päisest.
+   The user interface also scales to low-resolution screens; in that case,
+   the menu section is hidden from the default view and can be opened from the page header.
 
 
-Seadistuste, nimekirjade ja volituste koostamine ning laadimine
----------------------------------------------------------------
+Preparing and loading configurations, lists, and permissions
+-------------------------------------------------------------
 
-Kasutajaliides kaudu on võimalik süsteemi laadida kogumisteenuse seadistusi,
-valikute- ja valijate nimekirju ning kasutajate volitusi.
+Through the user interface, it is possible to load collector service configurations,
+choices lists and voter lists, and user permissions into the system.
 
-Nende andmete peavad olema vormistatud digitaalselt signeeritud korraldusena.
-Seadistuspakkide ettevalmistamine on kirjeldatud dokumendis ``IVXV seadistuste
-koostamise juhend``.
+These data must be formatted as digitally signed commands.
+The preparation of configuration packages is described in the document ``IVXV
+configuration preparation guide``.
 
-Süsteemi laaditud seadistuspakke on võimalik alla laadida, kui klõpsata
-kasutajaliideses seadistuspaki versiooniandmetel.
+Configuration packages loaded into the system can be downloaded by clicking
+on the configuration package version information in the user interface.

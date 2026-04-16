@@ -1,46 +1,48 @@
 ..  IVXV arhitektuur
 
-Rakendused
+Applications
 ==========
 
 
-Üldpõhimõtted
+General Principles
 -------------
 
-Kõik rakendused on käsurealiidesega rakendused, mis on pakendatud töötama
-operatsioonisüsteemi Windows 10 (või uuem) keskkonnas. Komponentide
-kasutajaliidesed on ühekeelsed. Komponendid tarnitakse eestikeelsetena, nende
-tõlkimine on võimalik tõlkefaili abil.
+All applications are command line interface applications packaged to work in a
+Windows 10 (or newer) operating system environment. The component user
+interfaces are monolingual. Components are delivered in Estonian, their
+translation is possible using a translation file.
 
-Rakendused on programmeeritud Java keeles.
+Applications are programmed in Java.
 
-Väliste infosüsteemidega suhtlevad rakendused kasutavad maksimaalselt
-olemasolevaid liideseid/andmestruktuure.
+Applications communicating with external information systems use existing
+interfaces/data structures to the maximum extent.
 
-Rakendused saavad oma sisendi rakenduste seadistustest ja seadistustes näidatud
-failidest failisüsteemis ning salvestavad oma väljundi kasutaja näidatud kausta
-failisüsteemis. Failid võivad paikneda ka operatiiv-mälukettal.
+Applications receive their input from application settings and from files
+indicated in the settings on the file system, and save their output to a
+user-specified folder on the file system. Files may also be located on a RAM
+disk.
 
-Relevantsed rakendused toetavad ElGamal krüptosüsteemi täisarvujäägikorpustel
-ning P-384 elliptkõveral. Lugemistõend on realiseeritud Schnorri
-nullteadmustõestusel põhineval protokollil.
+Relevant applications support the ElGamal cryptosystem on integer residue
+fields and the P-384 elliptic curve. The decryption proof is implemented
+using a protocol based on Schnorr's zero-knowledge proof.
 
 .. figure:: model/img/app_modules.png
 
-   Rakenduste abimoodulid
+   Application helper modules
 
-Valimise liides on rakenduste jaoks unifitseeritud, see võimaldab erinevate
-valimistüüpide realiseerimist moodulitena. Digiallkirja verifitseerimise
-funktsionaalsus on loodud `digidoc4j <https://github.com/open-eid/digidoc4j>`_
-teegi abil. Abimoodulite kasutamist alljärgnevatel skeemidel eraldi välja ei
-tooda.
+The election interface is unified for applications, which enables the
+implementation of different election types as modules. The digital signature
+verification functionality is created using the
+`digidoc4j <https://github.com/open-eid/digidoc4j>`_ library. The use of
+helper modules is not separately shown in the following diagrams.
 
-Rakenduste seadistamine
+Application Configuration
 ```````````````````````
 
-Rakendused seadistatakse kas digitaalallkirjastatud konfiguratsioonipakiga või
-käsureavõtmetega. Käsureavõtmed ei toeta hierarhilise struktuuriga seadistuste
-sisestamist. Seadistused konfiguratsioonipakis kirjeldatakse YAML-keeles:
+Applications are configured either with a digitally signed configuration
+package or with command line switches. Command line switches do not support
+entering hierarchically structured settings. Settings in the configuration
+package are described in YAML:
 
 .. code-block:: yaml
 
@@ -84,200 +86,199 @@ sisestamist. Seadistused konfiguratsioonipakis kirjeldatakse YAML-keeles:
      out: out-3
 
 
-Sisendite kooskõlalisuse kontroll
-`````````````````````````````````
+Input Consistency Check
+`````````````````````````````
 
-Kõik rakendused teostavad konfiguratsioonile sisendite kooskõlalisuse kontrolli
-vastavalt nende poolt kasutatavale konfiguratsioonile:
+All applications perform an input consistency check on the configuration
+according to the configuration they use:
 
-#. sertifikaatide konfiguratsiooni laadimine;
+#. loading certificate configuration;
 
-#. konfiguratsiooni digiallkirja verifitseerimine;
+#. verifying the digital signature of the configuration;
 
-#. ringkondade nimekirja verifitseerimine;
+#. verifying the districts list;
 
-#. ringkondade nimekirja kooskõlalisuse kontroll;
+#. consistency check of the districts list;
 
-#. ringkondade nimekirja laadimine;
+#. loading the districts list;
 
-#. valikute nimekirja verifitseerimine;
+#. verifying the choices list;
 
-#. valikute nimekirja kooskõlalisuse kontroll;
+#. consistency check of the choices list;
 
-#. valikute nimekirja laadimine;
+#. loading the choices list;
 
-#. valijate nimekirjade verifitseerimine;
+#. verifying the voter lists;
 
-#. valijate nimekirjade kooskõlalisus kontroll;
+#. consistency check of the voter lists;
 
-#. valijate nimekirjade laadimine.
+#. loading the voter lists.
 
 
-Võtmerakendus
+Key Application
 -------------
 
 .. figure:: model/img/key.png
 
-   Võtmerakenduse liidesed
+   Key Application interfaces
 
-Võtmerakendusega genereeritakse iga hääletamise jaoks häälte salastamise ja
-häälte avamise võti, samuti toimub selle abil häälte lugemine ja tulemuse
-väljastamine.
+The Key Application generates the vote encryption and vote decryption keys for
+each election, and also performs vote counting and result output.
 
-Võtmerakendus kasutab [DesmedtF89]_ läviskeemi, mis põhineb usaldataval
-osakujagajal ning rakendab Shamiri osakujagamist, mis on
-informatsiooniteoreetiliselt turvaline :math:`t < M` osapoole korral, kus M on
-lävipiir.
+The Key Application uses the [DesmedtF89]_ threshold scheme, which is based on
+a trusted dealer and applies Shamir's secret sharing, which is
+information-theoretically secure for :math:`t < M` parties, where M is
+the threshold.
 
-Võtmeosakud genereeritakse operatiivmälus ning talletatakse PKCS15-liidese
-vahendusel kiipkaardile.
+Key shares are generated in volatile memory and stored on a smart card via
+the PKCS15 interface.
 
-Võtmerakenduse sisend võtme genereerimisel on:
+The input of the Key Application for key generation is:
 
-- Võtmepaari identifikaator;
+- Key pair identifier;
 
-- Krüptosüsteemi ElGamal spetsifikatsioon – täisarvujäägikorpus või P-384
-  elliptkõver ning võtmepikkus;
+- ElGamal cryptosystem specification – integer residue field or P-384
+  elliptic curve and key length;
 
-- M-N läviskeemi spetsifikatsioon, mis peab vastama reeglile
+- M-N threshold scheme specification, which must comply with the rule
   :math:`N >= 2 * M - 1`;
 
-- N PKCS15-ühilduvat kiipkaarti;
+- N PKCS15-compatible smart cards;
 
-Võtmerakenduse väljund võtme genereerimisel on:
+The output of the Key Application for key generation is:
 
-- Isesigneeritud sertifikaat;
+- Self-signed certificate;
 
-- N võtmeosakut talletatuna kiipkaartidel;
+- N key shares stored on smart cards;
 
-- Rakenduse detailne tegevuslogi;
+- Detailed application activity log;
 
-- Rakenduse detailne vealogi.
+- Detailed application error log.
 
-Võtmerakenduse sisend häälte lugemisel on:
+The input of the Key Application for vote counting is:
 
-- Miksitud hääled;
+- Mixed votes;
 
-- Võtmepaari identifikaator;
+- Key pair identifier;
 
-- M võtmeosakut vastavalt läviskeemi spetsifikatsioonile.
+- M key shares according to the threshold scheme specification.
 
-Võtmerakenduse väljund häälte lugemisel on:
+The output of the Key Application for vote counting is:
 
-- Signeeritud hääletamistulemus;
+- Signed voting result;
 
-- Kehtetute häälte loend;
+- List of invalid votes;
 
-- Lugemistõend (Schnorri nullteadmustõestusel põhinev protokoll vastavalt
-  hankedokumentides viidatule);
+- Decryption proof (protocol based on Schnorr's zero-knowledge proof as
+  referenced in the procurement documents);
 
-- Rakenduse detailne tegevuslogi;
+- Detailed application activity log;
 
-- Rakenduse detailne vealogi.
+- Detailed application error log.
 
-Töötlemisrakendus
+Processing Application
 -----------------
 
-Töötlemisrakendusega verifitseeritakse, tühistatakse ning anonüümitakse
-hääletamisperioodil kogutud hääli vastavalt Üldkirjelduse jaotisele 7.6.
+The Processing Application verifies, revokes, and anonymizes votes collected
+during the voting period according to Section 7.6 of the General Description.
 
-Töötlemisrakenduse sisendid on:
+The inputs of the Processing Application are:
 
-- kogumisteenuse poolt talletatud elektroonilised hääled;
+- electronic votes stored by the collector service;
 
-- registreerimisteenuse poolt väljastatud ajamärgendid;
+- timestamps issued by the registration service;
 
-- valijate nimekirjad;
+- voter lists;
 
-- ringkondade nimekiri;
+- districts list;
 
-- tühistusnimekirjad;
+- revocation lists;
 
-- ennistusnimekirjad.
+- restoration lists.
 
-Töötlemisrakenduse väljundid on:
+The outputs of the Processing Application are:
 
-- rakenduse detailne tegevuslogi;
+- detailed application activity log;
 
-- rakenduse detailne vealogi;
+- detailed application error log;
 
-- e-hääletanute nimekiri PDF-vormingus, vastavalt töötlemise etapile;
+- list of e-voters in PDF format, according to the processing stage;
 
-- e-hääletanute nimekiri masintöödeldaval kujul, vastavalt töötlemise etapile;
+- list of e-voters in machine-readable format, according to the processing stage;
 
-- anonüümitud hääled.
+- anonymized votes.
 
-Lisaks varem defineeritud liidestele ja sõltuvustele kasutab töötlemisrakendus
-kolmanda osapoole teeki PDF'ide väljastamise funktsionaalsuse teostamiseks.
+In addition to previously defined interfaces and dependencies, the Processing
+Application uses a third-party library for implementing the PDF output
+functionality.
 
 .. figure:: model/img/processing.png
 
-   Töötlemisrakenduse liidesed
+   Processing Application interfaces
 
-Elektrooniliste häälte täielik töötlemine
-`````````````````````````````````````````
+Complete Processing of Electronic Votes
+`````````````````````````````````````
 
-Elektrooniliste häälte täielik töötlemine on tegevus, mille käigus
-töötlemisrakendus võrdleb Kogumisteenuse poolt talletatud häälte hulka
-registreerimisteenuse poolt talletatud häälte hulgaga, kontrollib talletatud
-häälte vastavust valimiste konfiguratsioonile, tuvastab loendamisele minevad
-hääled ning anonüümib need Võtmerakendusele üle andmiseks.
+Complete processing of electronic votes is an activity during which the
+Processing Application compares the set of votes stored by the Collector
+Service with the set of votes stored by the registration service, checks the
+compliance of stored votes with the election configuration, identifies the
+votes to be counted, and anonymizes them for handover to the Key Application.
 
-#. rakenduse seadistuste laadimine;
+#. loading application settings;
 
-#. elektrooniliste häälte digitaalallkirjade verifitseerimine;
+#. verifying digital signatures of electronic votes;
 
-#. registreerimisteenuse kinnituste verifitseerimine;
+#. verifying registration service confirmations;
 
-#. ajatemplite verifitseerimine;
+#. verifying timestamps;
 
-#. iga valija kohta viimase kehtiva hääle tuvastamine;
+#. identifying the last valid vote for each voter;
 
-#. algse elektrooniliselt hääletanute nimekirja väljastamine PDF-vormingus;
+#. outputting the initial list of e-voters in PDF format;
 
-#. tühistus- ja ennistusnimekirjade verifitseerimine;
+#. verifying revocation and restoration lists;
 
-#. tühistus- ja ennistusnimekirjade kooskõlalisuse kontroll;
+#. consistency check of revocation and restoration lists;
 
-#. tühistus- ja ennistusnimekirjade rakendamine;
+#. applying revocation and restoration lists;
 
-#. miksimisele minevate häälte nimekirja koostamine, krüptogrammide eraldamine
-   digitaalallkirjadest;
+#. compiling the list of votes to be mixed, separating cryptograms from
+   digital signatures;
 
-#. lõpliku elektrooniliselt hääletanute nimekirja väljastamine masinloetavas
-   vormingus.
-
-
-Elektrooniliselt hääletanute nimekirja genereerimine
-````````````````````````````````````````````````````
-
-#. rakenduse seadistuste laadimine;
-
-#. elektrooniliste häälte digitaalallkirjade verifitseerimine;
-
-#. algse elektrooniliselt hääletanute nimekirja väljastamine PDF-vormingus.
+#. outputting the final list of e-voters in machine-readable format.
 
 
-Auditirakendus
+Generating the List of E-Voters
+````````````````````````````````
+
+#. loading application settings;
+
+#. verifying digital signatures of electronic votes;
+
+#. outputting the initial list of e-voters in PDF format.
+
+
+Audit Application
 --------------
 
 .. figure:: model/img/audit.png
 
-   Auditirakenduse liidesed
+   Audit Application interfaces
 
-Auditirakendusega (joonis 9) verifitseeritakse matemaatiliselt häälte
-kokkulugemise korrektsust ning miksimise kasutamisel ka miksimise korrektsust.
+The Audit Application (figure 9) mathematically verifies the correctness of
+vote tallying and, when mixing is used, also the correctness of mixing.
 
-Auditirakenduse sisendid on;
+The inputs of the Audit Application are;
 
-- anonüümitud hääled;
+- anonymized votes;
 
-- miksitud hääled;
+- mixed votes;
 
-- Verificatumi miksimistõend;
+- Verificatum mixing proof;
 
-- hääletamistulemus.
+- voting result.
 
-Auditirakenduse väljund on rakenduse detailne tegevuslogi, mis sisaldab ka
-hinnangut auditi tervikliku õnnestumise kohta. Vajadusel väljastatakse ka
-rakenduse detailne vealogi.
+The output of the Audit Application is the detailed application activity log,
+which also contains an assessment of the overall success of the audit. If
+necessary, a detailed application error log is also output.

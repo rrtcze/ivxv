@@ -1,74 +1,74 @@
-Krahhi toimumise indikaatorid
+Crash occurrence indicators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Haldusveebiliides.
-Vali **Teenused** vasakult menüüst. Kui talletusteenus on krahhinud,
-siis tema **Seisund** on **Tõrge**.
+Management web interface.
+Select **Services** from the left menu. If the storage service has crashed,
+its **Status** is **Failure**.
 
-Halduskäsurealiides.
-Logi sisse **ivxv-admin** kasutajana ja päri teenuste statistikat::
+Management command line interface.
+Log in as the **ivxv-admin** user and query service statistics::
 
    $ sudo su - ivxv-admin
    $ ivxv-status
 
-Kui talletusteenus on krahhinud, siis tema **State** on **FAILURE**.
+If the storage service has crashed, its **State** is **FAILURE**.
 
 
-Krahhist taastumise eeldused
+Crash recovery prerequisites
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Krahhi taastumiseks piisab kui teenuste CA TLS privaatvõti ja sertifikaat on
-alles, mida saab kasutada teenuse varuvõtmete ja -sertifikaatide
-genereerimiseks. Samas, saab ka enne valimisi teenuse varuvõtmed ja
--sertifikaadid ette genereerida.
+For crash recovery it is sufficient that the services' CA TLS private key and
+certificate are preserved, which can be used to generate backup keys and
+certificates for the service. Alternatively, backup keys and certificates for
+the service can also be pre-generated before the elections.
 
-Kui kõikide teenuste CA on sama, siis tasub valija- ja kontrollrakenduste
-seadistusse panna hoopis CA TLS sertifikaadi. Juhul kui CA on teenustel erinev,
-siis peab panema kõik teenuste TLS sertifikaadid rakenduste seadistusse
-vahetult enne valimisi.
+If the CA for all services is the same, it is advisable to put the CA TLS
+certificate into the voter and verification application settings instead. If the
+CA differs between services, then all service TLS certificates must be placed
+into the application settings immediately before the elections.
 
 
-Krahhi võimalik mõju hääletamistulemusele
+Possible impact of crash on voting result
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Kõik päringud mis saadetakse vastu krahhinud talletusteenuse
-masinat ebaõnnestuvad. Valija ei saa autentida, ega hääletada.
+All requests sent to the crashed storage service machine will fail.
+The voter cannot authenticate or vote.
 
 
-Krahhist taastumise sammud
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Crash recovery steps
+^^^^^^^^^^^^^^^^^^^^
 
-Krahhi saab liigitada järgmiselt:
+The crash can be classified as follows:
 
-   #. Talletusteenus on terve, ning vajab ainult taaskäivitamist
+   #. The storage service is healthy and only needs a restart
 
-   #. Talletusteenuse andmed (võti, sertifikaat jne) on rikutud või masina
-      krahh
+   #. The storage service data (key, certificate, etc.) is corrupted or machine
+      crash
 
-   #. Talletusteenuse lähtekoodis on viga
+   #. There is a bug in the storage service source code
 
-Talletusteenus on terve, ning vajab ainult taaskäivitamist
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. seealso::
-
-   * Kasuta :ref:`recovery-stateless` juhendis oleva
-     **Teenus on terve, ning vajab ainult taaskäivitamist, v.a x-tee teenus**
-     peatükki
-
-Talletusteenuse andmed (võti, sertifikaat jne) on rikutud või masina krahh
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The storage service is healthy and only needs a restart
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. seealso::
 
-   * Kasuta :ref:`recovery-stateless` juhendis oleva
-     **Teenuse masin on krahhinud, v.a vahendus- ja x-tee teenused**
-     peatükki
+   * Use the chapter
+     **Service is healthy and only needs a restart, except X-Road service**
+     from the :ref:`recovery-stateless` guide
+
+Storage service data (key, certificate, etc.) is corrupted or machine crash
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. seealso::
+
+   * Use the chapter
+     **Service machine has crashed, except proxy and X-Road services**
+     from the :ref:`recovery-stateless` guide
 
 
 .. note::
 
-   Punktis 10 tuleb asendada vana talletusteenuse **id** ja **address** väljad:
+   In step 10, the old storage service **id** and **address** fields need to be replaced:
 
    .. code-block:: yaml
 
@@ -79,7 +79,7 @@ Talletusteenuse andmed (võti, sertifikaat jne) on rikutud või masina krahh
              address:     ivxv1:2379
              peeraddress: ivxv1:2380
 
-   uute vastu:
+   with new ones:
 
    .. code-block:: yaml
 
@@ -90,35 +90,35 @@ Talletusteenuse andmed (võti, sertifikaat jne) on rikutud või masina krahh
               address:     ivxv4:2379
               peeraddress: ivxv4:2380
 
-   Punktis 12 tuleb uuendada ka talletusteenuse TLS privaatvõti::
+   In step 12, the storage service TLS private key also needs to be updated::
 
       $ ivxv-secret-load --service=storage@storage4.ivxv.ee tls-key /opt/ivxv-install/service_definition/storage@storage4.ivxv.ee.key
 
-   ja sertifikaat:::
+   and certificate:::
 
       $ ivxv-secret-load --service=storage@storage4.ivxv.ee tls-cert /opt/ivxv-install/service_definition/storage@storage4.ivxv.ee.pem
 
-Veendu, et asendamine läks sujuvalt läbi:
+Verify that the replacement went smoothly:
 
-   #. SSH logi uue koguja masinasse *root* kasutajana::
+   #. SSH log in to the new collector machine as the *root* user::
 
       $ sudo su
 
-   #. Päri andmebaasi klastri seisu, näiteks, kui klaster koosneb
-      *ivxv4*, *ivxv2*, *ivxv3* masinatest::
+   #. Query the database cluster status, for example, if the cluster consists of
+      the *ivxv4*, *ivxv2*, *ivxv3* machines::
 
       $ cd /var/lib/ivxv/service/storage@storage4.ivxv.ee
       $ env ETCDCTL_API=3 etcdctl --endpoints=ivxv4:2379,ivxv2:2379,ivxv3:2379 --cert tls.pem --key tls.key --cacert ca.pem endpoint status -w table
 
-Talletusteenuse lähtekoodis on viga
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+There is a bug in the storage service source code
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Kui talletusteenuse lähtekoodis on viga, siis seda saab
-asendada uuema versiooniga, olemasoleva andmebaasi
-klastrit rikumata.
+If there is a bug in the storage service source code, it can be
+replaced with a newer version without corrupting the existing database
+cluster.
 
 .. seealso::
 
-   * Kasuta :ref:`recovery-stateless` juhendis oleva
-     **Teenuse lähtekoodis on viga, v.a x-tee teenus**
-     peatükki
+   * Use the chapter
+     **There is a bug in the service source code, except X-Road service**
+     from the :ref:`recovery-stateless` guide

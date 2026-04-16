@@ -59,10 +59,10 @@ $(HTMLDOCS): html-%:
 
 # Rules for generating release documentation.
 
-RELEASE1 = "$(abspath $(DESTDIR))/1. Ülddokumendid"
+RELEASE1 = "$(abspath $(DESTDIR))/1. General documents"
 DOCS1ET := public/uldsisukord
 
-RELEASE2 = "$(abspath $(DESTDIR))/2. Spetsifikatsioonid"
+RELEASE2 = "$(abspath $(DESTDIR))/2. Specifications"
 DOCS2ET := \
 	public/arhitektuur \
 	public/liidesed \
@@ -76,19 +76,19 @@ DOCS2EN := \
 	public/protokollid \
 	en/backendlogs
 
-RELEASE3 = "$(abspath $(DESTDIR))/3. Juhendid"
+RELEASE3 = "$(abspath $(DESTDIR))/3. Guides"
 DOCS3ET := \
 	et/haldusteenus \
 	et/kogumisteenuse_haldusjuhend \
 	et/seadistuste_koostejuhend \
 	et/audiitor
 
-RELEASE4 = "$(abspath $(DESTDIR))/4. Näited"
+RELEASE4 = "$(abspath $(DESTDIR))/4. Examples"
 DOCS4ET := \
 	et/example-config \
 	et/seadistuste_koostejuhend/config-examples/android-ios-config.json
 
-RELEASE5 = "$(abspath $(DESTDIR))/5. Muudatused"
+RELEASE5 = "$(abspath $(DESTDIR))/5. Changes"
 
 RELEASEDOCSET := $(patsubst %,release-et-%,$(DOCS1ET) $(DOCS2ET) $(DOCS3ET) $(DOCS4ET))
 RELEASEDOCSEN := $(patsubst %,release-en-%,$(DOCS1EN) $(DOCS2EN))

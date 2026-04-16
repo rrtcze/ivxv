@@ -2,285 +2,284 @@
 
 .. _tehnoloogiad:
 
-Kasutatavad tehnoloogiad
+Technologies Used
 ========================
 
-Kogumisteenuse programmeerimiskeel
+Collector Service Programming Language
 ----------------------------------
 
-Kogumisteenuse tuumikfunktsionaalsus on programmeeritud keeles Go, mis vastab
-järgmistele hanke nõuetele:
+The core functionality of the collector service is programmed in Go, which
+meets the following procurement requirements:
 
-* Staatiline tüüpimine;
+* Static typing;
 
-* Automaatne mäluhaldus;
+* Automatic memory management;
 
-* Kompilaator avatud lähtekoodiga;
+* Open source compiler;
 
-* Ribastamine (rööprapse).
+* Concurrency (parallelism).
 
-Kogumisteenuse haldusteenus on programmeeritud keeles Python.
+The collector service management service is programmed in Python.
 
 
-Rakenduste programmeerimiskeel
+Applications Programming Language
 ------------------------------
 
-Rakendused on programmeeritud keeles Java, mis vastab hanke nõuetele keele laia
-leviku ja jätkusuutlikkuse kohta.
+The applications are programmed in Java, which meets the procurement
+requirements for the language's wide adoption and sustainability.
 
 
-Projekti sõltuvused
+Project Dependencies
 -------------------
 
-Projektis kasutatavad kolmandate osapoolte komponendid koos nende motiveeritud
-kasutamisvajadusega on üles loetletud järgnevates tabelites. Eraldi tabelid on
-raamistiku pakendamiseks ja töötamiseks ning raamistiku arenduseks ja
-testimiseks.
+Third-party components used in the project along with the justified need for
+their use are listed in the following tables. Separate tables are provided for
+the framework's packaging and operation, and for the framework's development and
+testing.
 
-Kõik IVXV projektis kasutatavad välised teegid asuvad ``ivxv-external.git``
-hoidlas või on saadaval platvormil, kus rakendus tööle hakkab.
+All external libraries used in the IVXV project reside in the
+``ivxv-external.git`` repository or are available on the platform where
+the application will run.
 
-Kõik kogumisteenuses kasutatavad komponendid on avatud lähtekoodiga.
+All components used in the collector service are open source.
 
 .. tabularcolumns:: |p{0.2\linewidth}|p{0.1\linewidth}|p{0.15\linewidth}|p{0.55\linewidth}|
 .. list-table::
-   IVXV raamistiku tööks kasutatavad kolmandate osapoolte komponendid
+   Third-party components used for IVXV framework operation
    :header-rows: 1
 
-   *  - Nimi
-      - Versioon
-      - Litsents (SPDX)
-      - Kasutusvajadus
+   *  - Name
+      - Version
+      - License (SPDX)
+      - Usage need
 
    *  - `Bootstrap <http://getbootstrap.com>`_
       - 3.4.1, JavaScript
       - MIT
-      - Kogumisteenuse haldusteenuse kasutajaliidese kujundus
+      - Collector service management service user interface design
 
    *  - Bouncy Castle
       - 1.78.1, Java
       - MIT
-      - ASN1 käsitlemine, andmetüübi BigInteger abifunktsioonid
+      - ASN1 handling, BigInteger data type utility functions
 
    *  - `Bottle <https://bottlepy.org/>`_
       - 0.13.2, Python
       - MIT
-      - Raamistik kogumisteenuse haldusteenuse veebiliidese teostamiseks
+      - Framework for implementing the collector service management service web interface
 
    *  - CAL10N
       - 0.8.1, Java
       - MIT
-      - Mitmekeelsuse tugi, tõlkefailide valideerimine
+      - Multilingual support, translation file validation
 
    *  - Digidoc 4j
       - 5.3.1, Java
       - LGPL-2.1-only
-      - BDoc konteinerite käsitlemine
+      - BDoc container handling
 
    *  - Apache Commons (collections4 4.4)
       - Java
       - Apache-2.0
-      - Digidoc 4j ja PDFBox sõltuvused
+      - Digidoc 4j and PDFBox dependencies
 
    *  - `Docopt <http://docopt.org/>`_
       - 0.6.2, Python
       - MIT
-      - Kogumisteenuse haldusutiliitide käsurealiidese teostus
+      - Implementation of the collector service administration utilities command line interface
 
    *  - `Fasteners <https://github.com/harlowja/fasteners>`_
       - 0.19, Python
       - Apache-2.0
-      - Kogumisteenuse haldusteenuse protsesside lukustus
+      - Collector service management service process locking
 
    *  - `gin-gonic <https://github.com/gin-gonic>`_
       - 1.9.1, Go
       - MIT
-      - Veebiraamistik x-tee liidese jaoks
+      - Web framework for X-Road interface
 
    *  - `etcd <https://coreos.com/etcd>`_
       - 3.5.9, Go
       - Apache-2.0
-      - Talletusteenusena kasutatav hajus võti-väärtus andmebaas
+      - Distributed key-value database used as the storage service
 
    *  - Glassfish JAXB
       - 4.0.5, Java
       - BSD-3-Clause
-      - Java XML teek
+      - Java XML library
 
    *  - Gradle
       - 8.11, Java
       - Apache-2.0
-      - Java rakenduste ehitamise raamistik
+      - Build framework for Java applications
 
    *  - `HAProxy <http://www.haproxy.org/>`_
       - 2.4.24
       - GPL-2.0-or-later
-      - Vahendusteenusena kasutatav TCP-proksi
+      - TCP proxy used as the proxy service
 
    *  - Jackson
       - 2.18.1, Java
       - Apache-2.0
-      - JSON vormingus failide lugemine ja kirjutamine
+      - Reading and writing JSON format files
 
    *  - Jinja2
       - 3.1.4, Python
       - BSD
-      - Jinja mallide kasutamine haldusteenuses
+      - Using Jinja templates in the management service
 
    *  - `jQuery <https://jquery.org/>`_
       - 3.7.1, JavaScript
       - MIT
-      - Kogumisteenuse haldusteenuse kasutajaliides
+      - Collector service management service user interface
 
    *  - jsonschema
       - 4.23.0, Python
       - MIT
-      - JSON valideerimine haldusteenuses
+      - JSON validation in the management service
 
    *  - Logback
       - 1.5.12, Java
       - EPL-1.0 or LGPL-v2.1-only
-      - Logimise API teostus
+      - Logging API implementation
 
    *  - Logback JSON
       - 0.1.5, Java
       - EPL-1.0 or LGPL-v2.1-only
-      - Logback logija laiendus JSON vormingus logikirjete koostamiseks
-        Jackson teegi abil
+      - Logback logger extension for composing log entries in JSON format
+        using the Jackson library
 
    *  - `Logrus <https://github.com/sirupsen/logrus>`_
       - 1.9.3, Go
       - MIT
-      - Logimisraamistik x-tee liidese jaoks
+      - Logging framework for X-Road interface
 
    *  - `metisMenu <https://github.com/onokumus/metisMenu>`_
       - 1.1.3, JavaScript
       - MIT
-      - Kogumisteenuse haldusteenuse kasutajaliides
+      - Collector service management service user interface
 
    *  - `FontAwesome <https://github.com/FortAwesome/Font-Awesome>`_
       - 6.7.2, JavaScript
       - MIT
-      - Kogumisteenuse haldusteenuse kasutajaliides
+      - Collector service management service user interface
 
    *  - `DataTables <https://github.com/DataTables/DataTablesSrc>`_
       - 2.3.2, JavaScript
       - MIT
-      - Kogumisteenuse haldusteenuse kasutajaliides
+      - Collector service management service user interface
 
    *  - PDFBox
       - 3.0.3, Java
       - Apache-2.0
-      - PDF vormingus raportite genereerimise tugi Java rakendustele
+      - PDF format report generation support for Java applications
 
    *  - `PyYAML <http://pyyaml.org/>`_
       - 6.0.2, Python
       - MIT
-      - Kogumisteenuse seadistusfailide töötlemise tugi haldusteenusele
+      - Collector service configuration file processing support for the management service
 
    *  - python-crontab
       - 3.3.0, Python
       - LGPLv3
-      - Crontab haldusteenuses
+      - Crontab in the management service
 
    *  - python-dateutil
       - 2.9.0, Python
       - BSD
-      - Kuupäevad ja kellaajad haldusteenuses
+      - Dates and times in the management service
 
    *  - python-debian
       - 0.1.49, Python
       - GPLv2
-      - Debian pakkide lugemine haldusteenuses
+      - Reading Debian packages in the management service
 
    *  - pyopenssl
       - 24.2.1, Python
       - Apache
-      - OpenSSL kasutus haldusteenuses
+      - OpenSSL usage in the management service
 
    *  - `Schematics <https://github.com/schematics/schematics>`_
       - 2.1.1, Python
       - BSD-3-Clause
-      - Kogumisteenuse seadistusfailide valideerimise tugi haldusteenusele
+      - Collector service configuration file validation support for the management service
 
    *  - SnakeYAML
       - 2.3, Java
       - Apache-2.0
-      - YAML vormingus andmete lugemine
+      - Reading YAML format data
 
    *  - `SB Admin 2 <https://github.com/BlackrockDigital/startbootstrap-sb-admin-2>`_
       - 3.3.7+1, JavaScript
       - MIT
-      - Kogumisteenuse haldusteenuse kasutajaliidese kujundus
+      - Collector service management service user interface design
 
 .. tabularcolumns:: |p{0.2\linewidth}|p{0.1\linewidth}|p{0.15\linewidth}|p{0.55\linewidth}|
 .. list-table::
-   IVXV raamistiku testide
-   kasutatavad kolmandate osapoolte komponendid
+   Third-party components used for IVXV framework testing
    :header-rows: 1
 
-   *  - Nimi
-      - Versioon
-      - Litsents (SPDX)
-      - Kasutusvajadus
+   *  - Name
+      - Version
+      - License (SPDX)
+      - Usage need
 
    *  - Hamcrest
       - 3.0, Java
       - BSD-3-Clause
-      - Loetavam assert-meetodite kasutamine Java üksuste testides
+      - More readable assert method usage in Java unit tests
 
    *  - JUnit
       - 5.10.0, Java
       - EPL-1.0
-      - Java testimisraamistik
+      - Java testing framework
 
    *  - JUnitParams
       - 1.1.1, Java
       - Apache-2.0
-      - Testide parametriseerimise tugi
+      - Test parameterization support
 
    *  - Mockito
       - 5.14.2, Java
       - MIT
-      - Testitava koodi sõltuvuste mockimise tugi
+      - Support for mocking dependencies of tested code
 
    *  - libdigidocpp-tools
       - 3.14.5 .1404
       - LGPL-2.1-or-later
-      - Testandmete genereerimine
+      - Test data generation
 
    *  - PyTest
       - 7.4.2, Python
       - MIT
-      - Üksuste testimise tugi Pythonile
+      - Unit testing support for Python
 
    *  - Requests
       - 2.32.3, Python
       - Apache 2.0
-      - HTTP päringute moodul Pythoni testidele
+      - HTTP request module for Python tests
 
 .. tabularcolumns:: |p{0.2\linewidth}|p{0.1\linewidth}|p{0.15\linewidth}|p{0.55\linewidth}|
 .. list-table::
-   IVXV raamistiku arendamiseks ja/või testimiseks
-   kasutatavad kolmandate osapoolte tööriistad
+   Third-party tools used for IVXV framework development and/or testing
    :header-rows: 1
 
-   *  - Nimi
-      - Versioon
-      - Litsents (SPDX)
-      - Kasutusvajadus
+   *  - Name
+      - Version
+      - License (SPDX)
+      - Usage need
 
    *  - `Behave <https://github.com/behave/behave>`_
       - 1.2.6, Python
       - BSD-2-Clause
-      - Regressioonitestide käivitaja (*Behavior-driven development*)
+      - Regression test runner (*Behavior-driven development*)
 
    *  - `Docker <http://www.docker.com/>`_
-      - 18.06 (või uuem)
+      - 18.06 (or newer)
       - Apache-2.0
-      - Regressioonitestide läbiviimise keskkond - tarkvarakonteinerid
+      - Regression testing environment - software containers
 
    *  - `Sphinx <http://www.sphinx-doc.org/>`_
       - 7.2.5, Python
       - BSD
-      - Dokumentatsiooni genereerimine
+      - Documentation generation

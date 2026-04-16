@@ -1,238 +1,238 @@
-Krahhi toimumise indikaatorid
+Crash occurrence indicators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Haldusveebiliides.
-Vali **Teenused** vasakult menüüst. Kui teenus on krahhinud,
-siis tema **Seisund** on **Tõrge**.
+Management web interface.
+Select **Services** from the left menu. If the service has crashed,
+its **Status** is **Failure**.
 
-Halduskäsurealiides.
-Logi sisse **ivxv-admin** kasutajana ja päri teenuste statistikat::
+Management command line interface.
+Log in as the **ivxv-admin** user and query service statistics::
 
    $ sudo su - ivxv-admin
    $ ivxv-status
 
-Kui teenus on krahhinud, siis tema **State** on **FAILURE**.
+If the service has crashed, its **State** is **FAILURE**.
 
 
-Krahhist taastumise eeldused
+Crash recovery prerequisites
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Krahhist taastumiseks piisab kui teenuste CA TLS privaatvõti ja sertifikaat on
-alles, mida saab kasutada teenuse varuvõtmete ja -sertifikaatide
-genereerimiseks. Samas, saab ka enne valimisi teenuse varuvõtmed ja
--sertifikaadid ette genereerida.
+For crash recovery it is sufficient that the services' CA TLS private key and
+certificate are preserved, which can be used to generate backup keys and
+certificates for the service. Alternatively, backup keys and certificates for
+the service can also be pre-generated before the elections.
 
-Kui kõikide teenuste CA on sama, siis tasub valija- ja kontrollrakenduste
-seadistusse panna hoopis CA sertifikaat. Juhul kui CA on teenustel erinev,
-siis peab panema kõik teenuste TLS sertifikaadid rakenduste seadistusse
-vahetult enne valimisi.
+If the CA for all services is the same, it is advisable to put the CA
+certificate into the voter and verification application settings instead. If the
+CA differs between services, then all service TLS certificates must be placed
+into the application settings immediately before the elections.
 
 
-Krahhi võimalik mõju hääletamistulemusele
+Possible impact of crash on voting result
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sõltuvalt teenusest võivad tagajärjed olla järgmised:
+Depending on the service, the consequences may be as follows:
 
-   * kui krahhivad nimekirja-, Mobiil-ID, vahendus-, seansi-, Smart-ID,
-     hääletamis-, Web-eID teenused, siis valijal ei õnnestu hääletada
+   * if the choices, Mobile-ID, proxy, session, Smart-ID,
+     voting, Web-eID services crash, the voter will not be able to vote
 
-   * kui krahhivad järjekorra- ja x-tee teenused, siis VIS ei saa pärida
-     andmeid x-tee kaudu
+   * if the queue and X-Road services crash, VIS will not be able to query
+     data via X-Road
 
-   * kui krahhib verifitseerimisteenus, siis valijal ei õnnestu oma häält
-     verifitseerida
+   * if the verification service crashes, the voter will not be able to
+     verify their vote
 
 
-Krahhist taastumise sammud
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Crash recovery steps
+^^^^^^^^^^^^^^^^^^^^
 
 .. seealso::
 
-   * Talletusteenust antud juhendis ei käsitleta, selleks
-     on eraldi juhend :ref:`recovery-storageservice`
+   * The storage service is not covered in this guide, there is
+     a separate guide :ref:`recovery-storageservice`
 
-Krahhi saab liigitada järgmiselt:
+The crash can be classified as follows:
 
-   #. Teenus on terve, ning vajab ainult taaskäivitamist, v.a x-tee teenus
+   #. The service is healthy and only needs a restart, except X-Road service
 
-   #. Teenuse andmed (TLS privaatvõti, sertifikaat jne) on rikutud, v.a
-      vahendus- ja x-tee teenused
+   #. The service data (TLS private key, certificate, etc.) is corrupted, except
+      proxy and X-Road services
 
-   #. Teenuse lähtekoodis on viga, v.a x-tee teenus
+   #. There is a bug in the service source code, except X-Road service
 
-   #. X-tee teenuse taastumine, sh. krahh ja lähtekoodi viga
+   #. X-Road service recovery, including crash and source code bug
 
-   #. Teenuse masin on krahhinud, v.a vahendus- ja x-tee teenused
+   #. The service machine has crashed, except proxy and X-Road services
 
-   #. Vahendusteenuse masin on krahhinud
+   #. The proxy service machine has crashed
 
-Teenus on terve, ning vajab ainult taaskäivitamist, v.a x-tee teenus
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The service is healthy and only needs a restart, except X-Road service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   #. SSH logi sisse haldus masinasse **ivxv-admin** kasutajana::
+   #. SSH log in to the management machine as the **ivxv-admin** user::
 
          $ sudo su - ivxv-admin
 
-   #. Taaskäivita teenus, näiteks nimekirjateenust::
+   #. Restart the service, for example the choices service::
 
          $ ivxv-service restart choices@choices1.ivxv.ee
 
-Teenuse andmed (TLS privaatvõti, sertifikaat jne) on rikutud, v.a vahendus- ja x-tee teenused
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Service data (TLS private key, certificate, etc.) is corrupted, except proxy and X-Road services
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   #. Vaheta välja krahhinud teenuse **id** tehnilises seadistuses
-      varuteenuse **id** vastu, mille TLS privaatvõti ja sertifikaat on
-      genereeritud
+   #. Replace the crashed service's **id** in the technical configuration
+      with the backup service's **id**, whose TLS private key and certificate
+      have been generated
 
-   #. Allkirjasta tehniline seadistus
+   #. Sign the technical configuration
 
-   #. Laadi seadistus läbi haldusveebiliidese **Seadistused**
+   #. Load the configuration through the management web interface **Settings**
 
-   #. SSH logi sisse haldusmasinasse **ivxv-admin** kasutajana::
+   #. SSH log in to the management machine as the **ivxv-admin** user::
 
          $ sudo su - ivxv-admin
 
-   #. Laadi TLS privaatvõti ja sertifikaat, näiteks nimekirjateenus::
+   #. Load the TLS private key and certificate, for example the choices service::
 
          $ ivxv-secret-load --service=choices@choices4.ivxv.ee tls-key /opt/ivxv-install/service_definition/choices@choices4.ivxv.ee.key
          $ ivxv-secret-load --service=choices@choices4.ivxv.ee tls-cert /opt/ivxv-install/service_definition/choices@choices4.ivxv.ee.pem
 
-   #. Kui tegu on nimekirja-, Mobiil-ID, Smart-ID, hääletamis-, Web-eID või
-      verifitseerimisteenusega siis tuleb üles laadida ka küpsiste
-      allkirjatamiseks privaatvõti::
+   #. If it is a choices, Mobile-ID, Smart-ID, voting, Web-eID, or
+      verification service, then the private key for signing cookies
+      also needs to be uploaded::
 
          $ ivxv-secret-load mid-token-key /opt/ivxv-install/service_definition/ticket.key
 
-   #. Kui tegu on hääletamisteenusega siis tuleb üles laadida TSP vastuse
-      räsi allkirjastamiseks privaatvõti::
+   #. If it is a voting service, then the private key for signing the TSP
+      response hash also needs to be uploaded::
 
          $ ivxv-secret-load tsp-regkey /opt/ivxv-install/service_definition/tspreg.key
 
-   #. Käivita teenused::
+   #. Start the services::
 
          $ ivxv-config-apply --type=election
 
-Teenuse lähtekoodis on viga, v.a x-tee teenus
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+There is a bug in the service source code, except X-Road service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   #. Kopeeri uus *.deb* pakk haldusmasinasse
+   #. Copy the new *.deb* package to the management machine
 
-   #. SSH logi sisse haldusmasinasse **sudo** kasutajana::
+   #. SSH log in to the management machine as the **sudo** user::
 
          $ sudo su
 
-   #. Kopeeri *.deb* pakk */etc/ivxv/debs/* kausta
+   #. Copy the *.deb* package to the */etc/ivxv/debs/* folder
 
-   #. Logi **sudo** kasutajalt välja::
+   #. Log out from the **sudo** user::
 
          $ exit
 
-   #. SSH logi sisse haldusmasinasse **ivxv-admin** kasutajana::
+   #. SSH log in to the management machine as the **ivxv-admin** user::
 
          $ sudo su - ivxv-admin
 
-   #. Uuenda teenuse *.deb* pakki kõikides masinates, näiteks nimekirjateenus::
+   #. Update the service *.deb* package on all machines, for example the choices service::
 
          $ ivxv-update-packages --service=choices --package=/etc/ivxv/debs/ivxv-choices_1.9.12~dev_amd64.deb
 
-   #. Taaskäivita teenus igal hostil, näiteks taaskäivitame nimekirjateenuse
-      kolmeõlgse seadistuse korral::
+   #. Restart the service on each host, for example restarting the choices service
+      with a three-shoulder configuration::
 
          $ ivxv-service restart choices@choices1.ivxv.ee
          $ ivxv-service restart choices@choices2.ivxv.ee
          $ ivxv-service restart choices@choices3.ivxv.ee
 
-X-tee teenuse taastumine, sh. krahh ja lähtekoodi viga
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+X-Road service recovery, including crash and source code bug
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   #. Esmalt tasub proovida taaskäivitada systemd x-tee teenust::
+   #. First, try restarting the systemd X-Road service::
 
          $ sudo systemctl restart xroad-service
 
-   #. Ebaõnnestumise korral tuleb tarnida uus *.deb* pakk, ning
-      vana pakk eemaldada::
+   #. In case of failure, a new *.deb* package needs to be delivered, and
+      the old package removed::
 
          $ sudo apt purge xroad-service
 
-   #. Kui uus *.deb* pakk on masinasse kopeeritud, tuleb see paigaldada::
+   #. Once the new *.deb* package has been copied to the machine, it needs to be installed::
 
          $ sudo apt install ./xroad-service_*.deb
 
-   #. Kasuta x-tee teenuse juhendit, et paigaldada TLS sertifikaadid õigesse
-      kaustadesse
+   #. Use the X-Road service guide to install the TLS certificates into the correct
+      directories
 
-   #. Käivita systemd x-tee teenus::
+   #. Start the systemd X-Road service::
 
          $ sudo systemctl start xroad-service
 
-Teenuse masin on krahhinud, v.a vahendus- ja x-tee teenused
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The service machine has crashed, except proxy and X-Road services
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   #. Paigalda värske Ubuntu masin
+   #. Install a fresh Ubuntu machine
 
       .. important::
-         Palun täpsusta üle, millist Ubuntu versiooni parasjagu
-         kasutatakse
+         Please verify which Ubuntu version is currently
+         being used
 
-   #. Paigalda teenuse masinasse baastarkvara pakid APT
-      pakihoidlast::
+   #. Install the base software packages on the service machine from the APT
+      package repository::
 
          $ sudo apt-get install acl locales unzip zstd --yes
 
-   #. Nüüd tuleb haldus-, koguja-, varundus-, logi-, vahendus-, logi
-      monitooringu masinate **ip** ja DNS **nimi** lisada uue teenuse masina
-      */etc/hosts* faili
+   #. Now the management, collector, backup, log, proxy, log
+      monitoring machines' **ip** and DNS **name** need to be added to the new
+      service machine's */etc/hosts* file
 
-   #. Seejärel tuleb haldus-, koguja-, varundus-, logi-, vahendus masinates
-      kustutada krahhinud teenuse masina **ip** ja DNS **nimi** ning lisada
-      uus
+   #. Then in the management, collector, backup, log, proxy machines,
+      the crashed service machine's **ip** and DNS **name** need to be deleted
+      and new ones added
 
       .. attention::
 
-         See on kõige olulisem samm, kuna siin peab valima sellise DNS
-         **nime**, mille tulevikus lisame tehnilistesse seadistustesse.
+         This is the most important step, as here you must choose a DNS
+         **name** that will be added to the technical configuration in the future.
 
-         Reegel on lihtne, et iga uue teenuse masina DNS **nimi** peab olema
-         unikaalne ja ei tohi olla sama, mis krahhinud teenuste masinatele
-         olid varem omistatud. Haldusteenuse andmebaasis on registreeritud
-         kõigi süsteemis leiduvate masinate DNS **nimed**, isegi krahhinud
-         isendite omad. Haldusteenuse eripära seisneb selles, et see ei
-         paigalda tarkvara masinatele, mille DNS **nimi** on juba
-         haldusteenuse andmebaasis registreeritud.
+         The rule is simple: each new service machine's DNS **name** must be
+         unique and must not be the same as those previously assigned to crashed
+         service machines. The management service database has registered
+         the DNS **names** of all machines in the system, even those of crashed
+         instances. The management service's peculiarity is that it does not
+         install software on machines whose DNS **name** is already
+         registered in the management service database.
 
-   #. SSH logi sisse haldusmasinasse **ivxv-admin** kasutajana::
+   #. SSH log in to the management machine as the **ivxv-admin** user::
 
          $ sudo su - ivxv-admin
 
-   #. Kuna haldusteenus paigaldab vajaliku taristu kõikidele süsteemi masinatele
-      automaatselt, siis on vaja vältida SSH ühenduse loomisel *prompt* sõnumi
-      *Are you sure you want to continue connecting (yes/no)? yes* kinnitamist.
+   #. Since the management service installs the required infrastructure on all system
+      machines automatically, it is necessary to avoid confirming the SSH connection
+      *prompt* message *Are you sure you want to continue connecting (yes/no)? yes*.
 
-      Kustuta vana teenusmasina SSH avalik võti */etc/ssh/ssh_known_hosts*
-      failist, ning lisa uus, näiteks, kui uue teenuse masina DNS **nimi** on
+      Delete the old service machine's SSH public key from the */etc/ssh/ssh_known_hosts*
+      file, and add a new one, for example, if the new service machine's DNS **name** is
       *ivxv4*::
 
          $ ssh-keyscan -t ecdsa ivxv4 | grep -v ^# >> /etc/ssh/ssh_known_hosts
 
-   #. SSH logi sisse uue teenuse masinasse **root** kasutajana::
+   #. SSH log in to the new service machine as the **root** user::
 
          $ sudo su
 
-   #. Kuna haldusteenus edastab teenuse logid logimonitori, lisaks
-      *syslog* *RELP* protokollile, ka üle SSH protokolli, siis on vaja samuti
-      vältida SSH ühenduse loomisel *prompt* sõnumi kinnitamist, näiteks,
-      monitooringu masina *logmonitor* DNS **address** korral::
+   #. Since the management service transmits service logs to the log monitor,
+      in addition to *syslog* *RELP* protocol, also over SSH protocol, it is
+      likewise necessary to avoid confirming the SSH connection *prompt* message,
+      for example, with the monitoring machine *logmonitor* DNS **address**::
 
          $ ssh-keyscan -t ecdsa logmonitor | grep -v ^# >> /etc/ssh/ssh_known_hosts
 
-   #. Kuna haldusteenus peab paigaldama tarkvara APT pakihoidlast, mis
-      on võimatu juurkasutaja õiguseid omandamata, pead kopeerima haldusmasina
-      SSH avaliku võtme, mis asub
-      */var/lib/ivxv/user/ivxv-admin/.ssh/id_ed25519.pub* failis, ning lisama
-      selle uue teenuse masina */root/.ssh/authorized_keys* faili
+   #. Since the management service needs to install software from the APT package
+      repository, which is impossible without acquiring root user privileges, you
+      must copy the management machine's SSH public key, located in the
+      */var/lib/ivxv/user/ivxv-admin/.ssh/id_ed25519.pub* file, and add
+      it to the new service machine's */root/.ssh/authorized_keys* file
 
-   #. Nüüd tuleb tehnilistes seadistustes välja vahetada teenuste **id** ja
-      **nimed** (**address**), näiteks:
+   #. Now in the technical configuration, the service **id** and
+      **names** (**address**) need to be replaced, for example:
 
       .. code-block:: yaml
 
@@ -264,7 +264,7 @@ Teenuse masin on krahhinud, v.a vahendus- ja x-tee teenused
                   - id:         sessionstatus@sessionstatus1.ivxv.ee
                    address:     ivxv1:4448
 
-      uute **id** ja **address** vastu:
+      with new **id** and **address**:
 
       .. code-block:: yaml
 
@@ -297,20 +297,19 @@ Teenuse masin on krahhinud, v.a vahendus- ja x-tee teenused
                    address:     ivxv4:4448
 
       .. attention::
-         Pane tähele, et on muutunud nii **id** kui ka **address**.
-         Vahendus- ja talletusteenuste **id** ja **address** jäävad samaks
-         **siis ja ainult siis**, kui need teenused ei olnud krahhinud masina
-         koosseisus, vastasel juhul tuleb sarnaselt muuta ka nende teenuste
-         **id** ja **address**.
+         Note that both **id** and **address** have changed.
+         The proxy and storage service **id** and **address** remain the same
+         **if and only if** those services were not part of the crashed machine;
+         otherwise, those services' **id** and **address** must be similarly changed.
 
-   #. Allkirjasta uus tehniline seadistus. Laadi see läbi
-      haldusveebiliidese, vasakult valides **Seadusted**.
+   #. Sign the new technical configuration. Load it through the
+      management web interface, selecting **Settings** from the left.
 
-   #. SSH logi sisse haldusmasinasse **ivxv-admin** kasutajana::
+   #. SSH log in to the management machine as the **ivxv-admin** user::
 
          $ sudo su - ivxv-admin
 
-   #. Laadi kõik teenuste TLS privaatvõtmed ja sertifikaadid, näiteks::
+   #. Load all service TLS private keys and certificates, for example::
 
          $ ivxv-secret-load --service=choices@choices4.ivxv.ee tls-key /opt/ivxv-install/service_definition/choices@choices4.ivxv.ee.key
          $ ivxv-secret-load --service=voting@voting4.ivxv.ee tls-key /opt/ivxv-install/service_definition/voting@voting4.ivxv.ee.key
@@ -329,30 +328,30 @@ Teenuse masin on krahhinud, v.a vahendus- ja x-tee teenused
          $ ivxv-secret-load --service=votesorder@votesorder4.ivxv.ee tls-cert /opt/ivxv-install/service_definition/votesorder@votesorder4.ivxv.ee.pem
          $ ivxv-secret-load --service=webeid@webeid4.ivxv.ee tls-cert /opt/ivxv-install/service_definition/webeid@webeid4.ivxv.ee.pem
 
-   #. Lisa küpsiste signeerimisvõti::
+   #. Add the cookie signing key::
 
       $ ivxv-secret-load mid-token-key /opt/ivxv-install/service_definition/ticket.key
 
-   #. Lisa hääletamisteenuse TSP räsi signeerimisvõti::
+   #. Add the voting service TSP hash signing key::
 
       $ ivxv-secret-load tsp-regkey /opt/ivxv-install/service_definition/tspreg.key
 
-   #. Käivita teenused::
+   #. Start the services::
 
       $ ivxv-config-apply --type=election
 
-Vahendusteenuse masin on krahhinud
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The proxy service machine has crashed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. seealso::
 
-   * Kasuta käesoleva juhendi
-     **Teenuste masin on krahhinud, v.a vahendus- ja x-tee teenused**
-     peatükki, v.a punktid 6, 10-12.
+   * Use the chapter
+     **The service machine has crashed, except proxy and X-Road services**
+     from this guide, except steps 6, 10-12.
 
 .. note::
 
-   Punktis 8 tuleb ainult asendada vana vahendusteenuse **id** ja **address**:
+   In step 8, only the old proxy service **id** and **address** need to be replaced:
 
    .. code-block:: yaml
 
@@ -362,7 +361,7 @@ Vahendusteenuse masin on krahhinud
            - id:          proxy@proxy1.ivxv.ee
              address:     proxy1:443
 
-   uute vastu:
+   with new ones:
 
    .. code-block:: yaml
 

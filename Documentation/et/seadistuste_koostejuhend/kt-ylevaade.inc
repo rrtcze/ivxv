@@ -1,94 +1,95 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
-Ülevaade
+Overview
 --------
 
-Kogumisteenuse juhtimine toimub signeeritud korralduste abil. Korraldused
-koostatakse operaatori poolt tekstiredaktori abil või imporditakse Valimiste
-Infosüsteemist. Korraldused signeeritakse ID-kaardiga.
+Collector service management is performed through signed orders. Orders are
+prepared by the operator using a text editor or imported from the Election
+Information System. Orders are signed with an ID card.
 
-Nimekiri kogumisteenuse haldamise korraldustest:
+List of collector service management orders:
 
-#. Usaldusjuure seadistus;
+#. Trust root configuration;
 
-#. Tehniline seadistus;
+#. Technical configuration;
 
-#. Valimiste seadistus;
+#. Election configuration;
 
-#. Valikute nimekiri;
+#. Choices list;
 
-#. Ringkondade nimekiri;
+#. Districts list;
 
-#. Valijate nimekiri;
+#. Voter list;
 
-#. Valijate nimekirja vahelejätmine;
+#. Voter list skipping;
 
-#. Kasutajate volituste määramine.
+#. User authorization assignment.
 
-Lisaks korraldustele tuleb kogumisteenusele genereerida ka komplekt
-krüptovõtmeid.
-
-
-Korralduste vorming
-*******************
-
-Kogumisteenuse korralduste vorming on enamasti YAML või JSON, valijate
-nimekirja puhul kasutatakse spetsiifilist vormingut.
-
-YAML-vormingus korraldused:
-
-#. Usaldusjuure seadistus;
-
-#. Tehniline seadistus;
-
-#. Valimiste seadistus.
-
-JSON-vormingus korraldused:
-
-#. Valikute nimekiri;
-
-#. Kasutajate volituste määramine.
-
-Kohandatud vormingus korraldused:
-
-#. Valijate nimekiri.
+In addition to orders, a set of cryptographic keys must also be generated for
+the collector service.
 
 
-YAML-vormingus korraldused
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Order format
+************
 
-YAML-vormingus seadistustesse on võimalik kaasata väliseid faile. Selleks
-kasutatakse silti ``!container``.
+The collector service order format is mostly YAML or JSON; a specific format
+is used for the voter list.
 
-Näide:
+YAML format orders:
+
+#. Trust root configuration;
+
+#. Technical configuration;
+
+#. Election configuration.
+
+JSON format orders:
+
+#. Choices list;
+
+#. User authorization assignment.
+
+Custom format orders:
+
+#. Voter list.
+
+
+YAML format orders
+~~~~~~~~~~~~~~~~~~
+
+In YAML format configurations, it is possible to include external files. For
+this, the tag ``!container`` is used.
+
+Example:
 
 .. code-block:: yaml
 
-   # välja "ext_file" väärtus loetakse failist "certificate-file.pem"
+   # field "ext_file" value is read from file "certificate-file.pem"
    ext_file: !container certificate-file.pem
 
 .. caution::
 
-   Väliste failide kaasamisel tuleb arvestada sellega, et seadistused
-   laaditakse süsteemi BDOC-vormingus konteinerites (vt. lõiku
-   :ref:`korralduspaki-vorming`). See seab väliste failide kaasamisele
-   järgmised nõuded:
+   When including external files, it must be considered that configurations
+   are loaded into the system in BDOC format containers (see section
+   :ref:`korralduspaki-vorming`). This imposes the following requirements on
+   including external files:
 
-   * Kasutatavad välised failid peavad olema pakendatud seadistusfailiga
-     samasse konteinerisse;
+   * The external files used must be packaged in the same container as the
+     configuration file;
 
-   * Välised failid peavad asuma seadistusfailiga samas kataloogis.
+   * External files must be located in the same directory as the configuration
+     file.
 
 
 .. _korralduspaki-vorming:
 
-Korralduspaki vorming
-*********************
+Order package format
+********************
 
-Korralduspakk on BDOC-vormingus konteiner, milles on korraldusfail ja
-signatuurid. Üks korralduspakk tohib sisaldada ainult ühte korraldust.
-YAML-vormingus seadistuse (usaldusjuure seadistus, tehniline seadistus ja
-valimiste seadistus) korral võivad failis olla ka seadistusfaili poolt
-kasutatavad välised failid.
+An order package is a BDOC format container containing the order file and
+signatures. One order package may contain only one order. In the case of YAML
+format configurations (trust root configuration, technical configuration, and
+election configuration), the file may also contain external files used by the
+configuration file.
 
 .. vim:syntax=rst:

@@ -48,7 +48,7 @@ today_fmt = "%d.%m.%Y"
 
 numfig = True
 numfig_format = {
-    'section': '{name} (ptk. {number})'
+    'section': '{name} (ch. {number})'
 }
 
 # sphinx-intl
@@ -72,7 +72,7 @@ extensions = [
 ]
 
 
-spelling_lang='et_EE'
+spelling_lang='en_US'
 
 spelling_word_list_filename = ['../../spelling_wordlist.txt', 'spelling_wordlist.txt']
 

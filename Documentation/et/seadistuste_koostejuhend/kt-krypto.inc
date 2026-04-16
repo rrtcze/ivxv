@@ -1,41 +1,40 @@
-..  IVXV seadistuste koostamise juhend
+..  IVXV configuration preparation guide
 
 .. _kt-krypto:
 
-Kogumisteenuse krüptovõtmed
----------------------------
+Collector service cryptographic keys
+-------------------------------------
 
-Kogumisteenuse andmevahetuse turvamiseks on tarvis luua komplekt
-krüptograafilisi võtmeid. Komplekti koosseis sõltub kogumisteenuse tehnilistest
-seadistustest.
+To secure the collector service data exchange, a set of cryptographic keys
+must be created. The composition of the set depends on the technical
+configuration of the collector service.
 
-#. Teenuse krüptovõti ja TLS-sertifikaat - kasutatakse teenuste omavahelise
-   suhtluse turvamiseks kõigi teenuste puhul peale vahendusteenuse;
+#. Service cryptographic key and TLS certificate - used to secure inter-service
+   communication for all services except the proxy service;
 
-#. Hääletamisteenuse ajatemplipäringute signeerimisvõti - kasutatakse
-   ajatemplipäringute signeerimiseks juhul, kui ajatempliteenus on
-   registreerimisteenuseks;
+#. Voting service timestamp request signing key - used to sign timestamp
+   requests if the timestamp service is used as the registration service;
 
-#. Mobiil-ID/Smart-ID/Web eID tugiteenuse jagatud krüptimissaladus – kasutatakse sümmeetrilise
-   AES-256 krüptimise jaoks. Krüptimissaladusega krüptib Mobiil-ID tugiteenus
-   hääletajale väljastatava identsustõendi, mille abil hääletaja enda
-   identiteeti teistele teenustele tõendab.
-
+#. Mobile-ID/Smart-ID/Web eID support service shared encryption secret – used for symmetric
+   AES-256 encryption. With the encryption secret, the Mobile-ID support service encrypts
+   the identity token issued to the voter, which the voter uses to prove their
+   identity to other services.
 
 
-Teenuse krüptovõtme ja TLS-sertifikaadi genereerimine
-*****************************************************
 
-Teenuse krüptovõti ja TLS-sertifikaat genereeritakse kõigile teenustele peale
-vahendusteenuse. Kõikide teenuste sertifikaadid peavad olema välja antud sama
-sertifitseerimiskeskuse (CA – *Certificate Authority*) poolt.
+Generation of service cryptographic key and TLS certificate
+***********************************************************
+
+The service cryptographic key and TLS certificate are generated for all services
+except the proxy service. All service certificates must be issued by the same
+certification authority (CA – *Certificate Authority*).
 
 
-CA sertifikaadi genereerimine
+Generation of CA certificate
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Sertifitseerimiskeskuse krüptovõtme ja sertifikaadi genereerimine toimub
-järgneva käsuga:
+The certification authority cryptographic key and certificate are generated
+with the following command:
 
 .. code-block:: shell-session
 
@@ -43,14 +42,14 @@ järgneva käsuga:
      -days 365 -out ca.pem -keyout ca.key -utf8
      -subj "/C=EE/O=Example/OU=IVXV Test Certificates/CN=Service CA"
 
-Käsu väljundiks on failid :file:`ca.key` (võti) ja :file:`ca.pem` (sertifikaat).
+The command output is the files :file:`ca.key` (key) and :file:`ca.pem` (certificate).
 
 
-Teenuse isendi krüptovõtme ja TLS-sertifikaadi genereerimine
+Generation of service instance cryptographic key and TLS certificate
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Teenuse isendi krüptovõtme ja sertifikaadipäringu genereerimine toimub järgneva
-käsuga:
+The service instance cryptographic key and certificate request are generated
+with the following command:
 
 .. code-block:: shell-session
 
@@ -58,16 +57,16 @@ käsuga:
      -out <teenuse-id>-tls.csr -keyout <teenuse-id>-tls.key -utf8
      -subj "/C=EE/O=Example/OU=IVXV Test Certificates/CN=<teenuse-id>"
 
-Käsu väljundiks on failid :file:`<teenuse-id>-tls.key` (võti) ja
-:file:`<teenuse-id>-tls.csr` (sertifikaadipäring).
+The command output is the files :file:`<teenuse-id>-tls.key` (key) and
+:file:`<teenuse-id>-tls.csr` (certificate request).
 
 .. attention::
 
-   Talletusteenuse puhul peab sertifikaadipäringus olema CN väärtuseks teenuse
-   identifikaatori asemel hostinimi: erinevalt teistest teenustest ei kasutata
-   talletusteenuse puhul alternatiivset TLS nime.
+   For the storage service, the CN value in the certificate request must be
+   the hostname instead of the service identifier: unlike other services,
+   the storage service does not use an alternative TLS name.
 
-Teenuse isendi TLS-sertifikaadi genereerimine toimub järgneva käsuga:
+The service instance TLS certificate is generated with the following command:
 
 .. code-block:: shell-session
 
@@ -75,60 +74,60 @@ Teenuse isendi TLS-sertifikaadi genereerimine toimub järgneva käsuga:
      -extfile service-cert-openssl.cnf -extensions ext_<teenuse-tüüp>
      -in <teenuse-id>-tls.csr -out <teenuse-id>-tls.pem
 
-Käsu väljundiks on fail :file:`<teenuse-id>-tls.pem`.
+The command output is the file :file:`<teenuse-id>-tls.pem`.
 
-Sertifikaadi genereerimiseks peab failisüsteemis olema seadistusfail
-:file:`service-cert-openssl.cnf`.
+To generate the certificate, the configuration file
+:file:`service-cert-openssl.cnf` must exist in the filesystem.
 
 .. literalinclude:: ../../../tests/testdata/testca/service/service-cert-openssl.cnf
-   :caption: Fail ``service-cert-openssl.cnf``
+   :caption: File ``service-cert-openssl.cnf``
    :language: ini
 
 
-Hääletamisteenuse ajatemplipäringute signeerimisvõtme ja sertifikaadi genereerimine
-***********************************************************************************
+Generation of voting service timestamp request signing key and certificate
+**************************************************************************
 
-Hääletamisteenuse registreerimispäringute tegemise võti genereeritakse
-järgneva käsuga:
+The voting service registration request key is generated with the following
+command:
 
 .. code-block:: shell-session
 
    $ openssl genrsa -out tspreg.key 2048
 
-Käsu väljundiks on fail :file:`tspreg.key`.
+The command output is the file :file:`tspreg.key`.
 
-Hääletamisteenuse registreerimispäringute tegemise võtme sertifikaat
-genereeritakse järgneva käsuga:
+The voting service registration request key certificate is generated with
+the following command:
 
 .. code-block:: shell-session
 
    $ openssl req -x509 -nodes -days 365 -out tspreg.pem -key tspreg.key -utf8
      -subj "/C=EE/O=Example/OU=IVXV Test Certificates/CN=Collector Registration"
 
-Käsu väljundiks on fail :file:`tspreg.pem`.
+The command output is the file :file:`tspreg.pem`.
 
 .. note::
 
-   Hääletamisteenuse ajatemplipäringute signeerimisvõti on vaja genereerida
-   vaid juhul, kui ajatempliteenust kasutatakse registreerimisteenuseks.
+   The voting service timestamp request signing key needs to be generated
+   only if the timestamp service is used as the registration service.
 
 
-Mobiil-ID/Smart-ID/Web eID tugiteenusele jagatud krüptimissaladuse genereerimine
-********************************************************************************
+Generation of Mobile-ID/Smart-ID/Web eID support service shared encryption secret
+*********************************************************************************
 
-Jagatud krüptimissaladus genereeritakse järgneva käsuga:
+The shared encryption secret is generated with the following command:
 
 .. code-block:: shell-session
 
    $ openssl rand -out mobid-shared-secret.key 32
 
-Käsu väljundiks on 32 baidi suurune fail :file:`mobid-shared-secret.key`, mida
-Mobiil-ID, Smart-ID ja Web eID teenus hakkab kasutama sümmeetrilise AES-256 krüptimise
-jaoks.
+The command output is a 32-byte file :file:`mobid-shared-secret.key`, which
+the Mobile-ID, Smart-ID, and Web eID services will use for symmetric AES-256
+encryption.
 
 .. note::
 
-   Mobiil-ID/Smart-ID/Web eID tugiteenuse jagatud krüptimissaladus on vaja genereerida vaid
-   juhul, kui Mobiil-ID, Smart-ID või Web eID tugiteenus on kasutusel.
+   The Mobile-ID/Smart-ID/Web eID support service shared encryption secret needs to be
+   generated only if the Mobile-ID, Smart-ID, or Web eID support service is in use.
 
 .. vim:syntax=rst:

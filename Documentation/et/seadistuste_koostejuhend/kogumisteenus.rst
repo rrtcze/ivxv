@@ -1,9 +1,9 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
 .. _kogumisteenus:
 
-Kogumisteenus
-=============
+Collector Service
+=================
 
 .. include:: kt-ylevaade.inc
 .. include:: kt-usaldusjuur.inc

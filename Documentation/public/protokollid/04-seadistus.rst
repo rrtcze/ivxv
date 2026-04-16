@@ -1,23 +1,22 @@
-..  IVXV protokollid
+..  IVXV protocols
 
 ================================================================================
-Valimise definitsioon
+Election Definition
 ================================================================================
 
-Valimise defineerib valimise korraldaja. Eesti riiklikel valimistel jagunevad
-kõik hääleõiguslikud isikud ühte või mitmesse valimisringkonda. Valijal on
-võimalik hääletamisel valida ainult selle ringkonna kandidaatide vahel, kuhu ta
-kuulub.
+The election is defined by the election organizer. In Estonian national elections,
+all eligible voters are divided into one or more electoral districts. A voter
+can only choose among the candidates of the district to which they belong.
 
-Valimise defineerimiseks tuleb määratleda vähemalt
+To define an election, at least the following must be specified:
 
-#. valimise unikaalne identifikaator ning küsimuste unikaalsed identifikaatorid;
+#. a unique election identifier and unique question identifiers;
 
-#. täielik loend valimisringkondadest ja -jaoskondadest;
+#. a complete list of electoral districts and polling divisions;
 
-#. hääleõiguslike isikute nimekiri ja jagunemine valimisringkondadesse;
+#. a list of eligible voters and their distribution among electoral districts;
 
-#. kandidaatide nimekiri ja jagunemine valimisringkondadesse.
+#. a list of candidates and their distribution among electoral districts.
 
-Valimise sisendandmed koostatakse Valimise Infosüsteemis (VIS), vormingukirjeldused on
-spetsifitseeritud `VIS ja EHS ühisspetsifikatsioonis <https://github.com/e-gov/VIS3-EHS/>`_.
+The election input data is prepared in the Election Information System (VIS), and
+the format descriptions are specified in the `VIS and EHS joint specification <https://github.com/e-gov/VIS3-EHS/>`_.

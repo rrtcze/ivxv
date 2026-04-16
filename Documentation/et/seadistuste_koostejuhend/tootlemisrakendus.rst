@@ -1,139 +1,139 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
 .. _app-processor:
 
-Töötlemisrakendus
-=================
+Processing Application
+======================
 
-Töötlemisrakendus on käsurearakendus e-valimiskasti kontrollimiseks ja edasiseks
-töötlemiseks peale e-hääletamise lõppu.
+The processing application is a command-line application for verifying and further
+processing the e-ballot box after the end of e-voting.
 
-Töötlemisrakenduse põhilised tööriistad on *check*, *squash*, *revoke* ja
-*anonymize*, mis käivitatakse loetletud järjekorras vastavalt ette nähtud
-valimisprotseduuridele.
-Põhitööriistade sisendi hulgas on alati kas kogumisteenuse või eelmise tööriista
-poolt väljastatud e-valimiskast ja e-valimiskasti digitaalselt allkirjastatud räsi.
-Väljundi hulgas on töötlemisetapi tulemuseks olev e-valimiskast koos allkirjastamata
-räsiga. Kuna rakendused käivitatakse internetiühenduseta arvutis, tuleb
-räsifailid tõsta digitaalseks allkirjastamiseks välisesse seadmesse.
-E-valimiskasti räsi arvutatakse funktsiooniga ``hex(sha256(<fail>))``.
+The main tools of the processing application are *check*, *squash*, *revoke* and
+*anonymize*, which are executed in the listed order according to the prescribed
+election procedures.
+The input of the main tools always includes either the e-ballot box issued by the
+collector service or the previous tool, and the digitally signed hash of the e-ballot box.
+The output includes the e-ballot box resulting from the processing stage along with an
+unsigned hash. Since applications are run on a computer without internet connection,
+the hash files must be transferred to an external device for digital signing.
+The e-ballot box hash is calculated using the function ``hex(sha256(<file>))``.
 
-Lisaks põhitööriistadele on rakendusel veel neli täiendavat tööriista:
-*export*, *verify*, *stats* ja *statsdiff*.
+In addition to the main tools, the application has four additional tools:
+*export*, *verify*, *stats* and *statsdiff*.
 
-Kõigi tööriistade kasutamine eeldab allkirjastatud usaldusjuure ja konkreetse
-tööriista seadistuste olemasolu.
-Faile väljastavatel tööriistadel tuleb seadistustes määrata väljundkausta
-asukoht. Väljundkausta ei tohi käivitamise ajal olemas olla, selle loob rakendus.
-Alljärgnevalt on kirjeldatud tööriistade seadistusi.
+All tools require the presence of a signed trust root and the specific
+tool's configuration.
+For tools that produce output files, the output directory location must be specified
+in the configuration. The output directory must not exist at the time of execution;
+it is created by the application.
+Below are descriptions of the tool configurations.
 
 .. _processor-check:
 
-E-valimiskasti töötlemine - verifitseerimine
---------------------------------------------
+E-ballot Box Processing - Verification
+--------------------------------------
 
-Kogumisteenusest väljastatud e-valimiskasti verifitseerimiseks kasutatakse tööriista
-*check*. valimiskasti verifitseeritakse usaldusjuure, valijate nimekirjade, ringkondade
-nimekirja ja registreerimisteenuse väljundi vastu.
+The *check* tool is used to verify the e-ballot box issued from the collector service.
+The ballot box is verified against the trust root, voter lists, districts list,
+and the registration service output.
 
-Verifitseerimise käigus kontrollitakse järgmiseid põhilisi omadusi:
+During verification, the following main properties are checked:
 
-* Ringkondade nimekirja ja valijate nimekirjade andmeterviklus ja
-  kooskõlalisus;
+* Data integrity and consistency of the districts list and voter lists;
 
-* E-valimiskasti andmeterviklus;
+* Data integrity of the e-ballot box;
 
-* E-hääletajate valimisõigus e. kuuluvus valijate nimekirja (kontrollitakse
-  juhul kui valijate nimekirjad on seadistustes kirjeldatud);
+* Voting eligibility of e-voters, i.e., inclusion in the voter list (checked
+  if voter lists are described in the configuration);
 
-* E-valimiskastis sisalduvate häälte vastavus digiallkirja vormingule;
+* Compliance of votes contained in the e-ballot box with the digital signature format;
 
-* Registreerimisandmete andmeterviklus;
+* Data integrity of registration data;
 
-* E-valimiskastis sisalduvate häälte vastavus registreerimisandmetega.
+* Compliance of votes contained in the e-ballot box with registration data.
 
-E-valimiskasti verifitseerimine on töömahukas protsess. 4-tuumalise *i7* protsessoriga
-arvuti suudab ühe sekundi jooksul töödelda umbes 200 häält. Töötlemise jooksul
-kuvatakse kasutajale edenemisriba, mille alusel on võimalik ennustada
-töötlemisele kuluvat aega.
+E-ballot box verification is a resource-intensive process. A computer with a 4-core
+*i7* processor can process approximately 200 votes per second. During processing,
+a progress bar is displayed to the user, based on which it is possible to estimate
+the processing time.
 
 :check.ballotbox:
-        Kogumisteenusest väljastatud e-valimiskast.
+        E-ballot box issued from the collector service.
 
 :check.ballotbox_checksum:
-        Kogumisteenusest väljastatud e-valimiskasti digitaalselt allkirjastatud räsi.
+        Digitally signed hash of the e-ballot box issued from the collector service.
 
-        Kui määramata, siis ei väljastata korrastatud e-valimiskasti järgmisteks
-        etappideks. Kasulik mitte-lõpliku e-valimiskasti valimisaegseks kontrolliks.
+        If not specified, the corrected e-ballot box is not output for subsequent
+        stages. Useful for election-time verification of a non-final e-ballot box.
 
 :check.signed_ballot_max_size_bytes:
-        Kogumisteenusest väljastatud e-valimiskasti üksiku allkirjastatud hääle
-        maksimaalne lubatud pikkus baitides.
+        Maximum allowed size in bytes of a single signed vote in the e-ballot box
+        issued from the collector service.
 
-        Kui määramata, siis vaikimisi kasutatakse 32768 baiti.
+        If not specified, the default of 32768 bytes is used.
 
 :check.districts:
-        Digitaalselt allkirjastatud ringkondade nimekiri.
+        Digitally signed districts list.
 
 :check.registrationlist:
-        Registreerimisteenusest pärit registreerimisandmed. Kui määramata, siis
-        ei kontrollita e-valimiskastis sisalduvate häälte vastavust
-        registreerimisandmetega.
+        Registration data from the registration service. If not specified,
+        compliance of votes contained in the e-ballot box with registration
+        data is not checked.
 
 :check.registrationlist_checksum:
-        Registreerimisandmete digitaalselt allkirjastatud räsi. Võib puududa,
-        kui ``registrationlist`` puudub.
+        Digitally signed hash of the registration data. May be absent
+        if ``registrationlist`` is absent.
 
 :check.tskey:
-        Registreerimispäringute verifitseerimiseks kasutatav kogumisteenuse
-        avalik võti registreerimispäringute tegemise sertifikaadist.
+        Collector service public key from the registration request certificate
+        used for verifying registration requests.
 
 :check.vlkey:
-        Valijate nimekirjade verifitseerimiseks kasutatav avalik võti.
-        Argument on kohustuslik, kui valijate nimekirjad on antud.
+        Public key used for verifying voter lists.
+        The argument is mandatory if voter lists are provided.
 
 :check.voterlists_dir:
-        Valijate nimekirjade loendi kaust. Kui on määramata, siis e-hääletanute
-        hääleõigust ei kontrollita.
+        Voter lists directory. If not specified, the voting eligibility of
+        e-voters is not checked.
 
 :check.voterlists:
-        Valijate nimekirjade loend. Kui on määramata, siis e-hääletanute
-        hääleõigust ei kontrollita.
+        Voter lists. If not specified, the voting eligibility of
+        e-voters is not checked.
 
 :check.voterlists.path:
-        Valijate nimekirja fail.
+        Voter list file.
 
 :check.voterlists.signature:
-        Valijate nimekirja allkiri, mis on antud algoritmiga
+        Voter list signature, given with the algorithm
         ``ecdsa-with-SHA256``.
 
 :check.districts_mapping:
-        Valijate nimekirjas oleva ringkonna ja jaoskonna teisendusfail
-        (valikuline).
+        District and polling station mapping file for the voter list
+        (optional).
 
 :check.election_start:
-        Hääletamise algusaeg. Sellest varasema hääletusajaga hääli käsitletakse
-        proovihäältena ning need lugemisele ei lähe.
+        Voting start time. Votes with a voting time earlier than this are
+        treated as test votes and are not sent for tallying.
 
 :check.voterforeignehak:
-        Alaliselt välisriigis elavate valijate ringkonnakuuluvuse tuvastamiseks
-        kasutatav EHAK-kood. Vaikeväärtus "0000".
+        EHAK code used for determining district membership of voters
+        permanently residing abroad. Default value "0000".
 
 :check.out:
-        Tööriista väljundkaust. Sellesse kausta tekivad:
+        Tool output directory. The following are created in this directory:
 
-        #. Tervikluskontrolliga korrastatud e-valimiskast :file:`<valimise id>-bb-1.json`;
+        #. E-ballot box corrected with integrity check :file:`<election id>-bb-1.json`;
 
-        #. Tervikluskontrolliga korrastatud e-valimiskasti räsi
-           :file:`<valimise id>-bb-1.json.sha256sum`;
+        #. Hash of e-ballot box corrected with integrity check
+           :file:`<election id>-bb-1.json.sha256sum`;
 
-        #. E-valimiskasti töötlemisvigade raport :file:`ballotbox_errors.txt`;
+        #. E-ballot box processing errors report :file:`ballotbox_errors.txt`;
 
-        #. Valijate nimekirjade töötlemisvigade raport
+        #. Voter lists processing errors report
            :file:`voterlist_errors.txt`;
 
-        #. *Log1* fail ehk vastuvõetud hääled
-           :file:`<valimise id>.<küsimuse id>.check.log1`.
+        #. *Log1* file, i.e., accepted votes
+           :file:`<election id>.<question id>.check.log1`.
 
 :file:`processor.check.yaml`:
 
@@ -143,51 +143,50 @@ töötlemisele kuluvat aega.
 
 .. _processor-squash:
 
-E-valimiskasti töötlemine - korduvhäälte tühistamine
-----------------------------------------------------
+E-ballot Box Processing - Repeat Vote Cancellation
+---------------------------------------------------
 
-Korduvate e-häälte tühistamiseks kasutatakse tööriista *squash*.
-Tööriista sisendiks on tööriista *check* poolt koostatud e-valimiskast.
-Korduvhäälte tühistamisel jäetakse alles iga hääletaja kõige hilisema hääl ja
-eemaldatakse kõik varasemad hääled.
+The *squash* tool is used to cancel repeat e-votes.
+The input for the tool is the e-ballot box prepared by the *check* tool.
+During repeat vote cancellation, each voter's most recent vote is kept and
+all earlier votes are removed.
 
 :squash.ballotbox:
-        Tervikluskontrolliga korrastatud e-valimiskast.
+        E-ballot box corrected with integrity check.
 
 :squash.ballotbox_checksum:
-        Tervikluskontrolliga korrastatud e-valimiskasti digitaalselt allkirjastatud
-        räsi.
+        Digitally signed hash of the e-ballot box corrected with integrity check.
 
 :squash.districts:
-        Digitaalselt allkirjastatud ringkondade nimekiri.
+        Digitally signed districts list.
 
 :squash.enckey:
-        Krüpteerimise avaliku võtme faili asukoht (võtmerakenduse väljund).
-        Võtit kasutatakse krüpteeritud häälte eelkontrolliks, eristamaks
-        päriselt krüpteeritud hääli suvalisest binaarsest prügist.
+        Location of the encryption public key file (key application output).
+        The key is used for pre-checking encrypted votes, to distinguish
+        genuinely encrypted votes from arbitrary binary garbage.
 
 :squash.out:
-        Tööriista väljundkaust. Sellesse kausta luuakse:
+        Tool output directory. The following are created in this directory:
 
-        #. Korduvhäältest puhastatud e-valimiskast :file:`<valimise id>-bb-2.json`;
+        #. E-ballot box cleaned of repeat votes :file:`<election id>-bb-2.json`;
 
-        #. Korduvhäältest puhastatud e-valimiskasti räsi :file:`<valimise
+        #. Hash of e-ballot box cleaned of repeat votes :file:`<election
            id>-bb-2.json.sha256sum`;
 
-        #. E-hääletanute nimekiri JSON-vormingus :file:`<valimise
+        #. List of e-voters in JSON format :file:`<election
            id>-ivoterlist.json`;
 
-        #. E-hääletanute nimekiri PDF-vormingus :file:`<valimise
+        #. List of e-voters in PDF format :file:`<election
            id>-ivoterlist.pdf`;
 
-        #. Tühistamiste ja ennistamiste aruanne :file:`<valimise
+        #. Revocation and restoration report :file:`<election
            id>-revocation-report.csv`;
 
-        #. Tühistamiste ja ennistamiste aruanne ilma isikuandmeteta
-           :file:`<valimise
+        #. Revocation and restoration report without personal data
+           :file:`<election
            id>-revocation-report.csv.anonymous`;
 
-        #. *Log2* fail ehk tühistatud hääled :file:`<valimise id>.<küsimuse
+        #. *Log2* file, i.e., cancelled votes :file:`<election id>.<question
            id>.squash.log2`.
 
 :file:`processor.squash.yaml`:
@@ -199,46 +198,46 @@ eemaldatakse kõik varasemad hääled.
 
 .. _processor-revoke:
 
-E-valimiskasti töötlemine - häälte tühistamine ja ennistamine jaoskonnainfo põhjal
-----------------------------------------------------------------------------------
+E-ballot Box Processing - Vote Revocation and Restoration Based on Polling Station Info
+---------------------------------------------------------------------------------------
 
-Häälte tühistamiseks ja ennistamiseks jaoskonnainfo põhjal kasutatakse tööriista
-*revoke*. Tööriist saab sisendiks tööriista *squash* poolt koostatud e-valimiskasti ning
-rakendab sellele sisendiks antud tühistus- ja ennistusnimekirjad.
+The *revoke* tool is used for revoking and restoring votes based on polling station info.
+The tool receives as input the e-ballot box prepared by the *squash* tool and
+applies the revocation and restoration lists provided as input.
 
 :revoke.ballotbox:
-        Korduvhäältest puhastatud e-valimiskast.
+        E-ballot box cleaned of repeat votes.
 
 :revoke.ballotbox_checksum:
-        Korduvhäältest puhastatud e-valimiskasti digitaalselt allkirjastatud räsi.
+        Digitally signed hash of the e-ballot box cleaned of repeat votes.
 
 :revoke.districts:
-        Digitaalselt allkirjastatud ringkondade nimekiri.
+        Digitally signed districts list.
 
 :revoke.revocationlists:
-        Tühistus- ja ennistusnimekirjade loend. Võib olla tühi.
+        List of revocation and restoration lists. May be empty.
 
 :revoke.out:
-        Tööriista väljundkaust. Sellesse kausta tekivad:
+        Tool output directory. The following are created in this directory:
 
-        #. Korduvhääletajate häältest puhastatud e-valimiskast :file:`<valimise
+        #. E-ballot box cleaned of repeat voter votes :file:`<election
            id>-bb-3.json`;
 
-        #. Korduvhääletajate häältest puhastatud e-valimiskasti räsi
-           :file:`<valimise id>-bb-3.json.sha256sum`;
+        #. Hash of e-ballot box cleaned of repeat voter votes
+           :file:`<election id>-bb-3.json.sha256sum`;
 
-        #. Tühistamiste ja ennistamiste aruanne :file:`<valimise
+        #. Revocation and restoration report :file:`<election
            id>-revocation-report.csv`;
 
-        #. Tühistamiste ja ennistamiste aruanne ilma isikuandmeteta
-           :file:`<valimise
+        #. Revocation and restoration report without personal data
+           :file:`<election
            id>-revocation-report.csv.anonymous`;
 
-        #. E-hääletanute nimekiri JSON-vormingus :file:`<valimise
+        #. List of e-voters in JSON format :file:`<election
            id>-ivoterlist.json``;
 
-        #. *Log2* fail e. tühistatud hääled
-           :file:`<valimise id>.<küsimuse id>.revoke.log2`.
+        #. *Log2* file, i.e., cancelled votes
+           :file:`<election id>.<question id>.revoke.log2`.
 
 :file:`processor.revoke.yaml`:
 
@@ -249,31 +248,30 @@ rakendab sellele sisendiks antud tühistus- ja ennistusnimekirjad.
 
 .. _processor-anonymize:
 
-E-valimiskasti töötlemine - anonüümimine
+E-ballot Box Processing - Anonymization
 ----------------------------------------
 
-E-valimiskasti anonüümimiseks kasutatakse tööriista *anonymize*.
-Tööriist saab sisendiks tööriista *revoke* poolt koostatud e-valimiskasti ning eemaldab
-sellest valijate info.
+The *anonymize* tool is used for anonymizing the e-ballot box.
+The tool receives as input the e-ballot box prepared by the *revoke* tool and removes
+voter information from it.
 
 :anonymize.ballotbox:
-        Korduvhääletajate häältest puhastatud e-valimiskast.
+        E-ballot box cleaned of repeat voter votes.
 
 :anonymize.ballotbox_checksum:
-        Korduvhääletajate häältest puhastatud e-valimiskasti digitaalselt allkirjastatud
-        räsi.
+        Digitally signed hash of the e-ballot box cleaned of repeat voter votes.
 
 :anonymize.out:
-        Tööriista väljundkaust. Sellesse kausta luuakse:
+        Tool output directory. The following are created in this directory:
 
-        #. Hääletajate isikuandmetest puhastatud e-valimiskast :file:`<valimis
+        #. E-ballot box cleaned of voter personal data :file:`<election
            id>-bb-4.json`;
 
-        #. Hääletajate isikuandmetest puhastatud e-valimiskasti räsi :file:`<valimise
+        #. Hash of e-ballot box cleaned of voter personal data :file:`<election
            id>-bb-4.json.sha256sum`;
 
-        #. *Log3* fail e. lugemisele läinud hääled :file:`<valimise
-           id>.<küsimuse id>.anonymize.log3`.
+        #. *Log3* file, i.e., votes sent for tallying :file:`<election
+           id>.<question id>.anonymize.log3`.
 
 :file:`processor.anonymize.yaml`:
 
@@ -282,17 +280,17 @@ sellest valijate info.
    :linenos:
 
 
-Töötlemisrakenduse täiendavad tööriistad
+Additional Processing Application Tools
 ----------------------------------------
 
-Tööriist *verify*
+Tool *verify*
 *****************
 
-*Verify* on lisavahend, millega saab verifitseerida digitaalselt allkirjastatud
-konteineri allkirja ning kuvada konteineri andmed.
+*Verify* is an auxiliary tool that can verify the signature of a digitally signed
+container and display the container data.
 
 :verify.file:
-        Verifitseeritav fail.
+        File to verify.
 
 
 :file:`processor.verify.yaml`:
@@ -302,35 +300,35 @@ konteineri allkirja ning kuvada konteineri andmed.
    :linenos:
 
 
-Tööriist *export*
+Tool *export*
 *****************
 
-*Export* on lisavahend, millega saab eksportida kogumisteenusest väljastatud
-e-valimiskasti seest täielikke digitaalselt allkirjastatud hääle konteinereid. On
-võimalik eksportida nii kõiki hääli korraga, kui konkreetse valija hääli.
+*Export* is an auxiliary tool that can export complete digitally signed vote
+containers from the e-ballot box issued by the collector service. It is
+possible to export either all votes at once or a specific voter's votes.
 
 :export.ballotbox:
-        Kogumisteenusest väljastatud e-valimiskast.
+        E-ballot box issued from the collector service.
 
 :export.ballotbox_checksum:
-        Kogumisteenusest väljastatud e-valimiskasti digitaalselt allkirjastatud räsi.
+        Digitally signed hash of the e-ballot box issued from the collector service.
 
 :export.signed_ballot_max_size_bytes:
-        Kogumisteenusest väljastatud e-valimiskasti üksiku allkirjastatud hääle
-        maksimaalne lubatud pikkus baitides.
+        Maximum allowed size in bytes of a single signed vote in the e-ballot box
+        issued from the collector service.
 
-        Kui määramata, siis vaikimisi kasutatakse 32768 baiti.
+        If not specified, the default of 32768 bytes is used.
 
 :export.voter_id:
-        Valija identifikaator (valikuline).
+        Voter identifier (optional).
 
 :export.out:
-        Tööriista väljundkaust. Sellesse kausta tekivad:
+        Tool output directory. The following are created in this directory:
 
-        #. E-valimiskasti töötlemisvigade raport :file:`ballotbox_errors.txt`
-           (valikuline);
+        #. E-ballot box processing errors report :file:`ballotbox_errors.txt`
+           (optional);
 
-        #. E-valimiskastist eksporditud häälte digitaalselt allkirjastatud konteinerid.
+        #. Digitally signed containers of votes exported from the e-ballot box.
 
 
 :file:`processor.export.yaml`:
@@ -340,79 +338,78 @@ võimalik eksportida nii kõiki hääli korraga, kui konkreetse valija hääli.
    :linenos:
 
 
-Tööriist *stats*
+Tool *stats*
 ****************
 
-*Stats* on lisavahend, millega saab arvutada häälte ja hääletajate statistikat
-e-valimiskasti põhjal. Statistikat on võimalik piiritleda ajavahemikuga ning väljundit
-on võimalik piiritleda koondandmetega kui ka ringkondade kaupa. NB! Tööriist ei
-kontrolli digitaalallkirju, häälte töötlemiseks tuleb kasutada *check*,
-*squash*, *revoke*, *anonymize* töövoogu.
+*Stats* is an auxiliary tool that can calculate vote and voter statistics
+based on the e-ballot box. Statistics can be limited by time period and the output
+can be limited to aggregate data or broken down by district. NB! The tool does not
+verify digital signatures; for processing votes, use the *check*,
+*squash*, *revoke*, *anonymize* workflow.
 
 :stats.ballotbox:
-        E-valimiskast, mille põhjal statistika koostada. Kui faili laiendiks on
-        ``.json``, siis peab see olema olema töödeldud e-valimiskast. Vastasel juhul
-        peab see olema kogumisteenusest väljastatud e-valimiskast.
+        E-ballot box from which to compile statistics. If the file extension is
+        ``.json``, then it must be a processed e-ballot box. Otherwise,
+        it must be an e-ballot box issued from the collector service.
 
 :stats.signed_ballot_max_size_bytes:
-        Kogumisteenusest väljastatud e-valimiskasti üksiku allkirjastatud hääle
-        maksimaalne lubatud pikkus baitides.
+        Maximum allowed size in bytes of a single signed vote in the e-ballot box
+        issued from the collector service.
 
-        Kui määramata, siis vaikimisi kasutatakse 32768 baiti.
+        If not specified, the default of 32768 bytes is used.
 
 :stats.election_day:
-        Valimispäev. Kõikide e-hääletanute vanused arvutatakse statistika
-        tarbeks selle kuupäeva suhtes.
+        Election day. All e-voters' ages are calculated for statistics
+        purposes relative to this date.
 
 :stats.period_start:
-        Statistikaperioodi algusaeg (valikuline). Sellest varasema
-        hääletusajaga hääli statistikasse ei kaasata.
+        Statistics period start time (optional). Votes with a voting time
+        earlier than this are not included in statistics.
 
 :stats.period_end:
-        Statistikaperioodi lõppaeg (valikuline). Sellest hilisema hääletusajaga
-        hääli statistikasse ei kaasata.
+        Statistics period end time (optional). Votes with a voting time
+        later than this are not included in statistics.
 
 :stats.districts:
-        Digitaalselt allkirjastatud ringkondade nimekiri. Vajalik ringkondade
-        kaupa statistika väljastamiseks. Kui on määramata, siis väljastatakse
-        ainult koondstatistika.
+        Digitally signed districts list. Required for outputting statistics
+        by district. If not specified, only aggregate statistics are output.
 
 :stats.vlkey:
-        Valijate nimekirjade verifitseerimiseks kasutatav avalik võti.
-        Argument on kohustuslik valijate nimekirjade kasutamise korral.
+        Public key used for verifying voter lists.
+        The argument is mandatory when using voter lists.
 
 :stats.voterlists:
-        Valijate nimekirjade loend. Vajalik kogumisteenusest väljastatud
-        e-valimiskastist valija ringkonna tuvastamiseks.
+        Voter lists. Required for determining voter's district from the
+        e-ballot box issued from the collector service.
 
-        Argument on kohustuslik, kui e-valimiskast on väljastatud kogumisteenusest ja
-        statistikat väljastatakse ringkondade kaupa.
+        The argument is mandatory if the e-ballot box is issued from the collector service and
+        statistics are output by district.
 
 :stats.voterlists.path:
-        Valijate nimekirja fail.
+        Voter list file.
 
 :stats.voterlists.signature:
-        Valijate nimekirja allkiri, mis on antud algoritmiga
+        Voter list signature, given with the algorithm
         ``ecdsa-with-SHA256``.
 
 :check.voterforeignehak:
-        Alaliselt välisriigis elavate valijate ringkonnakuuluvuse tuvastamiseks
-        kasutatav EHAK-kood. Vaikeväärtus "0000".
+        EHAK code used for determining district membership of voters
+        permanently residing abroad. Default value "0000".
 
 :stats.out:
-        Tööriista väljundkaust. Sellesse kausta tekivad:
+        Tool output directory. The following are created in this directory:
 
-        #. E-valimiskasti statistika JSON-vormingus :file:`<valimise id>-stats.json`
-           (:file:`ELECTION-stats.json` kui valimist ei suudeta tuvastada);
+        #. E-ballot box statistics in JSON format :file:`<election id>-stats.json`
+           (:file:`ELECTION-stats.json` if the election cannot be identified);
 
-        #. E-valimiskasti statistika CSV-vormingus :file:`<valimise id>-stats.csv`
-           (:file:`ELECTION-stats.csv` kui valimist ei suudeta tuvastada);
+        #. E-ballot box statistics in CSV format :file:`<election id>-stats.csv`
+           (:file:`ELECTION-stats.csv` if the election cannot be identified);
 
-        #. E-valimiskasti töötlemisvigade raport :file:`ballotbox_errors.txt`
-           (tekib vigade korral);
+        #. E-ballot box processing errors report :file:`ballotbox_errors.txt`
+           (created when errors occur);
 
-        #. Valijate nimekirjade töötlemisvigade raport
-           :file:`voterlist_errors.txt` (tekib vigade korral).
+        #. Voter lists processing errors report
+           :file:`voterlist_errors.txt` (created when errors occur).
 
 
 :file:`processor.stats.yaml`:
@@ -422,26 +419,26 @@ kontrolli digitaalallkirju, häälte töötlemiseks tuleb kasutada *check*,
    :linenos:
 
 
-Tööriist *statsdiff*
+Tool *statsdiff*
 ********************
 
-*Statsdiff* on lisavahend, millega saab arvutada kahe statistikafaili vahet.
-Tulemuseks on kolmas statistikafail, mille kõik väärtused on pärit alusfailist,
-kust on lahutatud võrreldava faili väärtused.
+*Statsdiff* is an auxiliary tool that can calculate the difference between two
+statistics files. The result is a third statistics file whose all values come
+from the base file with the compared file's values subtracted.
 
 :statsdiff.compare:
-        Statistika võrdluse alusfail JSON-vormingus.
+        Statistics comparison base file in JSON format.
 
 :statsdiff.to:
-        Võrreldav statistika fail JSON-vormingus. Võrreldav statistika fail on pärit
-        IVXV logimonitorist. Selleks et kasutada *statsdiff* utiliidi tuleb antud failist
-        eemaldada **time:** ja **meta:** JSON kirjed. Need kirjed ei oma tähtsust
-        statistika võrdlemisel ja on lihtsalt statistika faili genereerimise ajatempel,
-        mis on alati erinev **statsdiff.compare** ja **statsdiff.to** failides.
+        Compared statistics file in JSON format. The compared statistics file comes from
+        the IVXV log monitor. To use the *statsdiff* utility, the **time:** and **meta:**
+        JSON entries must be removed from this file. These entries are not significant
+        for statistics comparison and are simply the statistics file generation timestamp,
+        which is always different in the **statsdiff.compare** and **statsdiff.to** files.
 
 :statsdiff.diff:
-        Tööriista väljundfail. Sellesse faili salvestatakse statistikate vahe
-        JSON-vormingus.
+        Tool output file. The statistics difference is saved to this file
+        in JSON format.
 
 
 :file:`processor.statsdiff.yaml`:
@@ -452,114 +449,114 @@ kust on lahutatud võrreldava faili väärtused.
 
 .. _processor-checkAndSquash:
 
-E-valimiskasti töötlemine - verifitseerimine ja korduvhäälte tühistamine
-------------------------------------------------------------------------
+E-ballot Box Processing - Verification and Repeat Vote Cancellation
+--------------------------------------------------------------------
 
-Antud tööriist teostab nii verifitseerimist, kui ka korduvhäälte tühistamist.
-Rohkem infot teostavate operatsioonide kohta leidub alapeatükkides:
+This tool performs both verification and repeat vote cancellation.
+More information about the operations performed can be found in the subsections:
 
-* *E-valimiskasti töötlemine - verifitseerimine*
-* *E-valimiskasti töötlemine - korduvhäälte tühistamine*
+* *E-ballot Box Processing - Verification*
+* *E-ballot Box Processing - Repeat Vote Cancellation*
 
 :checkAndSquash.ballotbox:
-        Kogumisteenusest väljastatud e-valimiskast.
+        E-ballot box issued from the collector service.
 
 :checkAndSquash.ballotbox_checksum:
-        Kogumisteenusest väljastatud e-valimiskasti digitaalselt allkirjastatud räsi.
+        Digitally signed hash of the e-ballot box issued from the collector service.
 
-        Kui määramata, siis ei väljastata korrastatud e-valimiskasti järgmisteks
-        etappideks. Kasulik mitte-lõpliku e-valimiskasti valimisaegseks kontrolliks.
+        If not specified, the corrected e-ballot box is not output for subsequent
+        stages. Useful for election-time verification of a non-final e-ballot box.
 
 :checkAndSquash.signed_ballot_max_size_bytes:
-        Kogumisteenusest väljastatud e-valimiskasti üksiku allkirjastatud hääle
-        maksimaalne lubatud pikkus baitides.
+        Maximum allowed size in bytes of a single signed vote in the e-ballot box
+        issued from the collector service.
 
-        Kui määramata, siis vaikimisi kasutatakse 32768 baiti.
+        If not specified, the default of 32768 bytes is used.
 
 :checkAndSquash.districts:
-        Digitaalselt allkirjastatud ringkondade nimekiri.
+        Digitally signed districts list.
 
 :checkAndSquash.registrationlist:
-        Registreerimisteenusest pärit registreerimisandmed. Kui määramata, siis
-        ei kontrollita e-valimiskastis sisalduvate häälte vastavust
-        registreerimisandmetega.
+        Registration data from the registration service. If not specified,
+        compliance of votes contained in the e-ballot box with registration
+        data is not checked.
 
 :checkAndSquash.registrationlist_checksum:
-        Registreerimisandmete digitaalselt allkirjastatud räsi. Võib puududa,
-        kui ``registrationlist`` puudub.
+        Digitally signed hash of the registration data. May be absent
+        if ``registrationlist`` is absent.
 
 :checkAndSquash.tskey:
-        Registreerimispäringute verifitseerimiseks kasutatav kogumisteenuse
-        avalik võti registreerimispäringute tegemise sertifikaadist.
+        Collector service public key from the registration request certificate
+        used for verifying registration requests.
 
 :checkAndSquash.vlkey:
-        Valijate nimekirjade verifitseerimiseks kasutatav avalik võti.
-        Argument on kohustuslik, kui valijate nimekirjad on antud.
+        Public key used for verifying voter lists.
+        The argument is mandatory if voter lists are provided.
 
 :checkAndSquash.voterlists_dir:
-        Valijate nimekirjade loendi kaust. Kui on määramata, siis e-hääletanute
-        hääleõigust ei kontrollita.
+        Voter lists directory. If not specified, the voting eligibility of
+        e-voters is not checked.
 
 :checkAndSquash.voterlists:
-        Valijate nimekirjade loend. Kui on määramata, siis e-hääletanute
-        hääleõigust ei kontrollita.
+        Voter lists. If not specified, the voting eligibility of
+        e-voters is not checked.
 
 :checkAndSquash.voterlists.path:
-        Valijate nimekirja fail.
+        Voter list file.
 
 :checkAndSquash.voterlists.signature:
-        Valijate nimekirja allkiri, mis on antud algoritmiga
+        Voter list signature, given with the algorithm
         ``ecdsa-with-SHA256``.
 
 :checkAndSquash.districts_mapping:
-        Valijate nimekirjas oleva ringkonna ja jaoskonna teisendusfail
-        (valikuline).
+        District and polling station mapping file for the voter list
+        (optional).
 
 :checkAndSquash.election_start:
-        Hääletamise algusaeg. Sellest varasema hääletusajaga hääli käsitletakse
-        proovihäältena ning need lugemisele ei lähe.
+        Voting start time. Votes with a voting time earlier than this are
+        treated as test votes and are not sent for tallying.
 
 :checkAndSquash.voterforeignehak:
-        Alaliselt välisriigis elavate valijate ringkonnakuuluvuse tuvastamiseks
-        kasutatav EHAK-kood. Vaikeväärtus "0000".
+        EHAK code used for determining district membership of voters
+        permanently residing abroad. Default value "0000".
 
 :checkAndSquash.enckey:
-        Krüpteerimise avaliku võtme faili asukoht (võtmerakenduse väljund).
-        Võtit kasutatakse krüpteeritud häälte eelkontrolliks, eristamaks
-        päriselt krüpteeritud hääli suvalisest binaarsest prügist.
+        Location of the encryption public key file (key application output).
+        The key is used for pre-checking encrypted votes, to distinguish
+        genuinely encrypted votes from arbitrary binary garbage.
 
 :checkAndSquash.out:
-        Tööriista väljundkaust. Sellesse kausta tekivad:
+        Tool output directory. The following are created in this directory:
 
-        #. Korduvhäältest puhastatud e-valimiskast :file:`<valimise id>-bb-2.json`;
+        #. E-ballot box cleaned of repeat votes :file:`<election id>-bb-2.json`;
 
-        #. Korduvhäältest puhastatud e-valimiskasti räsi :file:`<valimise
+        #. Hash of e-ballot box cleaned of repeat votes :file:`<election
            id>-bb-2.json.sha256sum`;
 
-        #. E-hääletanute nimekiri JSON-vormingus :file:`<valimise
+        #. List of e-voters in JSON format :file:`<election
            id>-ivoterlist.json`;
 
-        #. E-hääletanute nimekiri PDF-vormingus :file:`<valimise
+        #. List of e-voters in PDF format :file:`<election
            id>-ivoterlist.pdf`;
 
-        #. Tühistamiste ja ennistamiste aruanne :file:`<valimise
+        #. Revocation and restoration report :file:`<election
            id>-revocation-report.csv`;
 
-        #. Tühistamiste ja ennistamiste aruanne ilma isikuandmeteta
-           :file:`<valimise
+        #. Revocation and restoration report without personal data
+           :file:`<election
            id>-revocation-report.csv.anonymous`;
 
-        #. *Log1* fail ehk vastuvõetud hääled
-           :file:`<valimise id>.<küsimuse id>.log1`.
+        #. *Log1* file, i.e., accepted votes
+           :file:`<election id>.<question id>.log1`.
 
-        #. *Log2* fail ehk tühistatud hääled :file:`<valimise id>.<küsimuse
+        #. *Log2* file, i.e., cancelled votes :file:`<election id>.<question
            id>.log2`.
 
-        #. E-valimiskasti töötlemisvigade raport :file:`ballotbox_errors.txt`
-           (valikuline);
+        #. E-ballot box processing errors report :file:`ballotbox_errors.txt`
+           (optional);
 
-        #. Valijate nimekirjade töötlemisvigade raport
-           :file:`voterlist_errors.txt` (valikuline);
+        #. Voter lists processing errors report
+           :file:`voterlist_errors.txt` (optional);
 
 
 :file:`processor.checkAndSquash.yaml`:
@@ -570,50 +567,50 @@ Rohkem infot teostavate operatsioonide kohta leidub alapeatükkides:
 
 .. _processor-revokeAndAnonymize:
 
-E-valimiskasti töötlemine - häälte tühistamine, ennistamine jaoskonnainfo põhjal ja anonüümimine
----------------------------------------------------------------------------------------------------
+E-ballot Box Processing - Vote Revocation, Restoration Based on Polling Station Info and Anonymization
+-------------------------------------------------------------------------------------------------------
 
-Häälte tühistamiseks, ennistamiseks jaoskonnainfo põhjal ning anonüümimiseks
-kasutatakse tööriista *revokeAndAnonymize*. Tööriist saab sisendiks tööriista *squash*
-või *checkAndSquash* poolt koostatud e-valimiskasti ning rakendab sellele sisendiks antud
-tühistus- ja ennistusnimekirjad.
+The *revokeAndAnonymize* tool is used for revoking votes, restoring votes based on
+polling station info, and anonymization. The tool receives as input the e-ballot box
+prepared by the *squash* or *checkAndSquash* tool and applies the revocation and
+restoration lists provided as input.
 
 :revokeAndAnonymize.ballotbox:
-        Korduvhäältest puhastatud e-valimiskast.
+        E-ballot box cleaned of repeat votes.
 
 :revokeAndAnonymize.ballotbox_checksum:
-        Korduvhäältest puhastatud e-valimiskasti digitaalselt allkirjastatud räsi.
+        Digitally signed hash of the e-ballot box cleaned of repeat votes.
 
 :revokeAndAnonymize.districts:
-        Digitaalselt allkirjastatud ringkondade nimekiri.
+        Digitally signed districts list.
 
 :revokeAndAnonymize.revocationlists:
-        Tühistus- ja ennistusnimekirjade loend. Võib olla tühi.
+        List of revocation and restoration lists. May be empty.
 
 :revokeAndAnonymize.out:
-        Tööriista väljundkaust. Sellesse kausta tekivad:
+        Tool output directory. The following are created in this directory:
 
-        #. Korduvhääletajate häältest puhastatud ning anonüümitud e-valimiskast
-           :file:`<valimise id>-bb-4.json`;
+        #. E-ballot box cleaned of repeat voter votes and anonymized
+           :file:`<election id>-bb-4.json`;
 
-        #. Korduvhääletajate häältest puhastatud ning anonüümitud e-valimiskasti räsi
-           :file:`<valimise id>-bb-4.json.sha256sum`;
+        #. Hash of e-ballot box cleaned of repeat voter votes and anonymized
+           :file:`<election id>-bb-4.json.sha256sum`;
 
-        #. Tühistamiste ja ennistamiste aruanne :file:`<valimise
+        #. Revocation and restoration report :file:`<election
            id>-revocation-report.csv`;
 
-        #. Tühistamiste ja ennistamiste aruanne ilma isikuandmeteta
-           :file:`<valimise
+        #. Revocation and restoration report without personal data
+           :file:`<election
            id>-revocation-report.csv.anonymous`;
 
-        #. E-hääletanute nimekiri JSON-vormingus :file:`<valimise
+        #. List of e-voters in JSON format :file:`<election
            id>-ivoterlist.json``;
 
-        #. *Log2* fail e. tühistatud hääled
-           :file:`<valimise id>.<küsimuse id>.log2`.
+        #. *Log2* file, i.e., cancelled votes
+           :file:`<election id>.<question id>.log2`.
 
-        #. *Log3* fail e. lugemisele läinud hääled :file:`<valimise
-           id>.<küsimuse id>.log3`.
+        #. *Log3* file, i.e., votes sent for tallying :file:`<election
+           id>.<question id>.log3`.
 
 :file:`processor.revokeAndAnonymize.yaml`:
 

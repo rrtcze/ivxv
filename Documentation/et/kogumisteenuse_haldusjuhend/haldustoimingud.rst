@@ -1,548 +1,554 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
-Süsteemi haldustoimingud
-========================
+System Administrative Operations
+=================================
 
 .. _kogumisteenuse-oleku-jälgimine:
 
-Kogumisteenuse oleku jälgimine
-------------------------------
+Monitoring Collector Service Status
+------------------------------------
 
-Kogumisteenuse olekuandmed registreeritakse haldusteenuse andmebaasis. Oleku
-kuvamiseks on utiliit :ref:`ivxv-status`.
+Collector service status data is registered in the management service database.
+The utility :ref:`ivxv-status` is used to display the status.
 
-Olekus kuvatakse järgmisi andmeid:
+The following data is displayed in the status:
 
-* Valimise ID, faas, algus- ja lõpuaeg;
+* Election ID, phase, start and end time;
 
-* Haldusteenusesse laaditud konfiguratsioon:
+* Configuration loaded into the management service:
 
-   * Seadistuspakkide versioonid;
+   * Configuration package versions;
 
-   * Valikute nimekirja ja ringkondade nimekirja versioonid;
+   * Choices list and district list versions;
 
-   * Valijate nimekirjade versioonid ja olekud;
+   * Voter list versions and states;
 
-* Teenuste nimekiri koos rakendatud seadistuste versioonidega, teenuse seisundi
-  ja selle viimase tuvastamise ajaga;
+* Service list with applied configuration versions, service state
+  and the time of its last detection;
 
-* Väliste teenuste seisundid;
+* External service states;
 
-* Haldusteenuse andmehoidla statistika.
+* Management service data store statistics.
 
-Sõltuvalt kogumisteenuse seisundist võib oleku kuvamise utiliit jätta mõned
-andmeblokid kuvamata (kui need pole jooksva seisundi puhul olulised). Täieliku
-andmestiku väljastamiseks vaata utiliidi :ref:`ivxv-status` abiteavet.
+Depending on the state of the collector service, the status display utility
+may omit some data blocks (if they are not relevant for the current state).
+For full data output, see the help text for the :ref:`ivxv-status` utility.
 
-Mikroteenuste oleku jälgimise ning oleku ja võimaliku veainfo registreerimisega
-haldusteenuse andmebaasis tegeleb haldusteenuse :ref:`agentdeemon
-<ivxv-agent-daemon>`.
+Microservice status monitoring and registration of status and possible error
+information in the management service database is handled by the management
+service :ref:`agent daemon <ivxv-agent-daemon>`.
 
-Valijate muudatusnimekirjade hankimine Valimiste Infosüsteemist toimub
-utiliidiga :ref:`ivxv-voter-list-download`, mis käivitatakse teenuse `cron`
-poolt veerandtunnise intervalliga.
+Downloading voter change lists from the Election Information System is done
+using the :ref:`ivxv-voter-list-download` utility, which is launched by the
+`cron` service at 15-minute intervals.
 
-Kogumisteenuse haldusteenuse sündmuste logi kuvamiseks on utiliit
-:ref:`ivxv-eventlog-dump`.
+The utility :ref:`ivxv-eventlog-dump` is used to display the collector service
+management service event log.
 
 .. important::
 
-   Haldusteenus tagab kogumisteenuse alamteenuste olekuandmetes vajaliku teabe
-   teenuse töökorda seadmiseks. See võib olla järgmine:
+   The management service provides the necessary information in the sub-service
+   status data for restoring the service to working order. This may be:
 
-   #. Teave puuduvate seadistuste kohta (seadistusfailid, võtmed jms). Seda
-      kuvatakse kuni teenus on varustatud kõigi käivitamiseks vajalike
-      seadistustega.
+   #. Information about missing settings (configuration files, keys, etc.). This
+      is displayed until the service is provided with all settings required for
+      startup.
 
-   #. Veateade - alamteenuse haldusvahendite (seadistuste kontrollivahend,
-      teenuse haldusvahend) veaväljund mittetöötava teenuse kohta.
+   #. Error message — the error output of the sub-service management tools
+      (configuration verification tool, service management tool) about a
+      non-working service.
 
 
 .. _korralduste-valideerimine:
 
-Korralduste valideerimine
--------------------------
+Command Validation
+------------------
 
-Korraldusfailide valideerimine võimaldab veenduda korralduste vastavuses
-vormistusnõuetele ning tuvastada vigased või mittekooskõlalised korraldused.
+Command file validation allows verifying that commands comply with formatting
+requirements and detecting faulty or inconsistent commands.
 
-Valideerimine toimub käsuga :ref:`ivxv-config-validate`.
+Validation is performed using the command :ref:`ivxv-config-validate`.
 
-Valimise seadistuse valideerimise näide::
+Example of validating election settings::
 
    $ ivxv-config-validate --election=valimise-seadistus-TEST2017.asice
 
 
-Korralduste kooskõlalisuse valideerimine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Consistency Validation of Commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Kooskõla valideerimine viiakse läbi kahel juhul:
+Consistency validation is performed in two cases:
 
-#. Kui valideerimise käsule antakse korraga valideerimiseks mitu korraldust;
+#. When multiple commands are given for validation at the same time;
 
-#. Korralduse laadimisel juhul, kui laaditava korraldusega kooskõla nõudev
-   oluline korraldus juba haldusteenusesse laaditud.
+#. When loading a command, if a significant command requiring consistency with
+   the command being loaded has already been loaded into the management service.
 
-Korralduste kooskõla valideerimise kontrollid:
+Consistency validation checks for commands:
 
-#. Korraga valimiste seadistust ja/või nimekirju (valikute, ringkondade või
-   valijate) valideerides kontrollitakse valimiste identifikaatori kooskõla.
+#. When validating election settings and/or lists (choices, district, or
+   voter) simultaneously, the consistency of election identifiers is checked.
 
-#. Korraga mitut valijate nimekirja valideerides viiakse läbi järgnevad
-   kontrollid:
+#. When validating multiple voter lists simultaneously, the following checks
+   are performed:
 
-   * Nimekirjade korrektne järjestus;
+   * Correct ordering of lists;
 
-   *  Muudatusnimekirjas kontrollitakse:
+   *  In a change list, the following are checked:
 
-      #. Valija topeltlisamist ja -eemaldamist;
+      #. Duplicate addition and removal of a voter;
 
-      #. Valija eemaldamist pärast tema lisamist sama muudatusnimekirjaga.
+      #. Removal of a voter after their addition with the same change list.
 
-      #. Valija eemaldamist ringkonnast, kuhu teda pole lisatud;
+      #. Removal of a voter from a district to which they have not been added;
 
-#. Korraga ringkondade ja valikute nimekirja valideerides viiakse läbi
-   järgnevad kontrollid:
+#. When validating district and choices lists simultaneously, the following
+   checks are performed:
 
-   * Igas valimisringkonnas peab olema kirjeldatud vähemalt üks valik;
+   * Each election district must have at least one choice defined;
 
-   * Iga valik peab olema seotud olemasoleva valimisringkonnaga.
+   * Each choice must be associated with an existing election district.
 
-#. Korraga ringkondade nimekirja ja valijate nimekirju valideerides viiakse
-   läbi järgnevad kontrollid:
+#. When validating district lists and voter lists simultaneously, the following
+   checks are performed:
 
-   * Igas valimisjaoskonnas peab olema vähemalt üks valija;
+   * Each election precinct must have at least one voter;
 
-   * Iga valimisnimekirja kantud isik peab olema seotud olemasoleva
-     ringkonnaga;
+   * Each person entered in the election list must be associated with an
+     existing district;
 
-#. Valijate nimekirja(de) ja ringkondade nimekirja valideerimisel
-   kontrollitakse valijale määratud ringkonna olemasolu ringkondade nimekirjas.
+#. When validating voter list(s) and district lists, the existence of the
+   district assigned to the voter is checked in the district list.
 
-Kui valimiste seadistuses on määratud välisriigis asuvale valijale määratav
-ringkonna haldusüksuse EHAK-kood (parameeter ``voterforeignehak``), peab
-valikute, valijate ja ringkondade nimekirjade vastavuse valideerimisel olema
-kaasatud ka valimiste seadistus ja seadistuste valideerimisel tehakse täiendavad
-kontrollid:
+If the election settings specify the administrative unit EHAK code assigned
+to a voter residing abroad (parameter ``voterforeignehak``), the election
+settings must also be included when validating the compliance of choices, voter,
+and district lists, and the following additional checks are performed during
+settings validation:
 
-#. Valijate nimekirja ja ringkondade nimekirja kooskõla valideerides
-   kontrollitakse, et ringkondade nimekirjas on parameetriga määratud
-   haldusüksuses olemas valijale määratud ringkond.
+#. When validating the consistency of the voter list and district list, it is
+   verified that the district list contains the district assigned to the voter
+   in the administrative unit specified by the parameter.
 
 
 .. _korralduste-laadimine-rakendamine:
 
-Korralduste laadimine ja rakendamine
-------------------------------------
+Loading and Applying Commands
+-----------------------------
 
-Kogumisteenuse korraldused koostatakse signeeritud korralduspakkidena, millega
-kirjeldatakse kasutaja identifikaator (*Common Name* ehk CN väli ID-kaardilt)
-ja rollide nimekiri.
+Collector service commands are prepared as signed command packages that
+describe the user identifier (*Common Name* i.e., CN field from the ID card)
+and a list of roles.
 
-Sõltuvalt korraldusest tuleb rakendamiseks kasutada ühte või kahte käsku.
-Haldusteenust puudutavad korralduste rakendamiseks piisab nende laadimisest
-haldusteenusesse. Alamteenuseid puudutavad korraldused (näiteks seadistuspakid)
-tuleb pärast haldusteenusesse laadimist rakendada ka hallatavatele teenustele.
+Depending on the command, one or two commands must be used for application.
+For commands concerning the management service, loading them into the management
+service is sufficient. Commands concerning sub-services (such as configuration
+packages) must be applied to the managed services after loading into the
+management service.
 
-Korralduste laadimine haldusteenusesse toimub käsuga :ref:`ivxv-cmd-load`.
-Laadimise käigus viiakse läbi ka :ref:`korralduse valideerimine
-<korralduste-valideerimine>`, vigane või mittekooskõlaline korraldus jäetakse
-laadimata.
+Loading commands into the management service is done using the :ref:`ivxv-cmd-load`
+command. During loading, :ref:`command validation <korralduste-valideerimine>` is
+also performed; a faulty or inconsistent command will not be loaded.
 
-Valikute nimekirja korralduse rakendamise näide:
+Example of applying a choices list command:
 
 .. include:: genereeritud-failid/haldusteenus-laadi_valikute_nimekiri.inc
 
 .. seealso::
 
-   * Käsu :ref:`ivxv-cmd-load` abiteave;
+   * Help text for the :ref:`ivxv-cmd-load` command;
 
-   * Korralduste rollide kirjeldus ja korralduste koostamise juhend asuvad
-     dokumendis ``IVXV seadistuste
-     koostamise juhend``.
+   * Description of command roles and the guide for preparing commands are
+     available in the document ``IVXV Configuration
+     Guide``.
 
 
-Teenuse isendi seisundi tuvastamine
------------------------------------
+Detecting Service Instance State
+---------------------------------
 
-Mikroteenuse isendi seisundi tuvastamiseks on utiliit :ref:`ivxv-service`,
-millega on võimalik teenuse seisundit vahetult küsida (utiliit
-:ref:`ivxv-status` kuvab andmebaasis puhverdatavat seisundit).
+The utility :ref:`ivxv-service` is used to detect the state of a microservice
+instance, allowing direct querying of the service state (the utility
+:ref:`ivxv-status` displays the state buffered in the database).
 
-Teenuse seisundi päringu näide:
+Example of a service state query:
 
 .. include:: genereeritud-failid/mikroteenuse_seisundi_tuvastamine.inc
 
 
 .. _teenuse-taaskäivitamine:
 
-Teenuse (taas)käivitamine
--------------------------
+Service (Re)start
+------------------
 
-Mikroteenuste käivitamiseks ja taaskäivitamiseks on utiliit
-:ref:`ivxv-service`.
+The utility :ref:`ivxv-service` is used for starting and restarting
+microservices.
 
-Teenuse taaskäivitamise näide:
+Example of restarting a service:
 
 .. include:: genereeritud-failid/mikroteenuse_kaivitamine.inc
 
 .. note::
 
-   Protseduuri nimetamine käivitamiseks või taaskäivitamiseks sõltub teenuse
-   protsessi seisundist. Tehniliselt on tegemist sarnaste protseduuridega, kus
-   esmalt veendutakse, et teenus seisab (vajadusel jäetakse see seisma) ja siis
-   püütakse käivitada hetkel kehtivate seadistustega.
+   Whether the procedure is called starting or restarting depends on the state
+   of the service process. Technically, these are similar procedures where
+   first it is ensured that the service is stopped (stopping it if necessary)
+   and then an attempt is made to start it with the currently valid settings.
 
 
 .. _teenuse-seiskamine:
 
-Teenuse seiskamine
-------------------
+Stopping a Service
+-------------------
 
-Mikroteenuste seiskamiseks on utiliit :ref:`ivxv-service`.
+The utility :ref:`ivxv-service` is used for stopping microservices.
 
-Teenuse seiskamise näide:
+Example of stopping a service:
 
 .. include:: genereeritud-failid/mikroteenuse_seiskamine.inc
 
 
 .. _teenuse-asendamine:
 
-Teenuse isendi asendamine
--------------------------
+Replacing a Service Instance
+-----------------------------
 
-Teenuse isendi asendamine koosneb ühe mikroteenuse isendi eemaldamisest (vt.
-:ref:`teenuse-eemaldamine`) ja teise sama funktsiooniga mikroteenuse isendi
-lisamisest (vt. :ref:`teenuse-lisamine`).
+Replacing a service instance consists of removing one microservice instance
+(see :ref:`teenuse-eemaldamine`) and adding another microservice instance with
+the same function (see :ref:`teenuse-lisamine`).
 
 
 .. _teenuse-lisamine:
 
-Teenuse isendi lisamine
------------------------
+Adding a Service Instance
+--------------------------
 
-Teenuse isendi lisamiseks tuleb vajadusel teenust hostiv server ette valmistada
-(vt.  :ref:`taristu-paigaldamine`) ning rakendada uus tehniline seadistus, mis
-sisaldab lisatavat teenuse isendit.
+To add a service instance, the server hosting the service must be prepared if
+necessary (see :ref:`taristu-paigaldamine`), and a new technical configuration
+containing the service instance to be added must be applied.
 
 .. important::
 
-   Lisatava isendi identifikaator ei tohi kattuda ühegi teise, ka minevikus
-   eemaldatud isendi identifikaatoriga.
+   The identifier of the instance to be added must not match any other
+   instance identifier, including those of previously removed instances.
 
 
 .. _teenuse-eemaldamine:
 
-Teenuse isendi eemaldamine
---------------------------
+Removing a Service Instance
+-----------------------------
 
-Teenuse isendi eemaldamiseks tuleb:
+To remove a service instance:
 
-#. Teenuse isend seisma jätta (vt. :ref:`teenuse-seiskamine`);
+#. Stop the service instance (see :ref:`teenuse-seiskamine`);
 
-#. Keelata teenuse isendi uuesti käivitamine (vt. allpool);
+#. Prevent the service instance from being restarted (see below);
 
-#. Rakendada uus tehniline seadistus, mis eemaldatavat isendit enam ei sisalda.
+#. Apply a new technical configuration that no longer contains the instance to be removed.
 
 .. important::
 
-   Teenuse isendi eemaldamisel kogumisteenuse koosseisust on oluline
-   eemaldatava isendi täielik elimineerimine.
+   When removing a service instance from the collector service, the complete
+   elimination of the removed instance is important.
 
-   Teenuste isendid kasutavad üksteisele usalduse tõestamiseks kindla
-   sertifitseerimiskeskuse (CA) poolt välja antud sertifikaate, kuid ei kasuta
-   sama meetodit eemaldatud isendi usalduse tühistamiseks (vastava protseduuri
-   rakendamise liigse keerukuse tõttu).
+   Service instances use certificates issued by a specific certificate
+   authority (CA) to prove trust to each other, but do not use the same
+   method to revoke trust of a removed instance (due to the excessive
+   complexity of implementing such a procedure).
 
-   Seetõttu on oluline veenduda, et kogumisteenusest eemaldatud teenuse isend
-   on enne uue seadistuse rakendamist täielikult süsteemist eemaldatud.
-   Vastasel juhul tekib oht, et eemaldatav isend jätkab tegutsemist ja häirib
-   kogumisteenuse tööd.
+   Therefore, it is important to ensure that a service instance removed from
+   the collector service is completely removed from the system before applying
+   the new configuration. Otherwise, there is a risk that the removed instance
+   continues to operate and disrupts the collector service.
 
-Teenuse isendi käivitamise keelamiseks teenuse eemaldamisel tuleb eemaldada
-vastava teenuse tarkvarapakk teenuse hostist:
+To prevent a service instance from being restarted during service removal,
+the corresponding service software package must be removed from the service
+host:
 
-* Nimekirjateenuse paki eemaldamine:
+* Removing the choices service package:
 
    .. code-block:: text
 
       $ apt purge ivxv-choices
 
-* Mobiil-ID tugiteenuse paki eemaldamine:
+* Removing the Mobile-ID support service package:
 
    .. code-block:: shell-session
 
       $ apt purge ivxv-mid
 
-* Smart-ID tugiteenuse paki eemaldamine:
+* Removing the Smart-ID support service package:
 
    .. code-block:: shell-session
 
       $ apt purge ivxv-smartid
 
-* Web eID tugiteenuse paki eemaldamine:
+* Removing the Web eID support service package:
 
    .. code-block:: shell-session
 
       $ apt purge ivxv-webeid
 
-* Session status tugiteenuse paki eemaldamine:
+* Removing the Session status support service package:
 
    .. code-block:: shell-session
 
       $ apt purge ivxv-sessionstatus
 
-* Vahendusteenuse paki eemaldamine:
+* Removing the proxy service package:
 
    .. code-block:: shell-session
 
       $ apt purge haproxy
 
-* Talletusteenuse paki eemaldamine:
+* Removing the storage service package:
 
    .. code-block:: shell-session
 
       $ apt purge etcd-server
 
-* Kontrolliteenuse paki eemaldamine:
+* Removing the verification service package:
 
    .. code-block:: shell-session
 
       $ apt purge ivxv-verification
 
-* Hääletamisteenuse paki eemaldamine:
+* Removing the voting service package:
 
    .. code-block:: shell-session
 
       $ apt purge ivxv-voting
 
 
-Kasutajate haldus
------------------
+User Management
+----------------
 
-Kasutajate algsed kirjeldused määratakse usaldusjuure seadistuses, hilisem
-haldus toimub vastavate korralduste abil.
+Initial user descriptions are defined in the trust root configuration; subsequent
+management is done using the corresponding commands.
 
-Kasutajate halduse korraldused rakendatakse käsuga :ref:`ivxv-cmd-load` (vaata
+User management commands are applied using the :ref:`ivxv-cmd-load` command (see
 :ref:`korralduste-laadimine-rakendamine`).
 
-Kasutajaõiguste määramise korralduse rakendamise näide:
+Example of applying a user permission command:
 
 .. include:: genereeritud-failid/kasutaja_lisamine.inc
 
 .. attention::
 
-   Juba lisatud kasutajate eemaldamine süsteemist pole võimalik. Kasutaja
-   eemaldamise asemel tuleb kasutaja rolliks määrata "õigusteta kasutaja".
+   Removing already added users from the system is not possible. Instead of
+   removing a user, the user's role should be set to "user without permissions".
 
 .. seealso::
 
-   * Kasutajate rollide kirjeldus ja volituste korralduste koostamise juhend
-     asuvad dokumendis ``IVXV seadistuste koostamise juhend``.
+   * Description of user roles and the guide for preparing authorization
+     commands are available in the document ``IVXV Configuration Guide``.
 
-   * Korralduste rakendamine on kirjeldatud lõigus
+   * Applying commands is described in section
      :ref:`korralduste-laadimine-rakendamine`.
 
 
-Tarkvarauuenduste rakendamine
------------------------------
+Applying Software Updates
+--------------------------
 
-Tarkvarauuendused jagunevad kogumisteenuse vaatepunktist kaheks:
-operatsioonisüsteemi uuendused ja kogumisteenuse uuendused.
+Software updates are divided into two categories from the collector service
+perspective: operating system updates and collector service updates.
 
-Operatsioonisüsteemi tarkvarapakkide uute versioonide paigaldamine pole
-kogumisteenuse dokumentatsioonis käsitletud. Süsteemiülem peab tagama
-ajakohaste turvauuenduste rakendamise kogumisteenuses kasutatavate
-operatsioonisüsteemidele;
+Installing new versions of operating system packages is not covered in the
+collector service documentation. The system administrator must ensure that
+up-to-date security updates are applied to the operating systems used by the
+collector service;
 
-Kogumisteenuse tarkvarapakkide uute versioonide paigaldamine toimub järgnevalt:
+Installing new versions of collector service software packages is done as follows:
 
-#. Uuenenud tarkvarapakid kopeeritakse haldusteenuse kataloogi
-   :file:`/etc/ivxv/debs` (soovitavalt juurkasutaja õigustes);
+#. Updated software packages are copied to the management service directory
+   :file:`/etc/ivxv/debs` (preferably with root privileges);
 
-#. Haldusteenuse tarkvara uuendatakse juurkasutaja õigustes käsuga
-   :command:`dpkg -i /etc/ivxv/debs/ivxv-common_1.0_all.deb
-   /etv/ivxv/debs/ivxv-admin_1.0_amd64.deb` (tegelik versiooninumber erineb
-   käesolevas näites kasutatud versioonist);
+#. The management service software is updated with root privileges using the
+   command :command:`dpkg -i /etc/ivxv/debs/ivxv-common_1.0_all.deb
+   /etv/ivxv/debs/ivxv-admin_1.0_amd64.deb` (the actual version number
+   differs from the version used in this example);
 
-#. Hallatavate teenuste tarkvara uuendamine toimub haldusteenuse kasutaja
-   ``ivxv-admin`` õigustes käsuga :ref:`ivxv-update-packages`.
-
-
-Varundamine
------------
-
-Varundamine hõlmab kolme liiki andmeid:
-
-#. Haldusteenuse seadistused;
-
-#. Kogumisteenuse e-valimiskast;
-
-#. Kogutud logid.
-
-Varukoopia loomine toimub haldusteenuse masinas utiliidi
-:ref:`ivxv-backup` abil, varukoopiad talletatakse varundusserveri
-kataloogis :file:`/var/backups/ivxv`.
+#. Updating managed service software is done with the management service
+   user ``ivxv-admin`` privileges using the command :ref:`ivxv-update-packages`.
 
 
-Haldusteenus seadistuste varundamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Backup
+------
 
-Haldusteenuse seadistustest varundatakse järgmised andmed:
+Backup covers three types of data:
 
-#. :file:`etc/` - haldusteenusesse laaditud tarkvarapakid ja hetkel kehtivad
-   seadistusfailid;
+#. Management service settings;
 
-#. :file:`admin-ui-permissions/` - haldusteenuse kasutajaliidese pääsuõigused;
+#. Collector service e-ballot box;
 
-#. :file:`commands/` - kõik haldusteenusese laaditud korraldusfailid.
+#. Collected logs.
 
-Haldusteenuse varundamist viiakse läbi haldusteenuses, varundatavad andmed
-kopeeritakse varundusserverisse.
+Backup creation is performed on the management service machine using the
+:ref:`ivxv-backup` utility; backup copies are stored in the backup server
+directory :file:`/var/backups/ivxv`.
+
+
+Backing Up Management Service Settings
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following management service settings data is backed up:
+
+#. :file:`etc/` — software packages loaded into the management service and
+   currently valid configuration files;
+
+#. :file:`admin-ui-permissions/` — management service user interface access
+   permissions;
+
+#. :file:`commands/` — all command files loaded into the management service.
+
+Management service backup is performed in the management service; the data to
+be backed up is copied to the backup server.
 
 .. hint::
 
-   Haldusteenuse andmete tõhusamaks varundamiseks ja taasteks on soovitav
-   kasutada haldusteenuse virtuaalmasina dünaamilist tõmmist (*snapshot dump*).
+   For more efficient backup and recovery of management service data, it is
+   recommended to use a dynamic snapshot dump of the management service virtual
+   machine.
 
-Haldusteenuse seadistuste varukoopiast taastamise protseduuri pole
-kogumisteenuses ette nähtud.
+No procedure for restoring management service settings from a backup is provided
+in the collector service.
 
-Haldusteenuse seadistusete varukoopia loomise näide::
+Example of creating a management service settings backup::
 
    $ ivxv-backup management-conf
 
 
-Kogumisteenuse e-valimiskasti varundamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Backing Up the Collector Service E-Ballot Box
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Kogumisteenuse e-valimiskasti varundamine toimub talletusteenuses kogutud häältest
-e-valimiskasti loomisega ja selle kopeerimisega varundusteenusesse. Varundatud andmete
-taastamine toimub hääletuse järel e-valimiskasti väljastamise käigus, kus
-talletusteenuses olevatest häältest ja varukoopiatesse salvestatud häältest
-pannakse kokku töötlemisele minev e-valimiskast.
+Backing up the collector service e-ballot box involves creating an e-ballot box
+from the votes collected in the storage service and copying it to the backup
+service. Restoration of backed up data occurs during the e-ballot box export
+after voting, where the e-ballot box to be processed is assembled from the
+votes in the storage service and the votes saved in backup copies.
 
-E-valimiskasti varundamist viib läbi haldusteenus. Varukoopia loomine toimub
-talletusteenuses ja see kopeeritakse varundusserverisse.
+The e-ballot box backup is performed by the management service. The backup copy
+is created in the storage service and copied to the backup server.
 
-Varukoopia on sama vorminguga, nagu kogumisteenuse poolt väljastatav e-valimiskast
-(ZIP64).
+The backup copy has the same format as the e-ballot box output by the collector
+service (ZIP64).
 
-Varundamise andmemahtu saab arvutada järgmise meetodiga:
-``häälte arv * 12,1 kB * pakkimistegur``.
+The backup data volume can be calculated using the following method:
+``number of votes * 12.1 kB * compression factor``.
 
-Näiteks saja tuhande hääle suurus, kus pakkimistegur on 0,4 = 472 MB.
+For example, the size of one hundred thousand votes, where the compression
+factor is 0.4 = 472 MB.
 
-E-valimiskasti varukoopia loomise näide::
+Example of creating an e-ballot box backup::
 
    $ ivxv-backup ballot-box
 
 
-Logide varundamine
-^^^^^^^^^^^^^^^^^^
+Backing Up Logs
+^^^^^^^^^^^^^^^^
 
-Logikogumisteenustes kogutud logifailide varundamine toimub logifailide
-:file:`/var/log/ivxv/ivxv-YYYY-MM-DD-HH.log` kopeerimisega varundusserverisse. Logide
-varundamist viib läbi haldusteenus.
+Backing up log files collected by the log collection services involves copying
+log files :file:`/var/log/ivxv/ivxv-YYYY-MM-DD-HH.log` to the backup server.
+Log backup is performed by the management service.
 
-Logide varukoopiast taastamise protseduuri pole kogumisteenuses ette nähtud.
+No procedure for restoring logs from a backup is provided in the collector
+service.
 
-Logikogumisteenusesse kogutud logist varukoopia loomise näide::
+Example of creating a backup of logs collected by the log collection service::
 
    $ ivxv-backup log
 
 
 .. _konsolideeritud-e-valimiskasti-koostamine:
 
-Konsolideeritud e-valimiskasti koostamine
+Composing the Consolidated E-Ballot Box
 -----------------------------------------
 
-Konsolideeritud e-valimiskast koostatakse talletusteenusesse kogutud häältest ja
-varundusteenusesse varundatud e-valimiskastidest. Konsolideerimise protsess koosneb
-järgmistest sammudest:
+The consolidated e-ballot box is composed from votes collected in the storage
+service and e-ballot boxes backed up to the backup service. The consolidation
+process consists of the following steps:
 
-#. Talletusteenusesse kogutud hääled varundatakse varundusteenusesse. Selle
-   tulemusena on varundusteenusesse salvestatud kõik kogutud e-valimiskastid;
+#. Votes collected in the storage service are backed up to the backup service.
+   As a result, all collected e-ballot boxes are stored in the backup service;
 
-#. Varundusteenuses koostatakse konsolideeritud e-valimiskast;
+#. The consolidated e-ballot box is composed in the backup service;
 
-#. Konsolideeritud e-valimiskast kopeeritakse haldusteenusesse.
+#. The consolidated e-ballot box is copied to the management service.
 
-Konsolideeritud e-valimiskasti koostamise näide:
+Example of composing the consolidated e-ballot box:
 
 .. include:: genereeritud-failid/e-valimiskasti_koostamine.inc
 
 
-Töötlemisrakenduse sisendi aluse koostamine
--------------------------------------------
+Composing the Processing Application Input Base
+-------------------------------------------------
 
-Töötlemisrakenduse sisendi alus on häälte töötlemiseks vajalike sisendfailide
-komplekt, mis genereeritakse kogumisteenuses salvestatud andmete põhjal.
-Komplekti koosseis on järgmine:
+The processing application input base is a set of input files required for
+vote processing, generated from data stored in the collector service. The
+set composition is as follows:
 
-#. Ringkondade nimekiri;
+#. District list;
 
-#. Valijate nimekirjad;
+#. Voter lists;
 
-#. E-valimiskast kogutud häältega;
+#. E-ballot box with collected votes;
 
-#. Häälte registreerimispäringute valideerimisandmed;
+#. Registration request validation data;
 
-#. Töötlemisrakenduse seadistused.
+#. Processing application settings.
 
-Väljund on ZIP-konteiner, mis sisaldab järgmisi faile:
+The output is a ZIP container containing the following files:
 
-#. Ringkondade nimekiri digitaalselt signeerituna
+#. Digitally signed district list
    :file:`<election-id>.districts.json.asice`;
 
-#. Valijate nimekirjade signeerimisvõtme avalik võti
+#. Voter list signing key public key
    :file:`voterfile.pub.key`;
 
-#. Valijate nimekirjad
+#. Voter lists
    :file:`<changeset_no>.<election-id>.voters.utf`;
 
-#. Valijate nimekirjade signatuurid
+#. Voter list signatures
    :file:`<changeset_no>.<election-id>.voters.sig`;
 
-#. Valijate nimekirja vahelejätmise korraldused
+#. Voter list skip commands
    :file:`<changeset_no>.<election-id>.voters-skip.yaml.asice`;
 
-#. Registreerimispäringute verifitseerimise avalik võti
+#. Registration request verification public key
    :file:`ts.key`;
 
-#. Töötlemisrakenduse seadistuste mall e-valimiskasti verifitseerimiseks
+#. Processing application settings template for e-ballot box verification
    :file:`<election-id>.processor.yaml`.
 
-Töötlemisrakenduse sisendi alus koostatakse utiliidi
-:ref:`ivxv-generate-processor-input` abil. Näide:
+The processing application input base is composed using the
+:ref:`ivxv-generate-processor-input` utility. Example:
 
 .. include:: genereeritud-failid/töötlemisrakenduse_sisendi_koostamine.inc
 
-Hääletamise statistika eksportimine
+Exporting Voting Statistics
+----------------------------
+
+Voting statistics are compiled in the voting service and consist of two parts:
+general statistics (total number of voters) and detailed statistics. General
+statistics are copied to the management service and exported to the Election
+Information System at 15-minute intervals. Detailed statistics are compiled
+and exported to the Election Information System manually.
+
+Importing and exporting voting statistics is performed on the management service
+machine using the :ref:`ivxv-voterstats` utility. Automatic importing and
+exporting of general statistics is implemented using the cron service and
+described in the file :file:`/etc/cron.d/ivxv-admin`.
+
+
+Composing Voting Session Extracts
 -----------------------------------
 
-Häälestamise statistika koostatakse hääletusteenuses ja see koosneb kahest
-osast: üldstatistika (hääletajate koguarv) ja detailstatistika. Üldstatistika
-kopeeritakse haldusteenusesse ja eksporditakse Valimiste Infosüsteemi 15
-minutilise intervalliga. Detailstatistika koostatakse ja eksporditakse
-Valimiste Infosüsteemi käsitsi.
+The voting and vote verification session extract is in CSV format and is
+compiled in the log monitoring service.
 
-Häälestamise statistika importimine ja eksportimine toimub haldusteenuse
-masinas utiliidi :ref:`ivxv-voterstats` abil. Üldstatistika importimise ja
-eksportimise automaatika on teostatud cron-teenuse abil ja kirjeldatud failis
-:file:`/etc/cron.d/ivxv-admin`.
+The extract can be compiled in anonymized form, where users' personal
+identification codes and IP addresses are replaced with anonymous values.
 
-
-Hääletamise seansside väljavõtte koostamine
--------------------------------------------
-
-Hääletamise ja hääle kontrollimise seansside väljavõte on CSV-vormingus ja see
-koostatakse logiseire teenuses.
-
-Väljavõtet on võimalik koostada anonüümistatud kujul, kus kasutajate
-isikukoodid ja IP-aadressid on asendatud anonüümsete väärtustega.
-
-Võimalik on valida, kas väljastada kõik hääletamise seansid või ainult hääle
-kontrollimisega seansid.
+It is possible to choose whether to output all voting sessions or only sessions
+with vote verification.
 
 :ref:`ivxv-voting-sessions`

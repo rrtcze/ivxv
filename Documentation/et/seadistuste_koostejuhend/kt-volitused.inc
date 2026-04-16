@@ -1,57 +1,58 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
 .. _kt-management:
 
-Kogumisteenuse volituste kirjeldamine
--------------------------------------
+Collector service authorization description
+-------------------------------------------
 
-Kasutajatele volituste määramine käib süsteemis kirjeldatud rollide kaudu.
-Igale rollile on määratud komplekt õigusi ja kasutajal on kõik volitused, mis
-talle seotud rollide kaudu on määratud.
+Assigning authorizations to users is done through roles defined in the system.
+Each role has an assigned set of permissions and the user has all authorizations
+that have been assigned to them through associated roles.
 
-Volituste määramise korraldus määrab ühele kasutajale tema rollid süsteemis.
+The authorization assignment order assigns a user their roles in the system.
 
-Volitused koostatakse JSON-vormingus failina, millega määratakse:
+Authorizations are prepared as a JSON format file, which specifies:
 
-#. Korralduse sisu (``action=user-permissions``);
+#. Order content (``action=user-permissions``);
 
-#. Volitatud kasutaja *Common Name* väli tema ID-kaardilt (väli ``cn``);
+#. Authorized user's *Common Name* field from their ID card (field ``cn``);
 
-#. Kasutaja rollide nimekiri komadega eraldatud nimekirjana (väli ``roles``).
+#. User roles list as a comma-separated list (field ``roles``).
 
-Faili vorming:
+File format:
 
 .. code-block:: JavaScript
 
    {
        "action": "user-permissions",
-       "cn": "<kasutaja-CN">,
-       "roles": "roll1[,roll2]"
+       "cn": "<user-CN">,
+       "roles": "role1[,role2]"
    }
 
 
 .. _rollid:
 
-Rollid
-******
+Roles
+*****
 
-Kogumisteenuses on järgnevad rollid:
+The collector service has the following roles:
 
-#. **Kogumisteenuse haldur** (``admin``) on ette nähtud kogumisteenuse
-   tehniliseks haldamiseks;
+#. **Collector service administrator** (``admin``) is intended for technical
+   management of the collector service;
 
-#. **Valimiste haldur** (``election-conf-manager``) on ette nähtud valimiste
-   seadistuste kehtestamiseks;
+#. **Election manager** (``election-conf-manager``) is intended for
+   establishing election settings;
 
-#. **Vaataja** (``viewer``) on ette nähtud haldusteenuse kaudu väljastatavate
-   andmete vaatamiseks;
+#. **Viewer** (``viewer``) is intended for viewing data provided through the
+   management service;
 
-#. **Õigusteta kasutaja** (``none``). See roll on ette nähtud kasutajakonto
-   kirje hoidmiseks olukorras, kus kasutajale pole ühtegi teist rolli määratud
-   (näiteks pärast lisamist või pärast kõigist teistest rollidest eemaldamist).
+#. **User without permissions** (``none``). This role is intended for
+   maintaining a user account record in a situation where the user has not been
+   assigned any other role (for example after being added or after being
+   removed from all other roles).
 
 .. list-table::
-   Rollide ja volituste maatriks
+   Roles and authorizations matrix
    :header-rows: 1
 
    *  -
@@ -60,48 +61,48 @@ Kogumisteenuses on järgnevad rollid:
       - ``viewer``
       - ``none``
 
-   *  - Üldseisundi ja statistika vaatamine
+   *  - Viewing general status and statistics
       - ✓
       - ✓
       - ✓
       - `-`
 
-   *  - Valimiste seadistuste rakendamine
+   *  - Applying election settings
       - ✓
       - ✓
       - `-`
       - `-`
 
-   *  - E-valimiskasti allalaadimine
+   *  - Downloading e-ballot box
       - ✓
       - ✓
       - `-`
       - `-`
 
-   *  - Kasutajate haldus
+   *  - User management
       - ✓
       - `-`
       - `-`
       - `-`
 
-   *  - Tehnilise seadistuse rakendamine
+   *  - Applying technical configuration
       - ✓
       - `-`
       - `-`
       - `-`
 
-   *  - Logide vaatamine
+   *  - Viewing logs
       - ✓
       - `-`
       - `-`
       - `-`
 
 
-Volituste reeglid
-*****************
+Authorization rules
+*******************
 
-* Kasutaja võib olla mitmes rollis korraga;
+* A user can have multiple roles simultaneously;
 
-* Roll annab kasutajale rolliga seotud õigused, ükski roll õigusi ära ei võta.
+* A role grants the user permissions associated with the role; no role revokes permissions.
 
 .. vim:syntax=rst:

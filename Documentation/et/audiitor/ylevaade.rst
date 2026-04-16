@@ -1,126 +1,126 @@
-Miksimistõendi ülevaade
-=======================
+Mixing Proof Overview
+=====================
 
-Ilma juhuslikkust kasutamata oleks iga krüpteerimise algoritm deterministlik,
-st. valija valiku krüpteerimisel oleks tulemuseks alati sama väljund. See
-lubaks ründajal tuvastada esialgse valiku, kui ta krüpteeriks kõikvõimalikud
-valikud ja võrdleks seda nimekirja nähtud krüpteeritud valikuga.  Seega,
-krüpteerimine peab kasutama juhuslikkust.
+Without using randomness, every encryption algorithm would be deterministic,
+i.e., encrypting a voter's choice would always result in the same output. This
+would allow an attacker to identify the original choice by encrypting all
+possible choices and comparing this list with the observed encrypted choice.
+Therefore, encryption must use randomness.
 
-Juhuslikkuse kasutamine teeb krüptogrammid unikaalseks - isegi kui kaks korda
-on krüpteeritud sama valik, siis krüptogrammid on erinevad. See tähendab, et
-kui ründaja on võimeline mingil ajahetkel seostama krüptogrammi ja selle
-krüpteerinud isikut, siis on tal võimalik hiljem ainult krüptogrammi nähes
-tuletada seda andnud isik. Kuna sobivate parameetrite kasutamisel on ElGamali
-avaliku võtme krüptosüsteem pikaajaliselt turvaline, siis see ei ole otseselt
-probleemiks.
+The use of randomness makes cryptograms unique — even if the same choice is
+encrypted twice, the cryptograms are different. This means that if an attacker
+is able to associate a cryptogram with the person who encrypted it at some
+point in time, they can later identify the person just by seeing the
+cryptogram. Since the ElGamal public key cryptosystem is long-term secure when
+using appropriate parameters, this is not directly a problem.
 
-Probleem tekib siis, kui on tarvis tõestada, et krüptogramm on korrektselt
-dekrüpteeritud. Kui kasutatav valikute agregeerimise algoritm töötab avateksti
-kujul sõnede peal (nagu see IVXVs on), siis iga krüptogrammi kohta tekib üks
-dekrüpteeritud avatekst. Korrektse dekrüpteerimise tõestus peab nii
-krüptogrammi kui dekrüpteeritud avateksti siduma. Seega on võimalik ründajal
-tekitada seos isiku ja krüptogrammi, ning krüptogrammi ja vastava avateksti
-vahel, st. ta saab teada, mis valiku isik tegi.
+The problem arises when it is necessary to prove that a cryptogram has been
+correctly decrypted. If the choice aggregation algorithm operates on plaintext
+strings (as it does in IVXV), then each cryptogram produces one decrypted
+plaintext. A proof of correct decryption must bind both the cryptogram and the
+decrypted plaintext. Therefore, it is possible for an attacker to establish a
+link between a person and a cryptogram, and between a cryptogram and its
+corresponding plaintext, i.e., they can learn what choice the person made.
 
-Et seda seost eemaldada, kasutatakse IVXVs krüptogrammide segamist (miksnet).
-Miksnet teeb korraga kahte operatsiooni -- järjestab sisendkrüptogrammid ümber
-(permuteerib) ja uuendab krüptogrammis olevad juhuslikkust (rerandomiseerib).
-See tähendab, et krüptogrammid, mis lähevad miksneti sisse on väliselt täiesti
-sõltumatud krüptogrammidest, mis tulevad miksnetist välja. Kuna välise
-sõltumatuse tõttu võiks teoreetiliselt miksnet krüptogramme asendada, siis on
-tarvis lisada miksimistõend, mis tõestab krüptograafiliselt, et operatsioonid
-on tehtud korrektselt ja ühtegi täiendavat operatsiooni pole tehtud.
-Kontrollides miksimistõendit, on võimalik garanteerida, et miksnet on töötanud
-korrektselt.
+To remove this link, IVXV uses cryptogram shuffling (mixnet). A mixnet
+performs two operations simultaneously — it reorders the input cryptograms
+(permutes) and updates the randomness in the cryptograms (re-randomizes). This
+means that the cryptograms entering the mixnet are externally completely
+independent from the cryptograms coming out of the mixnet. Since due to
+external independence the mixnet could theoretically replace cryptograms, it is
+necessary to add a mixing proof that cryptographically proves that the
+operations were performed correctly and no additional operations were
+performed. By verifying the mixing proof, it is possible to guarantee that the
+mixnet has operated correctly.
 
-Väikeste parameetritega kirjutatud näide
-----------------------------------------
+Example Written with Small Parameters
+--------------------------------------
 
-IVXV kasutab valikute krüpteerimiseks ElGamali avaliku võtme krüptosüsteemi.
-ElGamali krüptosüsteemi korral on fikseeritud algebralise rühma parameetrid
-koos generaatoriga :math:`g`. Salajane võti :math:`x` valitakse vahemikus
-:math:`[0, q-1]` ühtlase jaotusega, kus :math:`q` on rühma multiplikatiivse
-alamrühma järk. Salajasele võtmele avalik võti on defineeritud:
+IVXV uses the ElGamal public key cryptosystem for encrypting choices. In the
+ElGamal cryptosystem, the parameters of a fixed algebraic group are defined
+together with a generator :math:`g`. The secret key :math:`x` is chosen
+uniformly from the range :math:`[0, q-1]`, where :math:`q` is the order of the
+multiplicative subgroup. The public key corresponding to the secret key is
+defined as:
 
 .. math::
    pk = (g, g^x) = (g, y).
 
-Krüpteerimaks sõne kujul valikut `V`, tuleb see kõigepealt kodeerida rühma
-elemendiks
+To encrypt a string-form choice `V`, it must first be encoded as a group
+element
 
 .. math::
    m = encode(V)
 
-ja seejärel arvutatakse krüptogramm kasutades ühekordset juhuarvu
+and then the cryptogram is computed using a one-time random number
 :math:`0<=r<q`
 
 .. math::
    c = (c_1, c_2) = (m y^r, g^r).
 
-Sellisel juhul piisab rerandomiseerimiseks teise ühekordse juhuarvuga
-:math:`t` arvutada
+In this case, re-randomization is sufficient by computing with a second
+one-time random number :math:`t`
 
 .. math::
    c' = c * (y^t, g^t) = (m y^{r + t}, g^{r + t}).
 
-Paneme veel tähele, et eelmises võrrandis :math:`(y^t, g^t)` on krüpteering
-elemendist :math:`1`.
+Note also that in the previous equation :math:`(y^t, g^t)` is an encryption
+of the element :math:`1`.
 
-Dekrüpteerimiseks arvutatakse
+For decryption, compute
 
 .. math::
    d = c_1 / c_2^x,
 
-ja dekoreeritakse :math:`S = decode(d)`.
+and decode :math:`S = decode(d)`.
 
-Juhul kui krüptogramm on korrektselt konstrueeritud ja dekrüpteerimine on
-korrektselt läbi viidud, siis :math:`d=m`, kuna
+If the cryptogram is correctly constructed and decryption is correctly
+performed, then :math:`d=m`, since
 
 .. math::
    d = c_1 / c_2^x = (m y^r) / (g^{rx}) = (m y^r) / (y^r) = m.
 
-Näiteks, oletame et rühm on täisarvud mooduli :math:`p = 227` järgi. Sellisel
-juhul genereerib generaator :math:`g = 4` alamrühma järguga :math:`q = 113`.
-Valime suvalise salajase võtme :math:`x = 100` ja sellele vastav avalik võti on
-:math:`pk = (g, g^x) = (4, 21)`.
+For example, assume the group is integers modulo :math:`p = 227`. In this
+case, the generator :math:`g = 4` generates a subgroup of order :math:`q = 113`.
+We choose an arbitrary secret key :math:`x = 100` and the corresponding public
+key is :math:`pk = (g, g^x) = (4, 21)`.
 
-Oletame, et on neli erinevat valikut ning nende kodeeringud alarühma on
-järgnevad:
+Assume there are four different choices and their encodings into the subgroup
+are as follows:
 
-===== =========
-valik kodeering
-===== =========
-orav     16
-jänes    64
-hunt     29
-kits    116
-===== =========
+======  ========
+choice  encoding
+======  ========
+orav       16
+jänes      64
+hunt       29
+kits      116
+======  ========
 
-Järgnevate valikute ja ühekordsete juhuarvude korral on krüptogrammid
-järgnevad:
+For the following choices and one-time random numbers, the cryptograms are as
+follows:
 
-===== ========= ======= =============
-valik kodeering juhuarv  krüptogramm
-===== ========= ======= =============
-kits     116       71    (62, 205)
-hunt     29        80    (161, 221)
-kits     116       64    (7, 147)
-kits     116       47    (139, 36)
-orav     16        76    (26, 172)
-hunt     29        86    (30, 212)
-kits     116       88    (155, 175)
-orav     16        85    (87, 212)
-orav     16        32    (132, 104)
-jänes    64        22    (113, 171)
-===== ========= ======= =============
+======  ========  =======  =============
+choice  encoding  random    cryptogram
+======  ========  =======  =============
+kits       116       71    (62, 205)
+hunt       29        80    (161, 221)
+kits       116       64    (7, 147)
+kits       116       47    (139, 36)
+orav       16        76    (26, 172)
+hunt       29        86    (30, 212)
+kits       116       88    (155, 175)
+orav       16        85    (87, 212)
+orav       16        32    (132, 104)
+jänes      64        22    (113, 171)
+======  ========  =======  =============
 
 
-Olgu miksneti kasutatav permutatsioon :math:`\pi` defineeritud järgnevalt:
+Let the permutation :math:`\pi` used by the mixnet be defined as follows:
 
-====== =======
-indeks väärtus
-====== =======
+======  =====
+index   value
+======  =====
    1      5
    2      8
    3      3
@@ -131,13 +131,13 @@ indeks väärtus
    8     10
    9      4
   10      1
-====== =======
+======  =====
 
-Olgu miksneti rerandomiseerimiseks kasutatavad juhuarvud:
+Let the random numbers used for re-randomization by the mixnet be:
 
-====== ================
-indeks täiendav juhuarv
-====== ================
+======  ======================
+index   additional random number
+======  ======================
    1         43
    2        107
    3          6
@@ -148,12 +148,12 @@ indeks täiendav juhuarv
    8        112
    9         55
   10        101
-====== ================
+======  ======================
 
-Sellisel juhul pärast ümberjärjestamist on krüptogrammid järgnevas järjekorras:
+In this case, after reordering, the cryptograms are in the following order:
 
 ==========   ==========  =============
- esialgne    uus indeks  permuteeritud
+ original    new index    permuted
 ==========   ==========  =============
 (62, 205)       5         (113, 171)
 (161, 221)      8         (30, 212)
@@ -167,11 +167,11 @@ Sellisel juhul pärast ümberjärjestamist on krüptogrammid järgnevas järjeko
 (113, 171)      1         (87, 212)
 ==========   ==========  =============
 
-Pärast rerandomiseerimist on krüptogrammid järgnevad:
+After re-randomization, the cryptograms are as follows:
 
-==========  ================  ==================  =================
- esialgne   täiendav juhuarv  korrutatav väärtus  rerandomiseeritud
-==========  ================  ==================  =================
+==========  ================  ==================  ===============
+ original   additional random  multiplied value    re-randomized
+==========  ================  ==================  ===============
 (113, 171)         43              (10, 103)         (222, 134)
 (30, 212)         107              (28, 159)         (159, 112)
 (7, 147)            6              (73, 10)          (57, 108)
@@ -182,14 +182,13 @@ Pärast rerandomiseerimist on krüptogrammid järgnevad:
 (161, 221)        113              (173, 57)         (159, 112)
 (155, 175)         55              (172, 85)         (101, 120)
 (87, 212)         101              (103, 84)         (108, 102)
-==========  ================  ==================  =================
+==========  ================  ==================  ===============
 
-Kontrollime, kuidas permuteeritud ja rerandomiseeritud krüptogrammid
-dekrüpteeruvad:
+Let us verify how the permuted and re-randomized cryptograms decrypt:
 
-===========  ==============  ============
-krüptogramm  dekrüpteeritud  dekodeeritud
-===========  ==============  ============
+===========  ==============  =========
+cryptogram   decrypted       decoded
+===========  ==============  =========
 (222, 134)        64            jänes
 (159, 112)        29            hunt
 (57, 108)         116           kits
@@ -200,4 +199,4 @@ krüptogramm  dekrüpteeritud  dekodeeritud
 (159, 112)        29            hunt
 (101, 120)        116           kits
 (108, 102)        16            orav
-===========  ==============  ============
+===========  ==============  =========

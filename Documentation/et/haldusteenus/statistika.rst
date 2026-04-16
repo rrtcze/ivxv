@@ -1,49 +1,49 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Statistika jälgimine
-====================
+Statistics monitoring
+=====================
 
-Statistika jälgimise leht avaneb menüüvalikust ``Statistika``.
-Hääletamise detailstatistika allalaadimine on kirjeldatud lõigus
+The statistics monitoring page opens from the menu option ``Statistika``.
+Downloading detailed voting statistics is described in section
 :ref:`allalaadimised`.
 
 
-Statistika genereerimine
-------------------------
+Statistics generation
+----------------------
 
-Statistika vaates kuvatavad andmed genereeritakse ja uuendatakse korrapäraselt
-logimonitoris ning laaditakse automaatselt haldusliidesesse.
+The data displayed in the statistics view is generated and updated regularly
+by the log monitor and loaded automatically into the management interface.
 
-Haldusliideses kuvatav statistika kajastab kogumisteenuse seisundit mõningase
-viivitusega (harilikult kuni 10 minutit).
+The statistics displayed in the management interface reflect the collector service
+status with some delay (usually up to 10 minutes).
 
 
-Statistika sisu
----------------
+Statistics content
+-------------------
 
-Kuvatavad andmed on järgmised:
+The displayed data is as follows:
 
-#. Kogutud häälte arv;
+#. Number of collected votes;
 
-#. Hääletajate arv;
+#. Number of voters;
 
-#. Kontrollitud häälte arv;
+#. Number of verified votes;
 
-#. Hääle kontrollijate arv;
+#. Number of vote verifiers;
 
-#. Hääletajate jaotumine:
+#. Distribution of voters:
 
-   #. Sugude kaupa;
+   #. By gender;
 
-   #. Vanusegruppide kaupa;
+   #. By age group;
 
-   #. Autentimisvahendite kaupa;
+   #. By authentication method;
 
-   #. Operatsioonisüsteemide kaupa;
+   #. By operating system;
 
-   #. Riikide kaupa (vastavalt hääletaja IP-aadressile).
+   #. By country (according to the voter's IP address).
 
-#. Korduvhääletamiste statistika.
+#. Re-voting statistics.
 
-Statistikat on võimalik filtreerida ringkondade ja jaoskondade kaupa (juhul,
-kui ringkondade nimekiri on laaditud haldusteenusesse).
+Statistics can be filtered by districts and polling divisions (if the districts
+list has been loaded into the management service).

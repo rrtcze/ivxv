@@ -1,1347 +1,1347 @@
 ..  IVXV dokumentatsiooni üldsisukord
 
-Tarned
-======
+Deliveries
+==========
 
-Muudatused tarne 1.10.4 koosseisus, erinevused võrreldes tarnega 1.10.3
+Changes in delivery 1.10.4 composition, differences compared to delivery 1.10.3
 --------------------------------------------------------------------------------
 
-Kogumisteenus
-~~~~~~~~~~~~~
+Collection Service
+~~~~~~~~~~~~~~~~~~
 
-Üldised muutused
+General changes
 
-* Valijate nimekirjade muudatuste allalaadimise täpsustused
+* Refinements to voter list change downloads
 
-Registreerimisteenus
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Muudatused puuduvad
+* No changes
 
 iOS
 
-* Muudatused puuduvad
+* No changes
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Muudatused puuduvad
+* No changes
 
-Võtmerakendus
+Key Application
 
-* Muudatused puuduvad
+* No changes
 
-Töötlemisrakendus
+Processing Application
 
-* Muudatused puuduvad
+* No changes
 
-Auditirakendus
+Audit Application
 
-* Muudatused puuduvad
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Numeratsiooni läbivaatus
-* Võtmerakenduse seadistuste täpsustamine
-* Smart-ID protokolli näidete täpsustamine
-
-Logimonitor
-~~~~~~~~~~~
-
-* Muudatused puuduvad
-
-
-Muudatused tarne 1.10.3 koosseisus, erinevused võrreldes tarnega 1.10.2
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Numbering review
+* Key application configuration refinements
+* Smart-ID protocol example refinements
 
-* Muudatused puuduvad
+Log Monitor
+~~~~~~~~~~~
 
-Registreerimisteenus
+* No changes
+
+
+Changes in delivery 1.10.3 composition, differences compared to delivery 1.10.2
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* No changes
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Muudatused puuduvad
+* No changes
 
 iOS
 
-* Muudatused puuduvad
+* No changes
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Muudatused puuduvad
+* No changes
 
-Võtmerakendus
+Key Application
 
-* Muudatused puuduvad
+* No changes
 
-Töötlemisrakendus
+Processing Application
 
-* Muudatused puuduvad
+* No changes
 
-Auditirakendus
+Audit Application
 
-* Muudatused puuduvad
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Tõlgete läbivaatus
-* Õigekirja läbivaatus
-* Tarne 1.10.2 sisu dokumenteerimine
-
-Logimonitor
-~~~~~~~~~~~
-
-* Muudatused puuduvad
-
-
-Muudatused tarne 1.10.2 koosseisus, erinevused võrreldes tarnega 1.10.1
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Translation review
+* Spelling review
+* Documenting delivery 1.10.2 content
 
-* ZIP/BDOC failide käsitluse parendamine
-* Sõltuvuste uuendamine, JavaScript
-* eID vahendite testimine
-* Mälulekete parandamine
-* Smart-ID voogude uuendamine vastavalt protokollile
-* Nimekirjade laadimise intervalli ja strateegia täpsustamine
-* Arendus- ja testkeskkonna parendused
-* Pisiparandused
+Log Monitor
+~~~~~~~~~~~
 
-Registreerimisteenus
+* No changes
+
+
+Changes in delivery 1.10.2 composition, differences compared to delivery 1.10.1
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Improvement of ZIP/BDOC file handling
+* Dependency updates, JavaScript
+* eID tool testing
+* Memory leak fixes
+* Smart-ID flow updates according to protocol
+* List loading interval and strategy refinements
+* Development and test environment improvements
+* Minor fixes
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Rakenduse kolimine Riigikogu Kantselei poodi
-* TargetSDK uuendamine
-* Erinevad veaparandused kasutajaliideses
-* Täiendav obfuskeerimine
-* Veateadete täiendamine
+* Application migration to the Chancellery of the Riigikogu store
+* TargetSDK update
+* Various bug fixes in the user interface
+* Additional obfuscation
+* Error message improvements
 
 iOS
 
-* Rakenduse kolimine Riigikogu Kantselei poodi
-* Erinevad veaparandused kasutajaliideses
-* Täpsustused rakenduse varundamisele
-* Rakenduse elutsükli olekumasina täpsustused
-* Veateadete täiendamine
+* Application migration to the Chancellery of the Riigikogu store
+* Various bug fixes in the user interface
+* Refinements to application backup
+* Application lifecycle state machine refinements
+* Error message improvements
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* ZIP/BDOC failide käsitluse parendamine
+* Improvement of ZIP/BDOC file handling
 
-Võtmerakendus
+Key Application
 
-* Pisiparandused
+* Minor fixes
 
-Töötlemisrakendus
+Processing Application
 
-* Pisiparandused
+* Minor fixes
 
-Auditirakendus
+Audit Application
 
-* Pisiparandused
+* Minor fixes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Sõltuvuste uuendamine, OpenSSL, PCRE
-* Kasutajaliidese teegi FLTK uuendamine
-* Smart-ID voo uuendamine
-* Testimine uusima ID-kaardiga
-* Kompileerimiskeskkonna täpsustused
+* Dependency updates, OpenSSL, PCRE
+* UI library FLTK update
+* Smart-ID flow update
+* Testing with the latest ID card
+* Compilation environment refinements
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Tõlgete läbivaatus
-* Õigekirja läbivaatus
-* Tarne 1.10.2 sisu dokumenteerimine
-
-Logimonitor
-~~~~~~~~~~~
-
-* Sõltuvuste uuendamine, Python, JavaScript
-* Veebiliidese täiendused
-* Päringuvahendaja ``pgbouncer`` kasutuselevõtt
-* Veebiserveri konfiguratsiooni läbivaatus turvatesti tulemustest lähtudes
-
-
-Muudatused tarne 1.10.1 koosseisus, erinevused võrreldes tarnega 1.10.0
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Translation review
+* Spelling review
+* Documenting delivery 1.10.2 content
 
-* Uuenenud SmartID serdiprofiili toetamine
+Log Monitor
+~~~~~~~~~~~
 
-Registreerimisteenus
+* Dependency updates, Python, JavaScript
+* Web interface enhancements
+* Adoption of query pooler ``pgbouncer``
+* Web server configuration review based on security test results
+
+
+Changes in delivery 1.10.1 composition, differences compared to delivery 1.10.0
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Support for updated SmartID certificate profile
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Täpsustused hääle verifitseerimisel, äärejuhtumite läbivaatus
+* Refinements in vote verification, edge case review
 
 iOS
 
-* Täpsustused hääle verifitseerimisel, äärejuhtumite läbivaatus
+* Refinements in vote verification, edge case review
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Muudatused puuduvad
+* No changes
 
-Võtmerakendus
+Key Application
 
-* Muudatused puuduvad
+* No changes
 
-Töötlemisrakendus
+Processing Application
 
-* Muudatused puuduvad
+* No changes
 
-Auditirakendus
+Audit Application
 
-* Muudatused puuduvad
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Muudatused puuduvad
-
-Logimonitor
-~~~~~~~~~~~
-
-* Pisiparandused vastavalt muutuste logile
-
-
-Muudatused tarne 1.10.0 koosseisus, erinevused võrreldes tarnega 1.9.10
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* No changes
 
-* Funktsionaalsus kehtetute sedelite eemaldamiseks kogumisteenuses
-* MODP ja elliptkõverate krüptograafia
-* Erinevad pisiparandused vastavalt muutuste logile
+Log Monitor
+~~~~~~~~~~~
 
-Registreerimisteenus
+* Minor fixes according to the changelog
+
+
+Changes in delivery 1.10.0 composition, differences compared to delivery 1.9.10
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Functionality for removing invalid ballots in the collection service
+* MODP and elliptic curve cryptography
+* Various minor fixes according to the changelog
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Elliptkõverate krüptograafia
-* Ligipääsetavuse parandamine
-* Täpsustused hääle verifitseerimisel, äärejuhtumite läbivaatus
+* Elliptic curve cryptography
+* Accessibility improvements
+* Refinements in vote verification, edge case review
 
 iOS
 
-* Elliptkõverate krüptograafia
-* Ligipääsetavuse parandamine
-* Täpsustused hääle verifitseerimisel, äärejuhtumite läbivaatus
+* Elliptic curve cryptography
+* Accessibility improvements
+* Refinements in vote verification, edge case review
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Elliptkõverate krüptograafia
+* Elliptic curve cryptography
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Elliptkõverate krüptograafia
-* Täpsustused urni verifitseerimisel, äärejuhtumite läbivaatus
+* Elliptic curve cryptography
+* Refinements in ballot box verification, edge case review
 
-Võtmerakendus
+Key Application
 
-* Elliptkõverate krüptograafia
-* Täpsustused urni verifitseerimisel, äärejuhtumite läbivaatus
+* Elliptic curve cryptography
+* Refinements in ballot box verification, edge case review
 
-Töötlemisrakendus
+Processing Application
 
-* Elliptkõverate krüptograafia
-* Täpsustused urni verifitseerimisel, äärejuhtumite läbivaatus
+* Elliptic curve cryptography
+* Refinements in ballot box verification, edge case review
 
-Auditirakendus
+Audit Application
 
-* Elliptkõverate krüptograafia
-* Täpsustused urni verifitseerimisel, äärejuhtumite läbivaatus
+* Elliptic curve cryptography
+* Refinements in ballot box verification, edge case review
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Elliptkõverate krüptograafia
-* Proksikasutuse refaktoreerimine
+* Elliptic curve cryptography
+* Proxy usage refactoring
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Protokollidokumendi täiendamine
-* Logide dokumendi loomine
-
-Logimonitor
-~~~~~~~~~~~
-
-* Pisiparandused vastavalt muutuste logile
-
-
-Muudatused tarne 1.9.10 koosseisus, erinevused võrreldes tarnega 1.9.4
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Protocol document enhancements
+* Log document creation
 
-* Erinevad pisiparandused vastavalt muutuste logile
+Log Monitor
+~~~~~~~~~~~
 
-Registreerimisteenus
+* Minor fixes according to the changelog
+
+
+Changes in delivery 1.9.10 composition, differences compared to delivery 1.9.4
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Various minor fixes according to the changelog
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* FLAG_SECURE kasutuselevõtt
-* Täpsustused hääle verifitseerimisel, äärejuhtumite läbivaatus
+* FLAG_SECURE adoption
+* Refinements in vote verification, edge case review
 
 iOS
 
-* Ligipääsetavuse parendamine
-* Täpsustused hääle verifitseerimisel, äärejuhtumite läbivaatus
+* Accessibility improvements
+* Refinements in vote verification, edge case review
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Muudatused puuduvad
+* No changes
 
-Võtmerakendus
+Key Application
 
-* Krüptogrammi kehtetuks kuulutamise äärejuhtumite läbivaatus
-
-
-Töötlemisrakendus
-
-* Hääle kehtetuks kuulutamise äärejuhtumite läbivaatus
-
-Auditirakendus
-
-* Muudatused puuduvad
-
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-* Windows, ligipääsetavuse veaparandused
-
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Eesti- ja ingliskeelse dokumentatsiooni ühtlustamine
-* Arhitektuuridokumendi täiendamine
-
-Logimonitor
-~~~~~~~~~~~
-
-* Hääletamisfaktide edastamise ebaõnnestumise tuvastamine logist
-* Pisiparandused vastavalt muutuste logile
+* Edge case review for declaring cryptograms invalid
 
 
-Muudatused tarne 1.9.4 koosseisus, erinevused võrreldes tarnega 1.8.2
---------------------------------------------------------------------------------
+Processing Application
 
-Kogumisteenus
+* Edge case review for declaring votes invalid
+
+Audit Application
+
+* No changes
+
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Windows, accessibility bug fixes
+
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Harmonization of Estonian and English documentation
+* Architecture document enhancements
 
-* Ubuntu 22.04 tugi
-* Go versiooniuuendus
-* etcd versiooniuuendus ja seadistamine
-* Sõltuvuste ajakohastamine
-* Web eID autentimismeetodi lisamine
-* Session status mikroteenuse lisamine
-* EHS statistikaliidese töökindluse tõstmine
-* Valimiste järkjärguline lõpp
-* Seansiidentifikaatori muutmine kohustuslikuks
-* ASiCe vormingutäpsustus
-* VIS tugi detailstatistikale
-* SmartID toe täpsustused
-* Erinevad pisiparandused vastavalt muutuste logile
+Log Monitor
+~~~~~~~~~~~
 
-Registreerimisteenus
+* Detection of voting fact transmission failures from logs
+* Minor fixes according to the changelog
+
+
+Changes in delivery 1.9.4 composition, differences compared to delivery 1.8.2
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Ubuntu 22.04 support
+* Go version upgrade
+* etcd version upgrade and configuration
+* Dependency updates
+* Addition of Web eID authentication method
+* Addition of session status microservice
+* Improving EHS statistics interface reliability
+* Gradual end of elections
+* Making session identifier mandatory
+* ASiCe format refinement
+* VIS support for detailed statistics
+* SmartID support refinements
+* Various minor fixes according to the changelog
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
 * TLS 1.3
-* Sertide pinnimisest loobumine
-* Valikute nimekirja kontroll
+* Abandoning certificate pinning
+* Choices list verification
 
 iOS
 
 * TLS 1.3
-* Valikute nimekirja kontroll
+* Choices list verification
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused puuduvad
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
 * Java 17
 
-Võtmerakendus
+Key Application
 
-* Kehtetute sedelite korrektse dekrüpteerimise tõestamine
+* Proving correct decryption of invalid ballots
 
 
-Töötlemisrakendus
+Processing Application
 
-* Statistika arvutuste täpsustamine
-* Töötlemisprotseduuride auditeerimise täpsustamine
+* Statistics calculation refinements
+* Processing procedure auditing refinements
 
-Auditirakendus
+Audit Application
 
-* Kehtetute sedelite korrektse dekrüpteerimise kontrollimine
-* Sedelite kontrolli täpsustused
+* Verifying correct decryption of invalid ballots
+* Ballot verification refinements
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * TLS 1.3
-* Mitme PKCS11 tokeni tugi
-* Windowsi serdituvastuse parendamine
-* Aegunud sertide tuvastamine
-* DLL laadimisvigade parandamine
-* Ligipääsetavus macOS platvormil
-* Kasutajaliidese muudatused
-* Kuvatõmmiste automatiseerimine
+* Multiple PKCS11 token support
+* Windows certificate detection improvements
+* Expired certificate detection
+* DLL loading error fixes
+* Accessibility on macOS platform
+* User interface changes
+* Screenshot automation
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Web eID autentimismeetodiga seotud dokumentatsiooni lisamine
-* Eesti- ja ingliskeelse dokumentatsiooni ühtlustamine
-
-Logimonitor
-~~~~~~~~~~~
-
-* Ubuntu 22.04 tugi
-* Grafana versiooni uuendamine
-* Statistika arvutuste täpsustamine
-
-
-Muudatused tarne 1.8.2 koosseisus, erinevused võrreldes tarnega 1.8.1
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Adding documentation related to Web eID authentication method
+* Harmonization of Estonian and English documentation
 
-* Valijate nimekirjade vormingu muutus
-* EHS/VIS X-tee liidese CI lisandumine
-* EHS/VIS X-tee liidese dokumentatsiooni täpsustumine
-* Väiksemad veaparandused
+Log Monitor
+~~~~~~~~~~~
 
-Registreerimisteenus
+* Ubuntu 22.04 support
+* Grafana version upgrade
+* Statistics calculation refinements
+
+
+Changes in delivery 1.8.2 composition, differences compared to delivery 1.8.1
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Voter list format change
+* Addition of EHS/VIS X-Road interface CI
+* EHS/VIS X-Road interface documentation refinements
+* Minor bug fixes
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* RSA eemaldamine
-* Veaparandused
+* RSA removal
+* Bug fixes
 
 iOS
 
-* Muudatusi ei ole
+* No changes
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Valijate nimekirjade vormingu muutus
+* Voter list format change
 
-Võtmerakendus
+Key Application
 
-* Muudatusi ei ole
+* No changes
 
-Töötlemisrakendus
+Processing Application
 
-* Töövoogude konsolideerimine
+* Workflow consolidation
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Väiksemad veaparandused
+* Minor bug fixes
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Täpsustused seoses muudatustega tarkvaras
-
-Logimonitor
-~~~~~~~~~~~
-
-* Muudatusi ei ole
-
-Muudatused tarne 1.8.1 koosseisus, erinevused võrreldes tarnega 1.7.7
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Refinements related to software changes
 
-* Smart-ID toe lisandumine
-* EHS/VIS X-tee liidese lisandumine
-* Hääletamisfaktide järjestamine
-* Seadistatav SNI
+Log Monitor
+~~~~~~~~~~~
+
+* No changes
+
+Changes in delivery 1.8.1 composition, differences compared to delivery 1.7.7
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Addition of Smart-ID support
+* Addition of EHS/VIS X-Road interface
+* Ordering of voting facts
+* Configurable SNI
 
 
-Registreerimisteenus
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
 * Smart-ID
-* Täpsustatud krüptogrammi kontroll
-* Seadistatav SNI
+* Refined cryptogram verification
+* Configurable SNI
 
 iOS
 
 * Smart-ID
-* Täpsustatud krüptogrammi kontroll
-* Seadistatav SNI
+* Refined cryptogram verification
+* Configurable SNI
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
 * Smart-ID
 
-Võtmerakendus
+Key Application
 
-* Muudatusi ei ole
+* No changes
 
-Töötlemisrakendus
+Processing Application
 
-* Töövoogude konsolideerimine, täpsustused parameetrites
+* Workflow consolidation, parameter refinements
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * SmartID
-* Uuendatud väljanägemine
+* Updated appearance
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
+Documentation
+~~~~~~~~~~~~~
 
-* Täpsustused seoses muudatustega tarkvaras - SmartID, jne.
+* Refinements related to software changes - SmartID, etc.
 
-Logimonitor
+Log Monitor
 ~~~~~~~~~~~
 
 * SmartID
 
-Muudatused tarne 1.7.7 koosseisus, erinevused võrreldes tarnega 1.7.6
+Changes in delivery 1.7.7 composition, differences compared to delivery 1.7.6
 --------------------------------------------------------------------------------
 
-Kogumisteenus
-~~~~~~~~~~~~~
+Collection Service
+~~~~~~~~~~~~~~~~~~
 
-Üldised muutused
+General changes
 
-* Muudatusi ei ole
+* No changes
 
-Haldusteenus
+Management Service
 
-* Muudatusi ei ole
+* No changes
 
-IVXV mikroteenused
+IVXV Microservices
 
-* Muudatusi ei ole
+* No changes
 
-Registreerimisteenus
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Muudatusi ei ole
+* No changes
 
 iOS
 
-* Muudatusi ei ole
+* No changes
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused seoses entroopia allika valikulise tühjendamisega
+* Changes related to selective flushing of the entropy source
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Muudatusi ei ole
+* No changes
 
-Võtmerakendus
+Key Application
 
-* Muudatusi ei ole
+* No changes
 
-Töötlemisrakendus
+Processing Application
 
-* Muudatusi ei ole
+* No changes
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Muudatused seoses miksneti muutustega
-
-Logimonitor
-~~~~~~~~~~~
-
-* Muudatusi ei ole
-
-
-Muudatused tarne 1.7.6 koosseisus, erinevused võrreldes tarnega 1.6.0
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Changes related to mixnet changes
 
-* Muudatused seoses sisendnimekirjade haldamisega VIS3's
-* Muudatused seoses Ubuntu 20.04 toetamisega
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
+Log Monitor
+~~~~~~~~~~~
 
-Haldusteenus
+* No changes
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
 
-IVXV mikroteenused
+Changes in delivery 1.7.6 composition, differences compared to delivery 1.6.0
+--------------------------------------------------------------------------------
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
+Collection Service
+~~~~~~~~~~~~~~~~~~
 
-Registreerimisteenus
+General changes
+
+* Changes related to managing input lists in VIS3
+* Changes related to Ubuntu 20.04 support
+* Minor changes/bug fixes according to the `changelog` file
+
+Management Service
+
+* Minor changes/bug fixes according to the `changelog` file
+
+IVXV Microservices
+
+* Minor changes/bug fixes according to the `changelog` file
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Muudatused seoses API versioonile 28 liikumisega
-* Aegunud rakenduse tuvastamine
+* Changes related to migration to API version 28
+* Outdated application detection
 
 iOS
 
-* Muudatused seoses iOS versioonile 12 liikumisega
-* Aegunud rakenduse tuvastamine
+* Changes related to migration to iOS version 12
+* Outdated application detection
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused seoses Ubuntu 20.04 toetamisega
+* Changes related to Ubuntu 20.04 support
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Muudatused seoses sisendnimekirjade haldamisega VIS3s
+* Changes related to managing input lists in VIS3
 
-Võtmerakendus
+Key Application
 
-* Muudatusi ei ole
+* No changes
 
-Töötlemisrakendus
+Processing Application
 
-* Töötlemise töövoogude optimeerimine
+* Processing workflow optimization
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* M1 protsessoritüübi toetamine macOS platvormil
-* FLTK, OpenSSL ja teiste alusteekide versiooniuuendused
-* Aegunud rakenduse tuvastamine
+* M1 processor type support on macOS platform
+* FLTK, OpenSSL and other base library version upgrades
+* Outdated application detection
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Muudatused seoses muutustega seadistustes ning terminoloogias
-
-Logimonitor
-~~~~~~~~~~~
-
-* Kaasatud tarnesse
-
-
-
-
-Muudatused tarne 1.6.0 koosseisus, erinevused võrreldes tarnega 1.5.0
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Changes related to configuration and terminology changes
 
-* Mobiil-ID REST teenuse toetamine
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
+Log Monitor
+~~~~~~~~~~~
 
-Haldusteenus
+* Included in the delivery
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
 
-IVXV mikroteenused
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
 
-Registreerimisteenus
+Changes in delivery 1.6.0 composition, differences compared to delivery 1.5.0
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Mobile-ID REST service support
+* Minor changes/bug fixes according to the `changelog` file
+
+Management Service
+
+* Minor changes/bug fixes according to the `changelog` file
+
+IVXV Microservices
+
+* Minor changes/bug fixes according to the `changelog` file
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Muudatusi ei ole
+* No changes
 
 iOS
 
-* Muudatusi ei ole
+* No changes
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Java versiooni 11 kasutuselevõtt
-* Verificatumi versiooniuuendus
+* Adoption of Java version 11
+* Verificatum version upgrade
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Java versiooni 11 kasutuselevõtt
+* Adoption of Java version 11
 
-Võtmerakendus
+Key Application
 
-* RSA võtmete serialiseerimise uus vorming
+* New format for RSA key serialization
 
-Töötlemisrakendus
+Processing Application
 
-* Muudatusi ei ole
+* No changes
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Mobiil-ID REST teenuse tugi
+* Mobile-ID REST service support
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Mobiil-ID REST teenuse tugi
-
-Logimonitor
-~~~~~~~~~~~
-
-* Eemaldatud tarnest seoses litsentsi lõppemisega
-
-
-
-Muudatused tarne 1.5.0 koosseisus, erinevused võrreldes tarnega 1.4.1
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Mobile-ID REST service support
 
-* Kõigi päringute logimine
-* etcd Debian buster repositooriumist, uusima golang-google-rpc saamiseks
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
+Log Monitor
+~~~~~~~~~~~
 
-Haldusteenus
+* Removed from delivery due to license expiration
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
 
-IVXV mikroteenused
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
+Changes in delivery 1.5.0 composition, differences compared to delivery 1.4.1
+--------------------------------------------------------------------------------
 
-Registreerimisteenus
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Logging of all requests
+* etcd from Debian buster repository, to obtain the latest golang-google-rpc
+* Minor changes/bug fixes according to the `changelog` file
+
+Management Service
+
+* Minor changes/bug fixes according to the `changelog` file
+
+IVXV Microservices
+
+* Minor changes/bug fixes according to the `changelog` file
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Muudatused seoses koodiläbivaatuse ja veatöötluse parendamisega
+* Changes related to code review and error handling improvements
 
 iOS
 
-* Muudatusi ei ole
+* No changes
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatused seoses 300K hääle miksimisega
+* Changes related to mixing 300K votes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Valimise identifikaatori kasutamine läbiva prefiksina
+* Using election identifier as a common prefix
 
-Võtmerakendus
+Key Application
 
-* Muudatused seoses koodiläbivaatusega
+* Changes related to code review
 
-Töötlemisrakendus
+Processing Application
 
-* Muudatused seoses 300K hääle töötlemisega
+* Changes related to processing 300K votes
 
-Auditirakendus
+Audit Application
 
-* Edenemisriba
-* Muudatused seoses 300K hääle töötlemisega
+* Progress bar
+* Changes related to processing 300K votes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* MSAA toe täpsustamine
-* Süsteemsete PIN-dialoogide kasutamine Windows platvormil
+* MSAA support refinement
+* Using system PIN dialogs on Windows platform
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* IVXV audiitori juhendi lisamine
-* Muudatusdokumentide lisamine tarnesse
-
-
-Logimonitor
-~~~~~~~~~~~
-
-* Muutused/veaparandused vastavalt `changelog` failile
-
-
-
-
-Muudatused tarne 1.4.1 koosseisus, erinevused võrreldes tarnega 1.4.0
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Addition of IVXV auditor guide
+* Addition of change documents to the delivery
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
 
-Haldusteenus
+Log Monitor
+~~~~~~~~~~~
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
+* Changes/bug fixes according to the `changelog` file
 
-IVXV mikroteenused
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
 
-Registreerimisteenus
+
+Changes in delivery 1.4.1 composition, differences compared to delivery 1.4.0
+--------------------------------------------------------------------------------
+
+Collection Service
+~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Minor changes/bug fixes according to the `changelog` file
+
+Management Service
+
+* Minor changes/bug fixes according to the `changelog` file
+
+IVXV Microservices
+
+* Minor changes/bug fixes according to the `changelog` file
+
+Registration Service
 ~~~~~~~~~~~~~~~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Kontrollrakendused
-~~~~~~~~~~~~~~~~~~
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Muudatusi ei ole
+* No changes
 
 iOS
 
-* Muudatusi ei ole
+* No changes
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Muudatusi ei ole
+* No changes
 
-Võtmerakendus
+Key Application
 
-* Tööriista *init* väljundfailide muutus
-* Tööriista *init* SN ja CN parameetrite muutus
-* Tööriista *testkey* sisendparameetrite muutus
-* Tööriista *decrypt* kasutatud kaardinumbrite kuvamine
+* Change in *init* tool output files
+* Change in *init* tool SN and CN parameters
+* Change in *testkey* tool input parameters
+* Display of used card numbers in *decrypt* tool
 
-Töötlemisrakendus
+Processing Application
 
-* Muudatusi ei ole
+* No changes
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* MSAA toe täpsustamine
+* MSAA support refinement
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* IVXV protokollid - registreerimisprotokolli lisamine
-* IVXV seadistuste koostejuhend - läbivad täiendused ning käsiraamatuga
-  ühtlustamine.
-* IVXV valijarakendus - läbivad täiendused.
-* IVXV mixnet - dokument hõlmatud seadistuste koostejuhendisse, eemaldatud.
-* IVXV registreerimisteenus - dokument hõlmatud protokollistikku, eemaldatud.
-
-Logimonitor
-~~~~~~~~~~~
-
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
-
-Muudatused tarne 1.4.0 koosseisus, erinevused võrreldes tarnega 1.3.0
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* IVXV protocols - addition of registration protocol
+* IVXV configuration guide - comprehensive updates and
+  harmonization with the handbook.
+* IVXV voter application - comprehensive updates.
+* IVXV mixnet - document incorporated into the configuration guide, removed.
+* IVXV registration service - document incorporated into the protocol specification, removed.
 
-* OCSP ja ajatemplipäringute automaatne kordamine vastavalt
-  konfiguratsioonile
-* BDOC-TS allkirjakonteinerite toetamine
-* Tühjade valijanimekirjade tugi
+Log Monitor
+~~~~~~~~~~~
 
-Haldusteenus
+* Minor changes/bug fixes according to the `changelog` file
 
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
+Changes in delivery 1.4.0 composition, differences compared to delivery 1.3.0
+--------------------------------------------------------------------------------
 
-IVXV mikroteenused
-
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
-
-Registreerimisteenus
-~~~~~~~~~~~~~~~~~~~~
-* Muudatusi ei ole
-
-Kontrollrakendused
+Collection Service
 ~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Automatic retry of OCSP and timestamp requests according to
+  configuration
+* Support for BDOC-TS signature containers
+* Support for empty voter lists
+
+Management Service
+
+* Minor changes/bug fixes according to the `changelog` file
+
+IVXV Microservices
+
+* Minor changes/bug fixes according to the `changelog` file
+
+Registration Service
+~~~~~~~~~~~~~~~~~~~~
+* No changes
+
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* TLS 1.2 toetamine API-versioonide < 19 korral
-* Abiinfo vaate asendamine süsteemse brauseriga
-* Kuvast väljuvate tekstide automaatne lühendamine nuppude korral
+* TLS 1.2 support for API versions < 19
+* Replacing the help info view with the system browser
+* Automatic text truncation for buttons when text overflows the screen
 
 iOS
 
-* Muudatusi ei ole
+* No changes
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Muudatusi ei ole
+* No changes
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Üldised
+General
 
-* Jaoskonnanumbri unikaalsusnõuete täpsustamine
-* Tühja valijatenimekirja tugi
-* Kodeeringuvigadega sertifikaatide toetamine rakendustes
+* Precinct number uniqueness requirement refinements
+* Empty voter list support
+* Support for certificates with encoding errors in applications
 
-Võtmerakendus
+Key Application
 
-* Eemaldatud LOG4 ja LOG5
+* Removed LOG4 and LOG5
 
-Töötlemisrakendus
+Processing Application
 
-* Eemaldatud PDF vormingus valijate nimekiri faasist *revoke*
+* Removed PDF format voter list from *revoke* phase
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* macOS 10.11 toetamine
-* 32bit Linuxi toetamine
-* UPX versiooni uuendamine
-* Pinpad kaardilugejate töökindluse tõstmine (Win)
-* ID-kaardi suhtlusvigade parandamine (Win7/ECC)
-* Nii PEM kui DER vormingus andmete import (Seadistaja)
-* Lisatud Seadistuste valideerimisvõimalus (Seadistaja)
-* Parandatud käitumine liigsuurte seadistuste korral (Seadistaja)
+* macOS 10.11 support
+* 32bit Linux support
+* UPX version update
+* Pinpad card reader reliability improvement (Win)
+* ID card communication error fixes (Win7/ECC)
+* Both PEM and DER format data import (Configurator)
+* Added configuration validation capability (Configurator)
+* Fixed behavior with oversized configurations (Configurator)
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Dokumentatsiooni uuendamine muudatuste kajastamiseks ning DEMO2018
-  tagasiside arvestamiseks
-
-Logimonitor
-~~~~~~~~~~~
-
-* MTA sõltuvuse lisamine
-* CSV logiväljavõtte täpsustamine, algus- ja lõpuaja lisamine
-* Logianalüüsi optimeerimine mitmetuumalise riistvara jaoks
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
-
-Muudatused tarne 1.3.0 koosseisus, erinevused võrreldes tarnega 1.2.0
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Üldised muutused
+* Documentation update to reflect changes and incorporate DEMO2018
+  feedback
 
-* Ubuntu 18.04 LTS (Bionic Beaver) kasutuselevõtmine
-* Krahhitaaste protseduuride kirjeldamine
+Log Monitor
+~~~~~~~~~~~
 
-Haldusteenus
+* Addition of MTA dependency
+* CSV log export refinements, addition of start and end times
+* Log analysis optimization for multi-core hardware
+* Minor changes/bug fixes according to the `changelog` file
 
-* Parandatud tööriistad teenuste seisundiinfo saamiseks
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
+Changes in delivery 1.3.0 composition, differences compared to delivery 1.2.0
+--------------------------------------------------------------------------------
 
-IVXV mikroteenused
-
-* golang keeleversioon 1.9 kasutuselevõtmine
-* Eesti ID-kaardi uuenenud profiili toetamine (PNOEE)
-* Väiksemad muutused/veaparandused vastavalt `changelog` failile
-
-Registreerimisteenus
-~~~~~~~~~~~~~~~~~~~~
-* Muudatusi ei ole
-
-Kontrollrakendused
+Collection Service
 ~~~~~~~~~~~~~~~~~~
+
+General changes
+
+* Adoption of Ubuntu 18.04 LTS (Bionic Beaver)
+* Description of crash recovery procedures
+
+Management Service
+
+* Fixed tools for obtaining service status information
+* Minor changes/bug fixes according to the `changelog` file
+
+IVXV Microservices
+
+* Adoption of golang language version 1.9
+* Support for the updated Estonian ID card profile (PNOEE)
+* Minor changes/bug fixes according to the `changelog` file
+
+Registration Service
+~~~~~~~~~~~~~~~~~~~~
+* No changes
+
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* ESTEID2018 sertifikaatide toetamine
-* Täpsustatud vigase ASN1-kodeeringuga avalike võtmete käitlemist
+* ESTEID2018 certificate support
+* Refined handling of public keys with faulty ASN1 encoding
 
 iOS
 
-* ESTEID2018 sertifikaatide toetamine
-* iPhone 10 X muudatused
-* XCode 10 ja iOS 12 SDK kasutamine
+* ESTEID2018 certificate support
+* iPhone 10 X changes
+* Using XCode 10 and iOS 12 SDK
 
-Miksnet
-~~~~~~~
+Mixnet
+~~~~~~
 
-* Verificatumi AGPL versiooni kasutuselevõtmine
+* Adoption of the Verificatum AGPL version
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Võtmerakendus
+Key Application
 
-* Muudatusi ei ole
+* No changes
 
-Töötlemisrakendus
+Processing Application
 
-* Lisatud tööriist StatsTool valimiskastist statistikafaili genereerimiseks
-* Lisatud tööriist StatsDiffTool kahe statistikafaili võrdlemiseks
-* ESTEID2018 sertifikaatide ja profiili toetamine
-* digidoc4j 2.1.0 kasutamine
+* Added StatsTool for generating statistics files from the ballot box
+* Added StatsDiffTool for comparing two statistics files
+* ESTEID2018 certificate and profile support
+* Using digidoc4j 2.1.0
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole
+* No changes
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Valijarakenduses kandidaatide otsingu võimaldamine
-* Valijarakenduses erakondade ja kandidaatide kaustana kuvamine
-* Valijarakenduse ja Seadistusrakenduse üleviimine JSON-vormingus seadistustele
-* ESTEID2018 sertifikaatide ja profiili toetamine
-* Win: IDEMIA minidraiveri toetamine
-* Linux/macOS: IDEMIA PKCS11 draiveri toetamine
-* macOS 10.14 toetamine
+* Enabling candidate search in the voter application
+* Displaying parties and candidates as folders in the voter application
+* Migration of the voter application and configurator to JSON format settings
+* ESTEID2018 certificate and profile support
+* Win: IDEMIA minidriver support
+* Linux/macOS: IDEMIA PKCS11 driver support
+* macOS 10.14 support
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-
-* Dokumentatsiooni uuendamine muudatuste kajastamiseks
-* Ingliskeelse arhitektuuridokumendi ja protokollistiku lisamine
-
-Logimonitor
-~~~~~~~~~~~
-
-* Ubuntu 18.04 LTS (Bionic Beaver) kasutuselevõtmine
-* Võetud kasutusele Grafana 5.3.4
-* Parandatud vanusepõhise statistika genereerimine ja vanusegruppidesse
-  jaotumine
-* CSV väljundi võtmine seanssidest
-
-Muudatused tarne 1.2.0 koosseisus, erinevused võrreldes KOV2017 valimistega.
---------------------------------------------------------------------------------
-
-Kogumisteenus
+Documentation
 ~~~~~~~~~~~~~
 
-Haldusteenus
+* Documentation update to reflect changes
+* Addition of English architecture document and protocol specification
 
-* Lisatud tööriist vigaste valijanimekirjade eemaldamiseks.
-* Lisatud tööriist jaoskondade/ringkondade nimekirja lisamiseks.
-* Lisatud ringkonnapõhine statistika.
-* Lisatud varundusteenus.
-* Lisatud tööriist varundatud valimiskastide konsolideerimiseks.
-* Lisatud tööriist nimekirjade kooskõlalisuse kontrolliks.
-* Lisatud võimekus seadistusfailidele valimisspetsiifiliste prefiksite lisamiseks.
-* Täiendatud haldusliidese kasutajaliidest abiinfoga.
-* Eemaldatud aegunud konfiguratsiooniparameeter “stats.*”
-* Parandatud sisendfailide vormingu kontrolli ja laadimist.
+Log Monitor
+~~~~~~~~~~~
 
-IVXV mikroteenused
+* Adoption of Ubuntu 18.04 LTS (Bionic Beaver)
+* Adopted Grafana 5.3.4
+* Fixed age-based statistics generation and age group
+  distribution
+* CSV output from sessions
 
-* Uuendatud etcd versioon.
-* Lisatud võimekus etcd ajalõppude seadistamiseks keskkonnamuutujate kaudu.
-* Lisatud võimekus klastri modifitseerimiseks krahhitaaste eesmärgil.
-* Parandatud klastri käitumist liidrivahetuse korral, pooleliolevate talletamiste kordamine.
-* TLS šifrid muudetud seadistatavaks.
-* Parandatud BDOC profiili identifitseeriva konfiguratsioonivälja nimi.
-* Lisatud võimekus seadistada Mobiil-ID autentimist nõudma nii isikukoodi kui telefoninumbrit.
-* Lisatud võimekus piirata korduvhääletamise sagedust.
-* Lisatud võimekus toetada Windowsi reavahetusi konfifailides.
-* Täiustatud BDOC XML kanoniseerimist ja parsimist.
-* Karmistatud DDS päringute vormingukontrolle.
-* Logimine viidud üle RELP protokollile.
-* Muudetud seadistusfailide ülesehitust eristamaks Koguja ja Töötleja vastutusi.
+Changes in delivery 1.2.0 composition, differences compared to KOV2017 elections.
+--------------------------------------------------------------------------------
 
-Registreerimisteenus
-~~~~~~~~~~~~~~~~~~~~
-* Muudatusi ei ole.
-
-Kontrollrakendused
+Collection Service
 ~~~~~~~~~~~~~~~~~~
+
+Management Service
+
+* Added tool for removing faulty voter lists.
+* Added tool for adding district/precinct lists.
+* Added district-based statistics.
+* Added backup service.
+* Added tool for consolidating backed-up ballot boxes.
+* Added tool for list consistency verification.
+* Added capability to add election-specific prefixes to configuration files.
+* Enhanced management interface with help information.
+* Removed deprecated configuration parameter "stats.*"
+* Fixed input file format validation and loading.
+
+IVXV Microservices
+
+* Updated etcd version.
+* Added capability to configure etcd timeouts via environment variables.
+* Added capability to modify cluster for crash recovery purposes.
+* Fixed cluster behavior during leader change, retrying pending stores.
+* TLS ciphers made configurable.
+* Fixed BDOC profile identifying configuration field name.
+* Added capability to configure Mobile-ID authentication to require both personal code and phone number.
+* Added capability to limit repeat voting frequency.
+* Added capability to support Windows line endings in configuration files.
+* Improved BDOC XML canonicalization and parsing.
+* Tightened DDS request format validations.
+* Logging migrated to RELP protocol.
+* Changed configuration file structure to distinguish Collector and Processor responsibilities.
+
+Registration Service
+~~~~~~~~~~~~~~~~~~~~
+* No changes.
+
+Verification Applications
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Android
 
-* Lisatud juhised publitseeritud kontrollrakenduse ja avalikustatud lähtekoodi vastavuse kontrollimiseks.
+* Added instructions for verifying correspondence between published verification application and disclosed source code.
 
 iOS
 
-* Muudatusi ei ole.
+* No changes.
 
-Miksnet
-~~~~~~~
-* Muudatusi ei ole.
+Mixnet
+~~~~~~
+* No changes.
 
-Töötleja rakendused
-~~~~~~~~~~~~~~~~~~~
-Võtmerakendus
+Processing Applications
+~~~~~~~~~~~~~~~~~~~~~~~
+Key Application
 
-* Muudatusi ei ole.
+* No changes.
 
-Töötlemisrakendus
+Processing Application
 
-* Muudatusi ei ole.
+* No changes.
 
-Auditirakendus
+Audit Application
 
-* Muudatusi ei ole.
+* No changes.
 
-Valijarakendused ja seadistusrakendus
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* Linux ja Mac – platvormispetsiifilisi muudatusi ei ole.
-* Windows – parandatud liidestumist Minidraiveriga, mingw64 kasutuselevõtmine.
-* Lisatud ID-kaardi ECC toetamine.
-* Seadistatud Mobiil-ID nõudma vajadusel isikukoodi ja telefoninumbrit.
-* Täiendatud veakoode.
-* Kohandatud seadistusrakendus muudatustega vastavusse.
-* Kohandatud BDOC XML mallid
+Voter Applications and Configuration Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Linux and Mac – no platform-specific changes.
+* Windows – fixed interfacing with Minidriver, adoption of mingw64.
+* Added ID card ECC support.
+* Configured Mobile-ID to require personal code and phone number when needed.
+* Enhanced error codes.
+* Adapted configurator to correspond with changes.
+* Adapted BDOC XML templates
 
-Dokumentatsioon
-~~~~~~~~~~~~~~~
-* Dokumentatsioon läbivalt kaasajastatud seoses muudatustega
+Documentation
+~~~~~~~~~~~~~
+* Documentation comprehensively updated in connection with changes
 
-Logimonitor
+Log Monitor
 ~~~~~~~~~~~
-* Loobutud CrateDBst.
-* Võetud läbivalt kasutusele PostgreSQL.
-* Võetud kasutusele Grafana 5.0.1.
-* Seansside valideerimise parandused lähtudes KOV2017 logianalüüsist.
-* Lisatud statistika genereerimine ringkondade kaupa.
+* Abandoned CrateDB.
+* Comprehensively adopted PostgreSQL.
+* Adopted Grafana 5.0.1.
+* Session validation fixes based on KOV2017 log analysis.
+* Added statistics generation by districts.

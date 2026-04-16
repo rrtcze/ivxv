@@ -1,115 +1,115 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
 .. _kt-trust:
 
-Kogumisteenuse usaldusjuure seadistamine
-----------------------------------------
+Collector service trust root configuration
+-------------------------------------------
 
-Kogumisteenuse usaldusjuur sisaldab andmeid seadistuste (kaasa arvatud
-usaldusjuure enda) allkirjade kontrollimiseks ja nimekirja süsteemi esmastest
-volitustest.
+The collector service trust root contains data for verifying signatures of
+configurations (including the trust root itself) and a list of the system's
+initial authorizations.
 
-Usaldusjuure seadistuse koostab valimiste korraldaja.
-Seadistusfaili nimi peab alati lõppema stringiga :file:`trust.yaml`.
-Failinime võimalik eesliide peab alati lõppema punktiga.
+The trust root configuration is prepared by the election organizer.
+The configuration file name must always end with the string :file:`trust.yaml`.
+The possible prefix of the file name must always end with a period.
 
 .. attention::
 
-   Usaldusjuure seadistuste laadimine lähtestab kogumisteenuse. Seetõttu pole
-   juba seadistatud kogumisteenuse usaldusahela muutmine võimalik. Volituste
-   muutmine on võimalik vastavate korralduste abil.
+   Loading the trust root configuration resets the collector service. Therefore,
+   changing the trust chain of an already configured collector service is not
+   possible. Changing authorizations is possible using the corresponding commands.
 
 :container:
 
-        Kohustuslik väli.
-        Alamblokk, mis sisaldab seadistusfailide allkirjade kontrollimise
-        seadistust.
+        Required field.
+        Sub-block that contains the configuration for verifying signatures of
+        configuration files.
 
 :container.bdoc:
 
-        Alamblokk, mis sisaldab seadistusfailide BDOC-allkirjade kontrollimise
-        seadistust.
+        Sub-block that contains the configuration for verifying BDOC signatures
+        of configuration files.
 
 :container.bdoc.filecount:
-        Kohustuslik väli. Maksimaalne lubatud failide arv ZIP konteineris, ning
-        kuna tegu on BDOC konteineriga, siis sellele väärtusele tuleb alati liita 3,
-        sest BDOC konteineris on lisaks sisufailidele veel ``signatures0.xml``,
-        ``manifest.xml`` ja ``mimetype`` failid.
+        Required field. Maximum allowed number of files in the ZIP container, and
+        since it is a BDOC container, the value 3 must always be added to this value,
+        because the BDOC container contains, in addition to content files, the
+        ``signatures0.xml``, ``manifest.xml``, and ``mimetype`` files.
 
 :container.bdoc.bdocsize:
-        Kohustuslik väli.
-        BDOC konteineri maksimaalne lubatud suurus baitides.
+        Required field.
+        Maximum allowed size of the BDOC container in bytes.
 
 :container.bdoc.filesize:
-        Kohustuslik väli.
-        BDOC konteineris olevate failide maksimaalne lubatud hõrendatud suurus
-        baitides.
+        Required field.
+        Maximum allowed decompressed size of files in the BDOC container
+        in bytes.
 
 :container.bdoc.roots:
 
-        Kohustuslik väli.
-        Seadistuste allkirjastajate sertifikaatide usaldusjuured.
+        Required field.
+        Trust roots of the signer certificates of configurations.
 
 :container.bdoc.intermediates:
 
-        Seadistuste allkirjastajate sertifikaatide vahesertifikaadid.
-        Usalduse saavutamiseks peab nende sertifikaatide abil olema võimalik
-        luua ahel allkirjastaja sertifikaadist usaldusjuureni.
+        Intermediate certificates of the signer certificates of configurations.
+        To establish trust, it must be possible to create a chain from the signer
+        certificate to the trust root using these certificates.
 
 :container.bdoc.profile:
 
-        Kohustuslik väli.
-        Seadistuste allkirjadelt nõutav BDOC profiil. Toetatud valikud on
-        ``BES`` (põhiprofiil kirjeldatud BDOC spetsifikatsiooni jaotises 5),
-        ``TS`` (ajatemplitega profiil kirjeldatud BDOC
-        spetsifikatsiooni jaotises 6.2).
+        Required field.
+        Required BDOC profile for configuration signatures. Supported options are
+        ``BES`` (basic profile described in BDOC specification section 5),
+        ``TS`` (timestamp profile described in BDOC
+        specification section 6.2).
 
 :container.bdoc.ocsp.responders:
 
-        Kasutatakse ainult juhul kui ``container.bdoc.profile`` on ``TS``.
+        Used only when ``container.bdoc.profile`` is ``TS``.
 
-        Kehtivuskinnitusi väljastanud OCSP responderi sertifikaadid. Kui nende
-        hulgast responderi sertifikaati ei leita, siis otsitakse OCSP vastuses
-        olevate sertifikaatide hulgast selline, mis on antud välja sama
-        väljastaja poolt, mis seadistuste allkirjastaja sertifikaat, ning on
-        lubatud OCSP vastuste signeerimiseks. AIA loogika kasutamise
-        korral võib väli olla tühi.
+        OCSP responder certificates that issued validity confirmations. If the
+        responder certificate is not found among these, then a certificate is
+        searched from the certificates in the OCSP response that was issued by
+        the same issuer as the configuration signer certificate and is
+        authorized for signing OCSP responses. When using AIA logic,
+        this field may be empty.
 
 :container.bdoc.tsp.signers:
 
-        Kohustuslik väli.
-        Kasutatakse ainult juhul kui ``container.bdoc.profile`` on ``TS``.
+        Required field.
+        Used only when ``container.bdoc.profile`` is ``TS``.
 
-        Ajatempliteenuse vastuse allkirjastamise sertifikaadid.
+        Timestamp service response signing certificates.
 
 :container.bdoc.tsp.delaytime:
 
-        Kohustuslik väli.
-        Kasutatakse ainult juhul kui ``container.bdoc.profile`` on ``TS``.
+        Required field.
+        Used only when ``container.bdoc.profile`` is ``TS``.
 
-        Maksimaalne ajanihe ajatempli loomise ja allkirjastamise vahel
-        sekundites.
+        Maximum time offset between timestamp creation and signing
+        in seconds.
 
 :container.bdoc.tsdelaytime:
 
-        Kasutatakse ainult juhul kui ``container.bdoc.profile`` on ``TS``.
+        Used only when ``container.bdoc.profile`` is ``TS``.
 
-        Maksimaalne ajanihe ajatempli ja kehtivuskinnituse loomise vahel
-        sekundites. Välja puudumise või väärtuse 0 korral peavad mõlemad olema
-        loodud samal sekundil.
+        Maximum time offset between timestamp and validity confirmation creation
+        in seconds. If the field is missing or the value is 0, both must have
+        been created in the same second.
 
 :authorizations:
 
-        Kohustuslik väli.
-        Esmane nimekiri kogumisteenuse halduri volitustega isikutest (vt.
-        :ref:`rollid`), mis rakendatakse süsteemile usaldusjuure laadimisel.
-        Iga isiku kohta on kirje tema ID-kaardi välja ``Common Name`` (CN)
-        väärtusega. Minimaalselt peab sisaldama usaldusjuure signeerinud isiku
-        andmeid.
+        Required field.
+        Initial list of persons with collector service administrator
+        authorizations (see :ref:`rollid`), which is applied to the system when
+        loading the trust root. Each person has an entry with the value of their
+        ID card ``Common Name`` (CN) field. Must contain at minimum the data of
+        the person who signed the trust root.
 
 
-Näide
-*****
+Example
+*******
 
 :file:`example.trust.yaml`:
 

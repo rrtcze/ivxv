@@ -1,175 +1,176 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
-Süsteemi algseadistamine
-========================
+Initial Setup
+=============
 
-Süsteemi algseadistamine tähendab süsteemi paigaldamist ning seadistamist
-läbiviidavate valimiste tarbeks.
+Initial system setup means installing and configuring the system for the
+elections being conducted.
 
 .. _nouded-platvormile:
 
-Nõuded kasutatavale platvormile
--------------------------------
+Platform Requirements
+---------------------
 
-Kogumisteenus töötab platvormil ``Ubuntu 20.04 LTS (Focal Fossa)``.
+The collector service runs on the platform ``Ubuntu 20.04 LTS (Focal Fossa)``.
 
-Väliste teenuste kaardistamine
-------------------------------
+Mapping External Services
+--------------------------
 
-Kogumisteenuse poolt toetatavate ja läbiviidavas hääletamises kasutatavate
-väliste teenuste (Mobiil-ID, Smart-ID, OCSP jms) kaardistamise käigus koostatakse
-nimekiri välistest teenustest ja nendega andmevahetuseks vajalikest andmetest
-(võrguaadress, port jms).
+During the mapping of external services supported by the collector service and
+used in the elections being conducted (Mobile-ID, Smart-ID, OCSP, etc.), a list
+of external services and the data required for data exchange with them (network
+address, port, etc.) is compiled.
 
-Väliste teenuste andmed on sisendiks kogumisteenuse tehnilise seadistuse
-koostamisel (:ref:`seadistuste_koostamine`).
+External service data serves as input when composing the collector service
+technical settings (:ref:`seadistuste_koostamine`).
 
-Väliste teenuste kaardistamise tulemusena on kogumisteenuse osutajal olemas
-nimekiri kogumisteenuse poolt kasutatavatest välistest teenustest koos teenuste
-kasutamiseks vajalike parameetritega.
+As a result of mapping external services, the collector service provider has a
+list of external services used by the collector service together with the
+parameters required for using the services.
 
 
-Tugiteenuste ettevalmistamine
------------------------------
+Preparing Support Services
+---------------------------
 
-Kogumisteenuse tugiteenusteks on:
+Support services for the collector service are:
 
-#. Tehnilise seire teenus;
+#. Technical monitoring service;
 
-#. Logiseire teenus;
+#. Log monitoring service;
 
-#. Varundusteenus.
+#. Backup service.
 
-Tehnilise seire ettevalmistamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Preparing Technical Monitoring
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. important::
 
-   Kogumisteenuse osutaja peab kogumisteenuse töötamiseks eraldatud riistvara
-   jälgimiseks läbi viima riistvara tehnilist seiret.
+   The collector service provider must perform technical hardware monitoring
+   for the hardware allocated for the collector service operation.
 
-Tehnilise seire teenus on `Zabbix <http://www.zabbix.com/>`_ tarkvaral põhinev
-seire- ja teavitussüsteem. Zabbix serveri paigaldab  ja seadistab
-kogumisteenuse osutaja iseseisvalt.
+The technical monitoring service is a monitoring and alerting system based on
+`Zabbix <http://www.zabbix.com/>`_ software. The Zabbix server is installed and
+configured independently by the collector service provider.
 
-Tehnilisse seiresse võib hõlmata ka kogumisteenuse tarkvaralisi komponente nagu
-kirjeldatud lõigus ":ref:`etcd-zabbix`".
+Technical monitoring may also include collector service software components as
+described in section ":ref:`etcd-zabbix`".
 
-Seire toimimiseks on tarvis määrata seire eest vastutavad isikud ning tagada
-nende vahetu teavitamine seireprogrammi poolt avastatud kõrvalekalletest.
+For monitoring to function, persons responsible for monitoring must be designated
+and their direct notification by the monitoring program about detected
+anomalies must be ensured.
 
-Lisaks standardsele tehnilisele seirele (teenusmasinate
-protsessori-/kettakasutus jms.) viib kogumisteenuse haldusteenus läbi
-alamteenuste seiret ja teavitab tehnilise seire serverit avastatud
-kõrvalekalletest.
+In addition to standard technical monitoring (service machine
+CPU/disk usage, etc.), the collector service management service performs
+sub-service monitoring and notifies the technical monitoring server of detected
+anomalies.
 
 .. todo::
 
-   Lisada haldusteenusele tehnilise seire teavituste tugi!
+   Add technical monitoring notification support to the management service!
 
-Tehnilise seire ettevalmistamise tulemusena on kogumisteenuse osutajal olemas
-tehnilise seire server, kuhu on paigaldatud seiretarkvara ning kus on
-kirjeldatud tehnilise seire eest vastutavad isikud ja nende teavitamise
-meetodid.
-
-
-Logiseire ettevalmistamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Logiseire teenus koosneb rsyslog logiserverist koos analüüsi- ja
-visualiseerimistarkvaraga (Log Monitor, `Grafana <https://grafana.com/>`_).
-
-Logiseire ettevalmistamine ja integreerimine kogumisteenusega on kirjeldatud
-dokumendis ``IVXV tegevuslogi
-seirelahendus``.
-
-Logiseire ettevalmistamise tulemusena on kogumisteenuse osutajal olemas
-logiseire server, kuhu on paigaldatud logiseire tarkvara ning kus on
-kirjeldatud logiseire andmetele ligipääsevad isikud.
+As a result of preparing technical monitoring, the collector service provider
+has a technical monitoring server with monitoring software installed and
+where persons responsible for technical monitoring and their notification
+methods are defined.
 
 
-Varunduse ettevalmistamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Preparing Log Monitoring
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Varundusteenus on kogumisteenuse osutaja poolt paigaldatud ja seadistatud
-varundusserver, mis vastutab kogumisteenuse sisemises varundusserveris
-koostatud varukoopiate säilimise eest.
+The log monitoring service consists of an rsyslog log server with analysis and
+visualization software (Log Monitor, `Grafana <https://grafana.com/>`_).
 
-Varunduse ettevalmistamise tulemusena on kogumisteenuse osutajal olemas
-varundusserver, mis on suuteline kogumisteenuse varundusliidese kaudu andmeid
-varundama.
+Preparing log monitoring and integrating it with the collector service is
+described in the document ``IVXV Activity Log
+Monitoring Solution``.
+
+As a result of preparing log monitoring, the collector service provider has a
+log monitoring server with log monitoring software installed and where persons
+with access to log monitoring data are defined.
+
+
+Preparing Backup
+^^^^^^^^^^^^^^^^^
+
+The backup service is a backup server installed and configured by the collector
+service provider, which is responsible for preserving backup copies created by
+the collector service's internal backup server.
+
+As a result of preparing backup, the collector service provider has a backup
+server capable of backing up data through the collector service backup interface.
 
 
 .. _seadistuste_koostamine:
 
-Kogumisteenuse seadistuste koostamine
--------------------------------------
+Composing Collector Service Settings
+--------------------------------------
 
-Kogumisteenuse seadistused koosnevad kolmest eraldiseisvast osast:
+Collector service settings consist of three separate parts:
 
-#. **Usaldusjuure seadistus** sisaldab andmed seadistuste (kaasa arvatud
-   usaldusjuure enda) allkirjade kontrollimiseks ja nimekirja kogumisteenuse
-   haldurite volitustest.
+#. **Trust root settings** contain data for verifying the signatures of
+   settings (including the trust root itself) and the list of collector service
+   administrator authorizations.
 
-#. **Kogumisteenuse tehniline seadistus** määrab kogumisteenuse tehnilised
-   parameetrid, hääletuse läbiviimiseks kasutatavad teenused, samuti ka
-   kogumisteenuse koosseisu kuulvad alamteenused.
+#. **Collector service technical settings** define the technical parameters of
+   the collector service, the services used for conducting the election, as well
+   as the sub-services that are part of the collector service.
 
-#. **Valimiste seadistus** määrab ühe valimise seadistuse.
+#. **Election settings** define the settings for a single election.
 
-Seadistuste koostamine on kirjeldatud dokumendis IVXV-JSK-\* "Elektroonilise hääletamise
-infosüsteemi IVXV seadistuste koostamise juhend". Kogumisteenusele
-rakendatavad seadistused peavad olema pakendatud ASiC-E konteinerisse ja olema
-signeeritud volitatud kasutaja poolt.
+The preparation of settings is described in the document IVXV-JSK-\* "IVXV
+Electronic Voting Information System Configuration Guide". Settings to be
+applied to the collector service must be packaged in an ASiC-E container and
+signed by an authorized user.
 
-Kogumisteenuse seadistuste koostamise tulemusena on kogumisteenuse osutajal
-olemas kogumisteenuse seadistamiseks vajalikud seadistuspakid. Kõik seadistused
-on signeeritud isiku(te) poolt, kelle volitused on kirjeldatud usaldusjuure
-seadistustes või kelle volitused on määratud eraldiseisvate korralduste abil.
+As a result of composing collector service settings, the collector service
+provider has the configuration packages needed for configuring the collector
+service. All settings are signed by person(s) whose authorizations are described
+in the trust root settings or whose authorizations are defined using separate
+commands.
 
 
 .. _taristu-paigaldamine:
 
-Kogumisteenuse taristu paigaldamine
------------------------------------
+Installing Collector Service Infrastructure
+---------------------------------------------
 
-Kogumisteenuse taristu eraldatakse teenuse osutamiseks vastavalt koostatud
-seadistustele (:ref:`seadistuste_koostamine`).
+The collector service infrastructure is allocated for providing the service
+according to the prepared settings (:ref:`seadistuste_koostamine`).
 
-Igas teenusmasinas:
+In each service machine:
 
-#. peab olema seadistatud hostinimi (fail :file:`/etc/hostname`);
+#. the hostname must be configured (file :file:`/etc/hostname`);
 
-#. peab olema paigaldatud SSH teenus (tarkvarapakk ``openssh-server``);
+#. the SSH service must be installed (software package ``openssh-server``);
 
-#. peab olema paigaldatud tehnilise seire teenuse agent
-   (tarkvarapakk ``zabbix-agent``);
+#. the technical monitoring service agent must be installed
+   (software package ``zabbix-agent``);
 
-#. peab olema tagatud õige kellaaeg
-   (näiteks õige kellaaja teenuse ``ntp`` abil).
+#. the correct time must be ensured
+   (for example, using the time service ``ntp``).
 
-#. peab olema seadistatud nimelahendus, mis võimaldab kõikide teenusmasinate
-   aadresse lahendada;
+#. name resolution must be configured to allow resolving the addresses of all
+   service machines;
 
-#. peab olema seadistatud Eesti lokaat koos UTF-8 kooditabeli toega
-   ``et_EE.UTF-8`` (kas tarkvarapakk ``locales`` koos nimetatud lokaadi
-   seadistamisega või tarkvarapakk ``locales-all``, mis paigaldab kõik toetatud
-   lokaadid).
+#. the Estonian locale with UTF-8 encoding support ``et_EE.UTF-8`` must be
+   configured (either the ``locales`` package with the named locale configured,
+   or the ``locales-all`` package, which installs all supported locales).
 
 .. note::
 
-   Iga teenusmasina poolt kasutatav nimelahendus peab tagama, et suhtluseks
-   kasutatavate hostide nimed lahenduvad korrektselt.
+   The name resolution used by each service machine must ensure that the
+   names of hosts used for communication resolve correctly.
 
-   Vältima peab olukordi, kus hostinimi lahendub mitmeks aadressiks või
-   teistele hostidele kättesaamatuks aadressiks.
+   Situations where a hostname resolves to multiple addresses or to an
+   address unreachable by other hosts must be avoided.
 
-   Järgnev näide kirjeldab võimalikku olukorda failis :file:`/etc/hosts`, kus
-   operatsioonisüsteemi paigalduse järel on hostinimi ``ivxv123`` määratud kahele
-   liidesele. Sellise seadistuse puhul võib tekkida olukord, kus aadressile
-   ``ivxv123`` ühendusi vastu võtma seadistatud teenus hakkab kuulama kohalikul
-   liidesel ``127.0.0.1`` ja pole avaliku liidese ``192.168.10.1`` kaudu
-   teistele teenustele kättesaadav.
+   The following example describes a possible situation in the file
+   :file:`/etc/hosts`, where after operating system installation, the hostname
+   ``ivxv123`` is assigned to two interfaces. With such a configuration, a
+   situation may arise where a service configured to accept connections on the
+   address ``ivxv123`` starts listening on the local interface ``127.0.0.1``
+   and is not accessible to other services through the public interface
+   ``192.168.10.1``.
 
    .. code-block:: text
 
@@ -177,11 +178,11 @@ Igas teenusmasinas:
       127.0.0.1     ivxv123
       192.168.10.1  ivxv123
 
-Kogumisteenuse taristu jaoks eraldatud hostidest tuleb koostada nimekiri, kus
-on kirjas hosti asukohaks olev alamvõrk, hosti nimi, IP-aadress, SSH-serveri
-avalik võti ja hostile plaanitud teenused.
+A list must be compiled from the hosts allocated for the collector service
+infrastructure, containing the subnet location of the host, host name,
+IP address, SSH server public key, and services planned for the host.
 
-Kogumisteenuse taristu nimekirja näide:
+Example of the collector service infrastructure list:
 
 .. code-block:: text
 
@@ -206,249 +207,255 @@ Kogumisteenuse taristu nimekirja näide:
         SSH-serveri avalik võti:
           ecdsa-sha2-nistp256 AAAE2VjZHNhLXN...rtWT7A= root@ivxv2
 
-Kogumisteenuse taristusse kuuluvad hostid tuleb lisada tehnilisse seiresse.
+Hosts belonging to the collector service infrastructure must be added to
+technical monitoring.
 
-Kogumisteenuse taristu paigaldamise tulemusena on kogumisteenuse osutajal
-olemas dokumenteeritud platvorm kogumisteenuse paigaldamiseks ettenähtud
-konfiguratsiooniga. Kõik taristusse kuuluvad (virtuaal)masinad on tehnilise
-seire teenuse poolt kättesaadavad ja nende seisundis pole tuvastatud probleeme.
-
-
-Võrgupääsude loomine
---------------------
-
-Kogumisteenuse paigaldamiseks ja seadistamiseks on vajalik seadustustele
-vastavate võrgupääsude olemasolu.
+As a result of installing the collector service infrastructure, the collector
+service provider has a documented platform for installing the collector service
+in the designated configuration. All (virtual) machines in the infrastructure
+are accessible by the technical monitoring service and no problems have been
+detected in their state.
 
 
-Süsteemiülemad ja kasutajad
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Creating Network Access
+------------------------
 
-#. Kogumisteenuse süsteemiülemate arvutitest haldusteenusesse
-   (protokoll SSH, port 22);
-
-#. Haldusteenuse kasutajate arvutitest haldusteenusesse
-   (protokoll HTTPS, port 443);
-
-#. Kogumisteenuse süsteemiülemate arvutitest logiseire teenusesse
-   (protokoll SSH, port 22);
-
-#. Logiseire kasutajate arvutitest logiseire teenusesse
-   (protokoll HTTPS, port 443).
+The existence of network access according to the settings is required for
+installing and configuring the collector service.
 
 
-Teenuste omavaheline suhtlus
+System Administrators and Users
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+#. From the collector service system administrators' computers to the management
+   service (protocol SSH, port 22);
+
+#. From the management service users' computers to the management service
+   (protocol HTTPS, port 443);
+
+#. From the collector service system administrators' computers to the log
+   monitoring service (protocol SSH, port 22);
+
+#. From the log monitoring users' computers to the log monitoring service
+   (protocol HTTPS, port 443).
+
+
+Inter-Service Communication
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-#. Haldusteenusest kõikidesse mikroteenustesse
-   (protokoll SSH, port 22);
+#. From the management service to all microservices
+   (protocol SSH, port 22);
 
-#. Haldusteenusest logiseire teenusesse
-   (protokoll SSH, port 22);
+#. From the management service to the log monitoring service
+   (protocol SSH, port 22);
 
-#. Kõigist mikroteenuste hostidest kõikidesse logikogumisteenustesse
-   (protokoll RELP, port 20514);
+#. From all microservice hosts to all log collection services
+   (protocol RELP, port 20514);
 
-#. Kõigist mikroteenuste hostidest kõikidesse välistesse logikogumisteenustesse
-   (sh, ka logiseire teenusesse)
-   (protokoll RELP, port 20514);
+#. From all microservice hosts to all external log collection services
+   (including the log monitoring service)
+   (protocol RELP, port 20514);
 
-#. Kõigist mikroteenuste hostidest logiseire teenusesse
-   (protokoll SSH, port 22);
+#. From all microservice hosts to the log monitoring service
+   (protocol SSH, port 22);
 
-#. Kõigist logikogumisteenuste hostidest logiseire teenusesse
-   (protokoll SSH, port 22);
+#. From all log collection service hosts to the log monitoring service
+   (protocol SSH, port 22);
 
-#. Vahendusteenusest teistesse mikroteenustesse peale talletusteenuse
-   (protokoll TLS, port vastavalt tehnilisele seadistusele);
+#. From the proxy service to other microservices except the storage service
+   (protocol TLS, port according to technical settings);
 
-#. Nimekirjateenusest talletusteenustesse
-   (protokoll TLS, port vastavalt tehnilisele seadistusele);
+#. From the choices service to storage services
+   (protocol TLS, port according to technical settings);
 
-#. Hääletamisteenusest talletusteenustesse
-   (protokoll TLS, port vastavalt tehnilisele seadistusele);
+#. From the voting service to storage services
+   (protocol TLS, port according to technical settings);
 
-#. Kontrolliteenusest talletusteenustesse
-   (protokoll TLS, port vastavalt tehnilisele seadistusele);
+#. From the verification service to storage services
+   (protocol TLS, port according to technical settings);
 
-#. Talletusteenusest teistesse talletusteenustesse
-   (protokoll TLS, port vastavalt tehnilisele seadistusele);
+#. From the storage service to other storage services
+   (protocol TLS, port according to technical settings);
 
-#. Mobiil-ID tugiteenusest välisesse Mobiil-ID teenusesse
-   (protokoll HTTP(S), port vastavalt tehnilisele seadistusele);
+#. From the Mobile-ID support service to the external Mobile-ID service
+   (protocol HTTP(S), port according to technical settings);
 
-#. Smart-ID tugiteenusest välisesse Smart-ID teenusesse
-   (protokoll HTTP(S), port vastavalt tehnilisele seadistusele);
+#. From the Smart-ID support service to the external Smart-ID service
+   (protocol HTTP(S), port according to technical settings);
 
-#. Teistest mikroteenustest Session status tugiteenusesse
-   (protokoll RPC, port vastavalt tehnilisele seadistusele);
+#. From other microservices to the Session status support service
+   (protocol RPC, port according to technical settings);
 
-#. Hääletamisteenusest välisesse kvalifitseerimisteenusesse
-   (protokoll HTTP(S), port vastavalt tehnilisele seadistusele);
+#. From the voting service to the external qualification service
+   (protocol HTTP(S), port according to technical settings);
 
-#. Varundusteenusest haldusteenusesse
-   (protokoll SSH, port 22);
+#. From the backup service to the management service
+   (protocol SSH, port 22);
 
-#. Varundusteenusest logikogumisteenustesse
-   (protokoll SSH, port 22);
+#. From the backup service to log collection services
+   (protocol SSH, port 22);
 
-#. Varundusteenusest talletusteenustesse
-   (protokoll SSH, port 22);
-
-
-Hääletaja
-^^^^^^^^^
-
-#. Hääletaja kasutatavast seadmest vahendusteenusesse
-   (protokoll TLS, port vastavalt tehnilisele seadistusele, eeldatavalt 443).
+#. From the backup service to storage services
+   (protocol SSH, port 22);
 
 
-Haldusteenuse paigaldamine
---------------------------
+Voter
+^^^^^^
 
-Haldusteenuse paigaldamine toimub haldusteenuse hostil.
+#. From the voter's device to the proxy service
+   (protocol TLS, port according to technical settings, presumably 443).
 
-Haldusteenuse paigaldamiseks tuleb kopeerida **kõik** kogumisteenuse
-tarkvarapakid haldusteenuse masina kataloogi :file:`/etc/ivxv/debs/`. Nendest pakkidest
-paigaldatakse haldusteenus, samuti kasutab haldusteenus neid pakke alamteenuste
-paigaldamiseks.
 
-Haldusteenuse sõltuvuste paigaldamine:
+Installing the Management Service
+-----------------------------------
+
+The management service is installed on the management service host.
+
+To install the management service, **all** collector service software packages
+must be copied to the management service machine directory :file:`/etc/ivxv/debs/`.
+The management service is installed from these packages, and the management
+service also uses these packages for installing sub-services.
+
+Installing management service dependencies:
 
 .. include:: genereeritud-failid/haldusteenuse_soltuvuste_paigaldamine.inc
 
-Haldusteenuse paigaldamine:
+Installing the management service:
 
 .. include:: genereeritud-failid/haldusteenuse_paigaldamine.inc
 
 .. important::
 
-   Haldusteenuse edasine kasutamine toimub haldusteenuse konto alt. Selleks
-   tuleb halduril luua SSH-ligipääs haldusteenuse kontole ``ivxv-admin``.
-   Soovitav on autentimine teha ID-kaardi põhiseks (vaata
-   :ref:`configure-ssh-idcard-auth`).
+   Further use of the management service is done under the management service
+   account. To do this, the administrator must create SSH access to the
+   management service account ``ivxv-admin``. It is recommended to use
+   ID card-based authentication (see :ref:`configure-ssh-idcard-auth`).
 
-Haldusteenuse paigaldamise tulemusena on kogumisteenuse osutajal teenuse
-haldamiseks vajalik liides.
-
-
-Haldusteenuse seadistamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Osad haldusteenuse protsessid käivitatakse korrapärase intervalliga cron
-teenuse abil. Nende protsesside puhul väljastatakse võimalik tõrkeinfo
-standardväljunditesse ja cron edastab selle e-posti teel käivitaja konto
-aadressile. Seetõttu tuleb haldusteenuse masinasse paigaldada meiliserver ja
-seadistada see nii, et kõigile masinas asuvatele kontodele (nt.
-``root@localhost``) saadetavad sõnumid edastatakse teenuse halduritele.
+As a result of installing the management service, the collector service provider
+has the interface required for managing the service.
 
 
-Kogumisteenuse taristu hõlmamine haldusesse
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Configuring the Management Service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Haldusteenus kasutab kogumisteenuse haldamiseks SSH protokolli. Selleks, et
-haldusteenusel oleks võimalik teisi teenushoste usaldada, tuleb
-haldusteenusesse lisada hallatavate teenushostide SSH-serveri võtmed.
+Some management service processes are executed at regular intervals using the
+cron service. For these processes, possible error information is output to
+standard outputs and cron forwards it via email to the account address of
+the executor. Therefore, a mail server must be installed on the management
+service machine and configured so that messages sent to all accounts on the
+machine (e.g., ``root@localhost``) are forwarded to the service administrators.
 
-Näide hosti ``ivxv1`` SSH-võtmete lisamisest haldusteenuse usaldatavate hostide
-hulka::
+
+Including Collector Service Infrastructure in Management
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The management service uses the SSH protocol for managing the collector service.
+For the management service to be able to trust other service hosts, the SSH
+server keys of managed service hosts must be added to the management service.
+
+Example of adding the SSH keys of host ``ivxv1`` to the management service's
+trusted hosts::
 
    ivxv-admin@admin $ ssh-keyscan ivxv1 >> ~/.ssh/known_hosts
    # ivxv1:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.2
    # ivxv1:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.2
    # ivxv1:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.2
 
-Selleks, et haldusteenusel oleks võimalik teenushostidesse tarkvara paigaldada,
-tuleb haldusteenuse kontole ``ivxv-admin`` luua SSH-ligipääs teenushostide
-juurkasutaja kontole.
+For the management service to be able to install software on service hosts,
+SSH access must be created for the management service account ``ivxv-admin``
+to the root account of the service hosts.
 
 .. note::
 
-   Haldusteenus vajab juurkasutaja ligipääsu alamteenuse tarkvara
-   paigaldamiseks. Pärast edukat paigaldamist ühel hostil eemaldab
-   haldusteenus ligipääsu selle hosti juurkasutaja kontole.
+   The management service needs root access for installing sub-service
+   software. After successful installation on one host, the management
+   service removes access to that host's root account.
 
-Haldusteenuse konto SSH-võtmepaari avalik võti asub kasutaja ``ivxv-admin``
-kodukataloogi all failis :file:`.ssh/id_ed25519.pub` ja see on genereeritud
-haldusteenuse paigaldamise käigus. Vajadusel võib haldur selle võtme asendada
-(kuid see peab toimuma enne, kui võti on üle kantud hallatavatesse
-teenusmasinatesse).
+The public key of the management service account SSH key pair is located in the
+``ivxv-admin`` user's home directory in the file :file:`.ssh/id_ed25519.pub`
+and is generated during the management service installation. If necessary, the
+administrator may replace this key (but this must be done before the key is
+transferred to the managed service machines).
 
-Teenusmasinas tuleb haldusteenuse konto SSH avalik võti panna faili
-:file:`/root/.ssh/authorized_keys`. See fail peab kuuluma juurkasutajale ja
-olema loetav ainult juurkasutaja poolt (faili pääsuõigused ``0600``).
+On the service machine, the management service account SSH public key must be
+placed in the file :file:`/root/.ssh/authorized_keys`. This file must be owned
+by the root user and readable only by the root user (file permissions ``0600``).
 
-Kogumisteenuse taristu haldusesse hõlmamise tulemusena on haldusteenusel
-usaldusväärne ligipääs kogumisteenuse taristusse kuuluvatele teenusmasinate
-juurkasutaja kontodele.
+As a result of including the collector service infrastructure in management, the
+management service has trusted access to the root accounts of the service
+machines belonging to the collector service infrastructure.
 
 
-Logiseire lahenduse ühendamine haldusteenusega
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Connecting the Log Monitoring Solution with the Management Service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Logiseire lahenduse kasutamise korral peab haldusteenusel olema ligipääs
-logiseire lahendusele, et sealt kogutud statistikat alla laadida ja vajadusel
-värskendada logiseire poolt analüüsitavaid logisid.
+When using the log monitoring solution, the management service must have access
+to the log monitoring solution to download collected statistics from there and,
+if necessary, update the logs analyzed by the log monitoring solution.
 
-Selleks, et haldusteenusel oleks usaldus logiseire teenuse vastu, tuleb
-haldusteenusesse lisada logiseire teenuse hosti (käesolevas näites nimega
-``logmonitor``) SSH-serveri võtmed::
+For the management service to trust the log monitoring service, the SSH server
+keys of the log monitoring service host (in this example named ``logmonitor``)
+must be added to the management service::
 
    ivxv-admin@admin $ ssh-keyscan -t ecdsa logmonitor >> ~/.ssh/known_hosts
 
-Selleks, et haldusteenus pääseks logiseire kontole ligi, tuleb haldusteenuse
-konto SSH avalik võti panna logiseire konto ``logmon`` volitatud võtmete faili
-:file:`~logmon/.ssh/authorized_keys`. See fail peab kuuluma logimonitori
-kasutajale ja olema loetav ainult selle kasutaja poolt (faili pääsuõigused
-``0600``).
+For the management service to access the log monitoring account, the management
+service account SSH public key must be placed in the authorized keys file of the
+log monitoring account ``logmon``
+:file:`~logmon/.ssh/authorized_keys`. This file must be owned by the log monitor
+user and readable only by that user (file permissions ``0600``).
 
-Logiseire lahenduse haldusteenusega ühendamise tulemusena on tegevuslogi
-seirelahendus haldusteenusele kättesaadav ning haldusteenusel on võimalik
-seirelahendusest statistikaandmeid laadida ning seirelahenduse andmehoidlasse
-ajakohaseid logiandmeid üle kanda.
+As a result of connecting the log monitoring solution with the management
+service, the activity log monitoring solution is accessible to the management
+service, and the management service can load statistics data from the monitoring
+solution and transfer up-to-date log data to the monitoring solution's data
+store.
 
 
-Haldusteenuse veebiliidese vaikimisi TLS-sertifikaadi asendamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Replacing the Management Service Default Web Interface TLS Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Haldusteenuse paigalduse käigus genereeritakse kasutajaliidese veebiserveri
-TLS-sertifikaat koos krüptovõtmega ja tugeva Diffie-Hellman grupifailiga (vaata
-https://weakdh.org/). Vajadusel on halduril võimalik need asendada.
+During management service installation, a TLS certificate with a cryptographic
+key and a strong Diffie-Hellman group file (see https://weakdh.org/) are
+generated for the user interface web server. If necessary, the administrator can
+replace them.
 
-Failide asukohad:
+File locations:
 
-* Veebiserveri TLS-sertifikaadi võti:
+* Web server TLS certificate key:
   :file:`/etc/ssl/private/ivxv-admin-default.key`
 
-* Veebiserveri TLS-sertifikaat: :file:`/etc/ssl/certs/ivxv-admin-default.crt`
+* Web server TLS certificate: :file:`/etc/ssl/certs/ivxv-admin-default.crt`
 
-* Diffie-Hellmani grupifail: :file:`/etc/ssl/dhparams.pem`
+* Diffie-Hellman group file: :file:`/etc/ssl/dhparams.pem`
 
-Asendatud failide rakendamiseks tuleb veebiserver taaskäivitada käsuga
-:command:`service apache2 restart` ja veenduda, et veebiliides töötab.
+To apply replaced files, the web server must be restarted using the command
+:command:`service apache2 restart` and the web interface must be verified to
+be working.
 
-Haldusteenuse veebiliidese vaikimisi TLS-sertifikaadi asendamise tulemusena
-kasutab haldusteenuse veebiliides turvalist sertifikaati.
+As a result of replacing the management service default web interface TLS
+certificate, the management service web interface uses a secure certificate.
 
 
-Haldusteenuse vaikimisi autentimissertifikaadi asendamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Replacing the Management Service Default Authentication Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Haldusteenuse paigalduse käigus genereeritakse haldusteenuse
-autentimissertifikaat koos krüptovõtmega (haldusteenus kasutab seda Valimiste
-Infosüsteemiga infovahetusel autentimiseks). Vajadusel on halduril võimalik
-need asendada.
+During management service installation, a management service authentication
+certificate with a cryptographic key is generated (the management service uses
+this for authentication when exchanging information with the Election
+Information System). If necessary, the administrator can replace them.
 
-Failide asukohad:
+File locations:
 
-* Autentimissertifikaadi võti: :file:`/etc/ssl/private/ivxv-admin-client.key`
+* Authentication certificate key: :file:`/etc/ssl/private/ivxv-admin-client.key`
 
-* Autentimissertifikaat: :file:`/etc/ssl/certs/ivxv-admin-client.crt`
+* Authentication certificate: :file:`/etc/ssl/certs/ivxv-admin-client.crt`
 
-Haldusteenuse vaikimisi autentimissertifikaadi asendamise tulemusena kasutab
-haldusteenus Valimiste Infosüsteemi autentimiseks turvalist sertifikaati.
+As a result of replacing the management service default authentication
+certificate, the management service uses a secure certificate for
+authenticating with the Election Information System.
 
-Autentimissertifikaadi testimine:
+Testing the authentication certificate:
 
 .. code-block:: shell-session
 
@@ -457,124 +464,128 @@ Autentimissertifikaadi testimine:
      -key /etc/ssl/private/ivxv-admin-client.key
 
 
-Haldusteenuse lähtestamine
---------------------------
+Resetting the Management Service
+----------------------------------
 
-Haldusteenuse lähtestamine toimub käsuga :ref:`ivxv-collector-init`. Selle
-käigus puhastatakse haldusteenuse andmekataloogid ja lähtestatakse andmebaas.
+Resetting the management service is done using the command
+:ref:`ivxv-collector-init`. During this process, the management service data
+directories are cleaned and the database is reset.
 
 
-Seadistuste ja valimisnimekirjade rakendamine kogumisteenusele
+Applying Settings and Election Lists to the Collector Service
 --------------------------------------------------------------
 
 .. note::
 
-   Käesolevas lõigus ja alamlõikudes tähendab "seadistuspakk" nii seadistusi
-   sisaldavat faili kui valimisnimekirja faili, mis on signeeritud volitatud
-   isiku poolt.
+   In this section and subsections, "configuration package" refers to both a
+   file containing settings and an election list file signed by an authorized
+   person.
 
-Kogumisteenusele tuleb rakendada järgmised seadistuspakid:
+The following configuration packages must be applied to the collector service:
 
-#. Usaldusjuur – laaditakse alati esimesena;
+#. Trust root — always loaded first;
 
-#. Kogumisteenuse tehniline seadistus – laaditakse enne valimiste seadistust;
+#. Collector service technical settings — loaded before election settings;
 
-#. Valimiste seadistus – laaditakse enne nimekirju;
+#. Election settings — loaded before lists;
 
-#. Valikute nimekiri;
+#. Choices list;
 
-#. Ringkondade nimekiri;
+#. District list;
 
-#. Valijate algnimekiri.
+#. Initial voter list.
 
-Ettevalmistatud seadistuspakkide rakendamiseks tuleb läbi viia järgmised
-tegevused:
+The following steps must be taken to apply the prepared configuration packages:
 
-#. Ülekandmine haldusteenuse masinasse;
+#. Transfer to the management service machine;
 
-#. Laadimine haldusteenusesse;
+#. Loading into the management service;
 
-#. Rakendamine alamteenustele.
+#. Applying to sub-services.
 
 .. hint::
 
-   Seadistuspakkide ettevalmistamine on kirjeldatud lõigus
+   Preparation of configuration packages is described in section
    ":ref:`seadistuste_koostamine`".
 
 .. attention::
 
-   Usaldusjuure seadistuse laadimisega kaasneb alati ka
-   kogumisteenuse haldusteenuse andmebaasi lähtestamine!
+   Loading trust root settings always involves resetting the collector service
+   management service database!
 
-Seadistuste ja valimisnimekirjade kogumisteenusele rakendamise tulemusena on
-kogumisteenus seadistatud ettenähtud perioodil osutama nõuetekohast häälte
-kogumise teenust.
+As a result of applying settings and election lists to the collector service,
+the collector service is configured to provide a proper vote collection service
+during the designated period.
 
 
-Seadistuspaki ülekandmine haldusteenuse masinasse
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Transferring a Configuration Package to the Management Service Machine
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Seadistuspaki ülekandmine haldusteenuse masinasse toimub üle `SCP
-<https://en.wikipedia.org/wiki/Secure_copy>`_ protokolli. Seadistuspakk peab
-olema kättesaadav haldusteenuse kasutajakontole ``ivxv-admin``.
+Transferring a configuration package to the management service machine is done
+over the `SCP <https://en.wikipedia.org/wiki/Secure_copy>`_ protocol. The
+configuration package must be accessible to the management service user account
+``ivxv-admin``.
 
-Näide::
+Example::
 
    $ scp seadistus.asice ivxv-admin@admin:
    seadistus.asice              100%   15KB  79.5KB/s   00:00
 
 .. note::
 
-   Kogumisteenus osutaja võib seadistuspakkide ülekandmiseks kasutada ka muid
-   meetodeid, näiteks irdmeediat.
+   The collector service provider may also use other methods for transferring
+   configuration packages, such as removable media.
 
-Seadistuspaki ülekandmise tulemusena on seadistuspakk haldusteenuse poolt
-ligipääsetaval andmekandjal.
+As a result of transferring the configuration package, the package is on a data
+carrier accessible by the management service.
 
 
-Seadistuspaki laadimine haldusteenusesse
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Loading a Configuration Package into the Management Service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Seadistuspakk laaditakse haldusteenusesse käsuga :ref:`ivxv-cmd-load`. Selle
-käigus kontrollib haldusteenus seadistuspaki signeerinud isiku volitusi ja
-valideerib seadistuste sisu ning kooskõlalisust. Laadimise tulemusena on
-seadistuspakk valmis rakendamiseks hallatavatele teenustele.
+The configuration package is loaded into the management service using the
+command :ref:`ivxv-cmd-load`. During this process, the management service
+verifies the authorizations of the person who signed the configuration package
+and validates the content and consistency of the settings. As a result of
+loading, the configuration package is ready to be applied to the managed
+services.
 
-Näide: Usaldusjuure laadimine haldusteenusesse:
+Example: Loading the trust root into the management service:
 
 .. include:: genereeritud-failid/haldusteenus-laadi_usaldusjuure_seadistused.inc
 
-Seadistuspaki haldusteenusesse laadimise tulemusena on haldusteenus valmis
-rakendama seadistuspakki alamteenustele. Seadistuspaki versiooni kuvatakse
-haldusteenuse olekuandmetes.
+As a result of loading the configuration package into the management service,
+the management service is ready to apply the configuration package to the
+sub-services. The configuration package version is displayed in the management
+service status data.
 
 .. seealso:: * :ref:`korralduste-valideerimine`
 
 
-Seadistuste rakendamine alamteenustele
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Applying Settings to Sub-Services
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Haldusteenusesse laaditud seadistuspakid rakendatakse hallatavatele teenustele
-käsuga :ref:`ivxv-config-apply`. Rakendamine on võimalik tehniliste seadistuse
-laadimise järel, kuna tehnilise seadistusega tekivad haldusteenusesse andmed
-hallatavate teenuste kohta.
+Configuration packages loaded into the management service are applied to
+managed services using the command :ref:`ivxv-config-apply`. Application is
+possible after loading the technical settings, since the technical settings
+provide the management service with data about the managed services.
 
-Seadistuste rakendamise käigus haldusteenus:
+During the settings application, the management service:
 
-* Paigaldab seadistatava teenuse tarkvara (tehnilise seadistuse laadimisel, kui
-  pole eelnevalt paigaldatud);
+* Installs the service software being configured (when loading technical
+  settings, if not previously installed);
 
-* Kannab seadistuspaki üle hallatava teenuse hosti failisüsteemi;
+* Transfers the configuration package to the managed service host file system;
 
-* Valimiste seadistuse laadimisel lubab ja käivitab seadistatava teenuse.
+* When loading election settings, enables and starts the service being configured.
 
 .. note::
 
-   Seadistuste rakendamise järjekord on kirjeldatud utiliidi ivxv-config-apply
-   abiteabe lõigus (vaata :ref:`ivxv-config-apply`).
+   The order of settings application is described in the help text section of
+   the ivxv-config-apply utility (see :ref:`ivxv-config-apply`).
 
-Näide: Haldusteenusesse laaditud seadistuste rakendamine hallatavatele
-teenusele::
+Example: Applying settings loaded into the management service to the managed
+services::
 
    ivxv-admin@admin $ ivxv-config-apply
    INFO: Technical config is signed by ÕIGE,VALIK,44444444444 2017-06-07T12:05:44Z
@@ -599,30 +610,30 @@ teenusele::
    INFO: Service voting@voting3.ivxv.ee: technical config config applied successfully
    INFO: 15 configuration packages successfully applied
 
-Seadistuste alamteenustele rakendamise tulemusena on hallatavad teenused
-seadistatud ja nende seisund on haldusteenusest jälgitav.
+As a result of applying settings to sub-services, the managed services are
+configured and their state is monitorable from the management service.
 
 .. seealso:: * :ref:`korralduste-laadimine-rakendamine`
 
 
-Kogumisteenuse krüptovõtmete rakendamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Applying Collector Service Cryptographic Keys
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Teenuste krüptovõtmete ja TLS-sertifikaatide** rakendamine toimub käsuga
-:ref:`ivxv-secret-load`.
+**Service cryptographic keys and TLS certificates** are applied using the
+command :ref:`ivxv-secret-load`.
 
 .. hint::
 
-   Teenuse krüptovõtmete seisundit on võimalik väljastada käsuga
-   :command:`ivxv-status --service=<service-id>` (vaata :ref:`ivxv-status`)
+   The state of service cryptographic keys can be displayed using the command
+   :command:`ivxv-status --service=<service-id>` (see :ref:`ivxv-status`)
 
-Võtme laadimine teenusele:
+Loading a key to a service:
 
 .. code-block:: shell-session
 
    $ ivxv-secret-load --service=<teenuse-id> tls-key tls.key
 
-Sertifikaadi laadimine teenusele:
+Loading a certificate to a service:
 
 .. code-block:: shell-session
 
@@ -630,11 +641,11 @@ Sertifikaadi laadimine teenusele:
 
 .. important::
 
-   Igale teenuse isendile tuleb rakendada selle
-   isendi jaoks genereeritud võti ja sertifikaat!
+   Each service instance must have the key and certificate generated
+   specifically for that instance applied!
 
-**Hääletamisteenuse ajatemplipäringute signeerimisvõtme** rakendamine toimub
-käsuga :ref:`ivxv-secret-load`:
+**Applying the voting service time-stamp request signing key** is done using
+the command :ref:`ivxv-secret-load`:
 
 .. code-block:: shell-session
 
@@ -642,12 +653,12 @@ käsuga :ref:`ivxv-secret-load`:
 
 .. note::
 
-   Hääletamisteenuse ajatemplipäringute signeerimisvõti on vaja rakendada vaid
-   juhul, kui ajatempliteenust kasutatakse registreerimisteenuseks (valimiste
-   seadistuses on ``qualification/protocol`` välja väärtuseks ``tspreg``).
+   The voting service time-stamp request signing key only needs to be applied
+   if the time-stamping service is used as a registration service (the value
+   of the ``qualification/protocol`` field in the election settings is ``tspreg``).
 
-**Mobiil-ID/Smart-ID/Web eID identsustõendi võtme** rakendamine toimub
-käsuga :ref:`ivxv-secret-load`:
+**Applying the Mobile-ID/Smart-ID/Web eID identity token key** is done using
+the command :ref:`ivxv-secret-load`:
 
 .. code-block:: shell-session
 
@@ -655,23 +666,24 @@ käsuga :ref:`ivxv-secret-load`:
 
 .. note::
 
-   Mobiil-ID/Smart-ID/Web eID identsustõendi võti on vaja rakendada vaid
-   juhul, kui Mobiil-ID/Smart-ID/Web eID tugiteenus on kasutusel
-   (valimiste seadistuses on olemas plokk ``auth.ticket``).
+   The Mobile-ID/Smart-ID/Web eID identity token key only needs to be applied
+   if the Mobile-ID/Smart-ID/Web eID support service is in use
+   (the election settings contain the ``auth.ticket`` block).
 
-Kogumisteenuse krüptovõtmete rakendamise tulemusena on hallatavate teenuste
-suhtluskanalid varustatud kanali turvamiseks vajalike krüptovõtmetega, samuti
-on teenustel olemas krüptovõtmed muude oluliste operatsioonide jaoks.
+As a result of applying collector service cryptographic keys, the communication
+channels of managed services are equipped with the cryptographic keys required
+for securing the channel, and the services also have cryptographic keys for
+other important operations.
 
 
-Algseadistamise tulemuse kontrollimine
---------------------------------------
+Verifying the Initial Setup Result
+------------------------------------
 
-Algseadistamise tegevuste tulemusena on kogumisteenus eeldatavalt valmis
-hääletuse läbiviimiseks. Tulemust on võimalik kontrollida kogumisteenuse oleku
-jälgimisega, mis on kirjeldatud süsteemi haldustoimingute lõigus
-(:ref:`kogumisteenuse-oleku-jälgimine`).
+As a result of the initial setup activities, the collector service is presumably
+ready for conducting the election. The result can be verified by monitoring the
+collector service status, which is described in the system administrative
+operations section (:ref:`kogumisteenuse-oleku-jälgimine`).
 
-Hääletuse läbiviimiseks seadistatud kogumisteenuse olek on "Seadistatud"
-(CONFIGURED). Oleku "Paigaldatud" puhul tuleb kontrollida mikroteenuste
-seisundit ja seisundi taustainfot.
+The state of the collector service configured for conducting an election is
+"Configured" (CONFIGURED). If the state is "Installed", the microservice states
+and state background information should be checked.

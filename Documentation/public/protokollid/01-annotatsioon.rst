@@ -1,13 +1,13 @@
-..  IVXV protokollid
+..  IVXV protocols
 
 
 ================================================================================
-Annotatsioon
+Abstract
 ================================================================================
 
-Käesolev dokument kirjeldab elektroonilise hääletamise infosüsteemi IVXV
-protokollistikku.
+This document describes the protocol suite of the electronic voting information
+system IVXV.
 
-Dokument annab üldise ülevaate elektroonilise hääletamise süsteemi tehnilisest
-ülesehitusest ja kasutatavatest protokollidest. Dokumendis defineeritakse
-protokollides kasutatavad ühised mõisted ja andmestruktuurid.
+The document provides a general overview of the technical architecture of the
+electronic voting system and the protocols used. The document defines the common
+concepts and data structures used in the protocols.

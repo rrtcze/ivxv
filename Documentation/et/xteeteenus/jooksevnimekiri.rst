@@ -1,20 +1,20 @@
-..  IVXV tehniline dokumentatsioon
+..  IVXV technical documentation
 
-E-hääletamiste jooksev nimekiri
-===============================
+Running List of E-votes
+=======================
 
-Teenus vahendab jooksvat nimekirja EHS-ist X-tee-le.
+The service mediates the running list from the vote collector service to X-Road.
 
 .. figure:: model/xteevotesorder.png
 
-   X-tee turvaserveri suhtlus EHS-iga
+   X-Road security server communication with the vote collector service
 
-Teenuses konfigureeritakse valimissündmused, mille nimekirja on võimalik küsida.
+Election events whose list can be queried are configured in the service.
 
-Teenus pakub kolme otspunkti:
+The service provides three endpoints:
 
-1. ``Valimissündmuste loetelu`` - väljastab aktiivsete valimissündmuste loetelu
+1. ``Election event list`` - returns the list of active election events
 
-2. ``Viimane järjenumber`` - väljastab konkreetse valimissündmuse viimase EHS-s registreeritud e-hääletamise järjenumbri.
+2. ``Last sequence number`` - returns the last e-vote sequence number registered in the vote collector service for a specific election event.
 
-3. ``e-hääletamiste pakk`` - väljastab EHS-lt valimissündmuse e-hääletamiste paki, alatest e-hääletamisest järjenumbriga.
+3. ``E-vote batch`` - returns the e-vote batch from the vote collector service for an election event, starting from the e-vote with the given sequence number.

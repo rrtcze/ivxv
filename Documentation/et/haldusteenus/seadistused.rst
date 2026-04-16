@@ -1,49 +1,50 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Seadistuste rakendamise seisundid
+Configuration application states
 =================================
 
-Seadistuste seisundite jälgimise leht avaneb menüüvalikust ``Seadistused``.
+The configuration states monitoring page opens from the menu option ``Seadistused``.
 
-Seisundit kuvatakse järgmiste seadistuste kohta:
+The status is displayed for the following configurations:
 
-* Usaldusjuure seadistused;
+* Trust root configuration;
 
-* Tehniline seadistus;
+* Technical configuration;
 
-* Valimiste seadistus;
+* Election configuration;
 
-* Valikute nimekiri;
+* Choices list;
 
-* Ringkondade nimekiri;
+* Districts list;
 
-* Valijate nimekirjad.
+* Voter lists.
 
-Seisundit ei kuvata järgmiste seadistuste kohta:
+The status is not displayed for the following configurations:
 
-* Kasutaja volitused (on laadimisel kohe rakendatud).
+* User permissions (applied immediately upon loading).
 
-Haldusteenusesse laaditud seadistuste kohta kuvatakse:
+For configurations loaded into the management service, the following is displayed:
 
-* Seadistuse rakendamise seisundit;
+* Configuration application status;
 
-* Aktiivse seadistuse versiooni;
+* Active configuration version;
 
-* Seadistuste rakendamise katsete arvu;
+* Number of configuration application attempts;
 
-* Rakendamisele saadetud seadistuse kohta ka rakendamise logi.
+* For configurations sent for application, the application log is also displayed.
 
 
-Seadistuste laadimine kogumisteenusesse
----------------------------------------
+Loading configurations into the collector service
+---------------------------------------------------
 
-Tehnilise seadistuse ja valimiste seadistuste laadimiseks kogumisteenusesse on
-lehe allosas laadimisvorm. Laadida on lubatud ainult volitatud kasutajate poolt
-digitaalselt signeeritud seadistuspakke. Seadistuste laadimise järjekord ei ole
-oluline. Valimiste seadistuse laadimine on eelduseks valimiste nimekirjade
-laadimisele.
+To load the technical configuration and election configurations into the collector
+service, there is a loading form at the bottom of the page. Only configuration
+packages digitally signed by authorized users are allowed to be loaded. The order
+of loading configurations is not important. Loading the election configuration is
+a prerequisite for loading election lists.
 
 .. note::
 
-   Usaldusjuure seadistuse laadib kogumisteenuse haldur käsurealt. Enne
-   usaldusjuure laadimist pole kogumisteenuse haldusliidest võimalik kasutada.
+   The trust root configuration is loaded by the collector service administrator
+   from the command line. The collector service management interface cannot be used
+   before the trust root is loaded.

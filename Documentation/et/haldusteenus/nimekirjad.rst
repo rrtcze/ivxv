@@ -1,77 +1,74 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Nimekirjade haldamine
-=====================
+List management
+================
 
-Nimekirjade haldamise leht avaneb menüüvalikust ``Nimekirjad``.
-
-
-Valikute nimekiri
------------------
-
-Valikute nimekirja kohta kuvatakse nimekirja seisundit ja laaditud nimekirja
-korral selle versiooni (nimekirja signeerija andmed koos digiallkirja
-ajatempliga).
-
-Nimekirja võimalikud seisundid on:
-
-#. Laadimata;
-
-#. Laaditud haldusteenusesse;
-
-#. Rakendatud kogumisteenusele.
+The list management page opens from the menu option ``Nimekirjad``.
 
 
-Valijate nimekirjad
--------------------
+Choices list
+-------------
 
-Valijate nimekirjade kohta kuvatakse nimekirjade koguarvu, nimekirjade arvu
-seisundi kaupa ning loetelu kõigi kogumisteenuses registreeritud nimekirjade
-kohta (versioon ja seisund).
+For the choices list, the list status and, if loaded, its version (the signer's
+data along with the digital signature timestamp) are displayed.
 
-Valijate algnimekirja korral on nimekirja versioon nimekirja signeerija andmed
-koos digiallkirja ajatempliga; muudatusnimekirja korral nimekirja allalaadimise
-URL koos allalaadimise hetke ajatempliga.
+The possible list statuses are:
 
-Nimekirja võimalikud seisundid on:
+#. Not loaded;
 
-#. Rakendamise ootel;
+#. Loaded into the management service;
 
-#. Rakendatud kogumisteenusele;
-
-#. Vigane;
-
-#. Vahele jäetud.
+#. Applied to the collector service.
 
 
-Ringkondade nimekiri
---------------------
+Voter lists
+------------
 
-Ringkondade nimekirja kohta kuvatakse nimekirja seisundit ja laaditud nimekirja
-korral selle versiooni (nimekirja signeerija andmed koos digiallkirja
-ajatempliga).
+For voter lists, the total number of lists, the number of lists per status,
+and a listing of all lists registered in the collector service (version and status)
+are displayed.
 
-Nimekirja võimalikud seisundid on:
+For the initial voter list, the list version is the signer's data along with the
+digital signature timestamp; for a changelist, it is the download URL along with
+the download timestamp.
 
-#. Laadimata;
+The possible list statuses are:
 
-#. Laaditud haldusteenusesse;
+#. Pending application;
 
-#. Rakendatud kogumisteenusele.
+#. Applied to the collector service;
+
+#. Invalid;
+
+#. Skipped.
 
 
-Nimekirjade laadimine kogumisteenusesse
----------------------------------------
+Districts list
+---------------
 
-Nimekirjade laadimiseks kogumisteenusesse on lehe allosas laadimisvorm. Laadida
-on lubatud ainult volitatud kasutajate poolt digitaalselt signeeritud
-nimekirju.
+For the districts list, the list status and, if loaded, its version (the signer's
+data along with the digital signature timestamp) are displayed.
+
+The possible list statuses are:
+
+#. Not loaded;
+
+#. Loaded into the management service;
+
+#. Applied to the collector service.
+
+
+Loading lists into the collector service
+-----------------------------------------
+
+To load lists into the collector service, there is a loading form at the bottom of
+the page. Only lists digitally signed by authorized users are allowed to be loaded.
 
 .. note::
 
-   Nimekirjade laadimise järjekord ei ole oluline. Enne nimekirjade laadimist
-   tuleb laadida valimiste seadistused.
+   The order of loading lists is not important. Election configurations must be
+   loaded before loading lists.
 
 .. important::
 
-   Valikute nimekirja on võimalik kogumisteenusele rakendada ainult üks kord!
+   The choices list can only be applied to the collector service once!

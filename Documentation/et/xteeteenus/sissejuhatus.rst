@@ -1,13 +1,13 @@
-..  IVXV tehniline dokumentatsioon
+..  IVXV technical documentation
 
-Sissejuhatus
+Introduction
 ============
 
-X-tee teenus on vahendamaks päringuid EHS-i(de) ja X-tee turvaserveri vahel.
+The X-Road service mediates requests between the vote collector service(s) and the X-Road security server.
 
 
 .. figure:: model/xteeivxv.png
 
-   X-tee teenus turvaserveri ja EHS-ide vahel
+   X-Road service between the security server and vote collector services
 
-Dokumendis spetsifitseeritakse teenuse tehnilised detailid.
+This document specifies the technical details of the service.

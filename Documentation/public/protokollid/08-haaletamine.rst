@@ -1,274 +1,278 @@
-..  IVXV protokollid
+..  IVXV protocols
 
 ===================
-Suhtlusprotokollid
+Communication Protocols
 ===================
 
-Liides
+Interface
 ------
 
-Kogumisteenuse valijale suunatud mikroteenused suhtlevad valijarakendusega ja
-kontrollrakendusega JSON-RPC protokolli vahendusel.
+The collection service's voter-facing microservices communicate with the voter
+application and the verification application via the JSON-RPC protocol.
 
-:id: JSON-RPC päringuidentifikaator
-:method: RPC-meetod
-:params: Konkreetse RPC-meetodi parameetrid
+:id: JSON-RPC request identifier
+:method: RPC method
+:params: Parameters of the specific RPC method
 
 .. literalinclude:: ../../common/examples/json.rpc.method.query.json
    :language: json
    :linenos:
 
-:error: Võimalik veainfo või ``null`` vea puudumisel
-:id: JSON-RPC päringuidentifikaator, peab ühtima päringus kasutatud id'ga
-:result: Meetodipõhine vastusandmestruktuur
+:error: Possible error information or ``null`` if no error
+:id: JSON-RPC request identifier, must match the id used in the request
+:result: Method-specific response data structure
 
 .. literalinclude:: ../../common/examples/json.rpc.method.response.json
    :language: json
    :linenos:
 
-Esimese päringuvahetuse käigus mõne IVXV mikroteenusega väljastatakse suhtlevale
-rakendusele HEX-kodeeritud unikaalne seansiidentifikaator (``result.SessionID``),
-mida rakendus kasutab edaspidi kõigis kogumisteenuse suunalistes päringutes
-(``params.SessionID``). Seansiidentifikaatori abil seostatakse
-hääletamisega seotud RPC-päringud üheks seansiks. Seostamine on informatiivne
-ning selle eesmärk on logianalüüsi lihtsustamine, hääle ringkonnakuuluvust jm.
-sisulisi aspekte puudutavad otsused tehakse digiallkirjastatud andmete põhjal.
+During the first request exchange with any IVXV microservice, the communicating
+application is issued a HEX-encoded unique session identifier (``result.SessionID``),
+which the application uses in all subsequent requests to the collection service
+(``params.SessionID``). The session identifier is used to associate RPC requests
+related to voting into a single session. The association is informational and
+its purpose is to simplify log analysis; decisions regarding vote district
+affiliation and other substantive aspects are made based on digitally signed data.
 
-Transpordiprotokollina on kasutusel TLS. Krüpteeritud kanali termineerimine
-toimub konkreetses mikroteenuses. Võimaldamaks koormuse jaotamist ning
-mikroteenuste paindlikku evitamist kasutatakse TLS-SNI laiendust, mis lubab
-vahendusteenusel TLS voogu termineerimata õigesse mikroteenusinstantsi suunata.
-Vahendusteenus on tüüpiliselt kättesaadav kogumisteenuse välise liidese pordis
-443.
+TLS is used as the transport protocol. Encrypted channel termination takes
+place in the specific microservice. To enable load balancing and flexible
+deployment of microservices, the TLS-SNI extension is used, which allows
+the proxy service to route the TLS stream to the correct microservice instance
+without terminating it. The proxy service is typically available on port 443
+of the collection service's external interface.
 
-Valikute nimekirja hankimine
+Obtaining the Choices List
 ----------------------------
 
-Valikute nimekirja hankimine tähendab valijarakenduse suhtlemist
-nimekirjateenusega (SNI ``choices.ivxv.invalid``). Valikute nimekirja hankimine
-eeldab valija autentimist ning tema ringkonnakuuluvuse tuvastamist.
+Obtaining the choices list means the voter application's communication with the
+choices service (SNI ``choices.ivxv.invalid``). Obtaining the choices list
+requires voter authentication and determination of their district affiliation.
 
-Valijarakendus teeb päringu ``RPC.VoterChoices`` nimekirjade hankimiseks.
+The voter application makes the request ``RPC.VoterChoices`` to obtain the lists.
 
-:params.AuthMethod: Toetatud valikud on meetodid ``tls`` ja ``ticket``.
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
+:params.AuthMethod: Supported options are methods ``tls`` and ``ticket``.
+:params.OS: Operating system on which the voter application is used.
 
-Päring ``RPC.VoterChoices`` ID-kaardiga autentimise korral - autentimine toimub
-TLS-protokolli tasemel päringu töötlemise ajal kasutades ID-kaardi
-autentimissertifikaati.
+Request ``RPC.VoterChoices`` for authentication with an ID card - authentication
+takes place at the TLS protocol level during request processing using the ID
+card's authentication certificate.
 
 .. literalinclude:: ../../common/examples/id.rpc.voterchoices.query.json
    :language: json
    :linenos:
 
-Päring ``RPC.VoterChoices`` Mobiil-ID'ga autentimise korral - päringu
-sooritamiseks tuleb eelnevalt kasutada Mobiil-ID vahendusteenuse (SNI
-``mid.ivxv.invalid``) abi allkirjastatud autentimistõendi saamiseks.
+Request ``RPC.VoterChoices`` for authentication with Mobile-ID - to make the
+request, the Mobile-ID mediation service (SNI ``mid.ivxv.invalid``) must first
+be used to obtain a signed authentication token.
 
-:params.AuthToken: Autentimisteenuse vahendusel allkirjastatud tõend, mis
-                   sisaldab endas valija unikaalset identifikaatorit.
+:params.AuthToken: A signed token obtained through the authentication service,
+                   which contains the voter's unique identifier.
 
-:params.SessionID: Kuna Mobiil-ID korral on nimekirja hankimisele eelnenud
-                   interaktsioon autentimistõendi saamiseks, on olemas
-                   seansiidentifikaator, mida tuleb kasutada.
+:params.SessionID: Since in the Mobile-ID case, there was an interaction to
+                   obtain the authentication token before obtaining the list,
+                   there is a session identifier that must be used.
 
 .. literalinclude:: ../../common/examples/mid.rpc.voterchoices.query.json
    :language: json
    :linenos:
 
-Päring ``RPC.VoterChoices`` Smart-ID'ga autentimise korral - päringu
-sooritamiseks tuleb eelnevalt kasutada Smart-ID vahendusteenuse (SNI
-``smartid.ivxv.invalid``) abi allkirjastatud autentimistõendi saamiseks.
+Request ``RPC.VoterChoices`` for authentication with Smart-ID - to make the
+request, the Smart-ID mediation service (SNI ``smartid.ivxv.invalid``) must
+first be used to obtain a signed authentication token.
 
-:params.AuthToken: Autentimisteenuse vahendusel allkirjastatud tõend, mis
-                   sisaldab endas valija unikaalset identifikaatorit.
+:params.AuthToken: A signed token obtained through the authentication service,
+                   which contains the voter's unique identifier.
 
-:params.SessionID: Kuna Smart-ID korral on nimekirja hankimisele eelnenud
-                   interaktsioon autentimistõendi saamiseks, on olemas
-                   seansiidentifikaator, mida tuleb kasutada.
+:params.SessionID: Since in the Smart-ID case, there was an interaction to
+                   obtain the authentication token before obtaining the list,
+                   there is a session identifier that must be used.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.voterchoices.query.json
    :language: json
    :linenos:
 
-Päring ``RPC.VoterChoices`` Web eID'ga autentimise korral - päringu
-sooritamiseks tuleb eelnevalt kasutada Web eID vahendusteenuse (SNI
-``webeid.ivxv.invalid``) abi allkirjastatud autentimistõendi saamiseks.
+Request ``RPC.VoterChoices`` for authentication with Web eID - to make the
+request, the Web eID mediation service (SNI ``webeid.ivxv.invalid``) must
+first be used to obtain a signed authentication token.
 
-:params.AuthToken: Autentimisteenuse vahendusel allkirjastatud tõend, mis
-                   sisaldab endas valija unikaalset identifikaatorit.
+:params.AuthToken: A signed token obtained through the authentication service,
+                   which contains the voter's unique identifier.
 
-:params.SessionID: Kuna Web eID korral on nimekirja hankimisele eelnenud
-                   interaktsioon autentimistõendi saamiseks, on olemas
-                   seansiidentifikaator, mida tuleb kasutada.
+:params.SessionID: Since in the Web eID case, there was an interaction to
+                   obtain the authentication token before obtaining the list,
+                   there is a session identifier that must be used.
 
 .. literalinclude:: ../../common/examples/webeid.rpc.voterchoices.query.json
    :language: json
    :linenos:
 
-Nimekirjateenuse vastus päringule ``RPC.VoterChoices``.
+Response from the choices service to the request ``RPC.VoterChoices``.
 
-:result.Choices: Valija ringkonnakuuluvuse identifikaator ``VoterDistrict``
-:result.List: BASE64-kodeeritud ringkonna valikute nimekiri ``DistrictChoices``
-:result.Voted: Kui valija on juba hääletanud, siis ``true``, vastasel juhul
-               seda välja vastuses ei ole.
+:result.Choices: The voter's district affiliation identifier ``VoterDistrict``
+:result.List: BASE64-encoded district choices list ``DistrictChoices``
+:result.Voted: If the voter has already voted, then ``true``; otherwise
+               this field is not present in the response.
 
 .. literalinclude:: ../../common/examples/id.rpc.voterchoices.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.VoterChoices`` korral.
+Possible error messages for the request ``RPC.VoterChoices``.
 
-:BAD_CERTIFICATE: Viga valija isikutuvastussertifikaadiga.
-:BAD_REQUEST: Vigane päring.
-:INELIGIBLE_VOTER: Valijal pole õigust hääletada.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:UNAUTHENTICATED: Autentimata päring.
-:VOTER_TOO_YOUNG: Valija on liiga noor.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_CERTIFICATE: Error with the voter's identity certificate.
+:BAD_REQUEST: Invalid request.
+:INELIGIBLE_VOTER: The voter does not have the right to vote.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:UNAUTHENTICATED: Unauthenticated request.
+:VOTER_TOO_YOUNG: The voter is too young.
+:VOTING_END: The voting period has ended.
 
 
-Allkirjastatud hääle saatmine talletamiseks
+Sending the Signed Vote for Storage
 -------------------------------------------
 
-Allkirjastatud hääle saatmine talletamiseks tähendab valijarakenduse suhtlemist
-hääletamisteenusega (SNI ``voting.ivxv.invalid``).
+Sending the signed vote for storage means the voter application's communication
+with the voting service (SNI ``voting.ivxv.invalid``).
 
-Valijarakendus teeb päringu ``RPC.Vote`` allkirjastatud hääle talletamiseks
-saatmiseks.
+The voter application makes the request ``RPC.Vote`` to send the signed vote
+for storage.
 
-:params.AuthMethod: Toetatud valikud on meetodid ``tls`` ja ``ticket``.
-:params.Choices: Valija ringkonnakuuluvuse identifikaator ``VoterDistrict`` mis
-                 kehtis valikute nimekirja hankimise ajal. Parameetri korrektne
-                 kasutamine võimaldab kogumisteenusel valijat hoiatada kui tema
-                 ringkonnakuuluvus on võrreldes hääletamise algushetkega
-                 muutunud.
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.Type: Allkirjastatud hääle vorming. Hetkel on ainus toetatud väärtus
-              ``bdoc``.
-:params.Vote: BASE64-kodeeritud hääl ``SignedVote`` eelpoolmääratud vormingus
-              (:ref:`signed-vote`).
+:params.AuthMethod: Supported options are methods ``tls`` and ``ticket``.
+:params.Choices: The voter's district affiliation identifier ``VoterDistrict``
+                 that was in effect at the time of obtaining the choices list.
+                 Correct use of this parameter allows the collection service to
+                 warn the voter if their district affiliation has changed
+                 compared to the start of voting.
+:params.OS: Operating system on which the voter application is used.
+:params.Type: Format of the signed vote. Currently the only supported value
+              is ``bdoc``.
+:params.Vote: BASE64-encoded vote ``SignedVote`` in the previously defined
+              format (:ref:`signed-vote`).
 
-Päring ``RPC.Vote`` ID-kaardiga autentimise korral.
+Request ``RPC.Vote`` for authentication with an ID card.
 
 .. literalinclude:: ../../common/examples/id.rpc.vote.query.json
    :language: json
    :linenos:
 
-Päring ``RPC.Vote`` Mobiil-ID'ga autentimise korral.
+Request ``RPC.Vote`` for authentication with Mobile-ID.
 
 .. literalinclude:: ../../common/examples/mid.rpc.vote.query.json
    :language: json
    :linenos:
 
-Päring ``RPC.Vote`` Smart-ID'ga autentimise korral.
+Request ``RPC.Vote`` for authentication with Smart-ID.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.vote.query.json
    :language: json
    :linenos:
 
-Päring ``RPC.Vote`` Web eID'ga autentimise korral.
+Request ``RPC.Vote`` for authentication with Web eID.
 
 .. literalinclude:: ../../common/examples/webeid.rpc.vote.query.json
    :language: json
    :linenos:
 
-Hääletamisteenuse vastus päringule ``RPC.Vote``.
+Response from the voting service to the request ``RPC.Vote``.
 
 :result.Qualification.ocsp:
 :result.Qualification.tspreg:
-    Kogumisteenuse poolt hangitud täiendavad tõendid valijarakenduse poolt
-    loodud hääle ``SignedVote`` (:ref:`signed-vote`) kvalifitseerimiseks ning
-    korrektseks registreerimiseks. Vastuse koosseis sõltub kogumisteenuse
-    konkreetsest seadistusest, antud juhul kasutatakse standardset OCSP
-    protokolli valija allkirjasertifikaadi kehtivuse kontrolliks ning PKIX
-    ajatempliprotokolli põhist registreerimisteenust nii hääle andmise aja
-    fikseerimiseks kui elektroonilise hääle registreerimiseks välises sõltumatus
-    teenuses.  Valijarakendusele kontrollimiseks edastatakse nii OCSP vastus kui
-    PKIX vormingus ajatempel koos registreerimisteenusele vajalike täiendustega.
-:result.TestVote: Kui hääl esitati enne hääletamise algust ning läks arvesse
-                  proovihäälena, siis ``true``, vastasel juhul seda välja
-                  vastuses ei ole. Valijarakendus kuvab valijale proovihääle
-                  korral sellekohase hoiatuse.
-:result.VoteID: Hääle identifikaator talletusteenuses, mille alusel on
-                kontrollrakendusel võimalik häält hilisemaks analüüsiks välja
-                nõuda.
+    Additional proofs obtained by the collection service for qualifying and
+    correctly registering the vote ``SignedVote`` (:ref:`signed-vote`) created
+    by the voter application. The composition of the response depends on the
+    specific configuration of the collection service; in this case, standard
+    OCSP protocol is used for verifying the validity of the voter's signing
+    certificate, and a PKIX timestamp protocol-based registration service is
+    used both for fixing the time of voting and for registering the electronic
+    vote in an independent external service. Both the OCSP response and the
+    PKIX format timestamp with the supplements necessary for the registration
+    service are forwarded to the voter application for verification.
+:result.TestVote: If the vote was submitted before the start of voting and
+                  was counted as a test vote, then ``true``; otherwise this
+                  field is not present in the response. The voter application
+                  displays a corresponding warning to the voter in the case
+                  of a test vote.
+:result.VoteID: The vote identifier in the storage service, based on which
+                the verification application can later request the vote for
+                analysis.
 
 .. literalinclude:: ../../common/examples/id.rpc.vote.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Vote`` korral.
+Possible error messages for the request ``RPC.Vote``.
 
-:BAD_CERTIFICATE: Viga valija isikutuvastus- või allkirjastamissertifikaadiga.
-:BAD_REQUEST: Vigane päring.
-:IDENTITY_MISMATCH: Isikutuvastus- ning allkirjastamissertifikaadi isikukoodid
-                    ei kattu.
-:INELIGIBLE_VOTER: Valijal pole õigust hääletada.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:OUTDATED_CHOICES: Valija ringkonnakuuluvus on nimekirja hankimisest muutunud.
-:UNAUTHENTICATED: Autentimata päring.
-:VOTER_TOO_YOUNG: Valija on liiga noor.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_CERTIFICATE: Error with the voter's identity or signing certificate.
+:BAD_REQUEST: Invalid request.
+:IDENTITY_MISMATCH: The personal identification codes of the identity and
+                    signing certificates do not match.
+:INELIGIBLE_VOTER: The voter does not have the right to vote.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:OUTDATED_CHOICES: The voter's district affiliation has changed since
+                   obtaining the list.
+:UNAUTHENTICATED: Unauthenticated request.
+:VOTER_TOO_YOUNG: The voter is too young.
+:VOTING_END: The voting period has ended.
 
 
-Hääletamine Mobiil-ID'ga
+Voting with Mobile-ID
 ------------------------
 
-Mobiil-ID kasutamine allkirjastamis- ning autentimisvahendina tingib Mobiil-ID
-teenusega liidestuva abiteenuse (SNI ``mid.ivxv.invalid``) kasutamise
-autentimistõendi hankimiseks enne valikute nimekirja hankimist ning hääle
-allkirjastamiseks enne talletamist.
+Using Mobile-ID as a signing and authentication tool requires the use of
+a helper service interfacing with the Mobile-ID service (SNI
+``mid.ivxv.invalid``) to obtain an authentication token before obtaining
+the choices list and for signing the vote before storage.
 
 
-Autentimistõendi hankimine
+Obtaining the Authentication Token
 **************************
 
-Valijarakendus teeb päringu ``RPC.Authenticate`` Mobiil-ID autentimise
-algatamiseks.
+The voter application makes the request ``RPC.Authenticate`` to initiate
+Mobile-ID authentication.
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.IDCode: Mobiil-ID kasutaja isikukood.
-:params.PhoneNo: Mobiil-ID kasutaja telefoninumber.
+:params.OS: Operating system on which the voter application is used.
+:params.IDCode: Personal identification code of the Mobile-ID user.
+:params.PhoneNo: Phone number of the Mobile-ID user.
 
 .. literalinclude:: ../../common/examples/mid.rpc.authenticate.query.json
    :language: json
    :linenos:
 
-:result.Challenge: Räsi, millest arvutada Mobiil-ID kontrollkood valijarakenduses
-                   kuvamiseks
-:result.SessionCode: Mobiil-ID seansiidentifikaator edasiste poll-päringute
-                     jaoks
+:result.Challenge: Hash from which to compute the Mobile-ID verification code
+                   for display in the voter application
+:result.SessionCode: Mobile-ID session identifier for subsequent poll requests
 
 .. literalinclude:: ../../common/examples/mid.rpc.authenticate.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Authenticate`` korral.
+Possible error messages for the request ``RPC.Authenticate``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.
 
-Valijarakendus teeb päringu ``RPC.AuthenticateStatus`` autentimisprotsessi oleku
-hindamiseks.
+The voter application makes the request ``RPC.AuthenticateStatus`` to check
+the status of the authentication process.
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.SessionCode: Autentimisseansi identifikaator
+:params.OS: Operating system on which the voter application is used.
+:params.SessionCode: Authentication session identifier
 
 .. literalinclude:: ../../common/examples/mid.rpc.authenticatestatus.query.json
    :language: json
    :linenos:
 
 
-:result.AuthToken: Autentimistõend teistele IVXV teenustele esitamiseks või
-                   ``null``, kui päringu töötlemine alles käib.
-:result.GivenName: Eduka autentimise korral valija eesnimi
-:result.PersonalCode: Eduka autentimise korral valija isikukood
-:result.Status: Päringu staatus - ``POLL`` viitab vajadusele päringut korrata, ``OK``
-                viitab edukale autentimisele. Vastuse muud väljad sisaldavad
-                infot vaid siis kui väärtus on ``OK``.
-:result.Surname: Eduka autentimise korral valija perekonnanimi
+:result.AuthToken: Authentication token for presenting to other IVXV services,
+                   or ``null`` if request processing is still ongoing.
+:result.GivenName: The voter's given name upon successful authentication
+:result.PersonalCode: The voter's personal identification code upon successful
+                      authentication
+:result.Status: Request status - ``POLL`` indicates the need to repeat the
+                request, ``OK`` indicates successful authentication. Other
+                response fields contain information only when the value is
+                ``OK``.
+:result.Surname: The voter's surname upon successful authentication
 
 
 .. literalinclude:: ../../common/examples/mid.rpc.authenticatestatus.response.json
@@ -279,102 +283,102 @@ hindamiseks.
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.AuthenticateStatus`` korral.
+Possible error messages for the request ``RPC.AuthenticateStatus``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:MID_BAD_CERTIFICATE: Viga valija Mobiil-ID isikutuvastussertifikaadiga.
-:MID_NOT_USER: Telefoninumber ei kuulu Mobiil-ID kliendile.
-:MID_OPERATOR: Probleem valija mobiiltelefoni SIM kaardiga, mille lahendamiseks
-               tuleb pöörduda mobiilioperaatori poole.
-:MID_ABSENT: Valija mobiiltelefon ei ole kättesaadav.
-:MID_CANCELED: Valija katkestas Mobiil-ID seansi.
-:MID_EXPIRED: Mobiil-ID seanss on aegunud.
-:MID_GENERAL: Viga Mobiil-ID teenuse töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:MID_BAD_CERTIFICATE: Error with the voter's Mobile-ID identity certificate.
+:MID_NOT_USER: The phone number does not belong to a Mobile-ID client.
+:MID_OPERATOR: Problem with the voter's mobile phone SIM card, which requires
+               contacting the mobile operator to resolve.
+:MID_ABSENT: The voter's mobile phone is not reachable.
+:MID_CANCELED: The voter cancelled the Mobile-ID session.
+:MID_EXPIRED: The Mobile-ID session has expired.
+:MID_GENERAL: Error in the Mobile-ID service operation.
+:VOTING_END: The voting period has ended.
 
 
-Hääle allkirjastamine
+Vote Signing
 *********************
 
-Valijarakendus teeb päringu ``RPC.GetCertificate`` allkirjastamissertifikaadi
-hankimiseks.
+The voter application makes the request ``RPC.GetCertificate`` to obtain the
+signing certificate.
 
-:params.AuthMethod: Toetatud ainult autentimismeetod ``ticket``.
-:params.AuthToken: Mobiil-ID autentimistõend.
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.PhoneNo: Hääle allkirjastaja telefoninumber
+:params.AuthMethod: Only the authentication method ``ticket`` is supported.
+:params.AuthToken: Mobile-ID authentication token.
+:params.OS: Operating system on which the voter application is used.
+:params.PhoneNo: Phone number of the vote signer
 
 .. literalinclude:: ../../common/examples/mid.rpc.getcertificate.query.json
    :language: json
    :linenos:
 
 
-:result.Certificate: Allkirjastamissertifikaat X509-vormingus
+:result.Certificate: Signing certificate in X509 format
 
 .. literalinclude:: ../../common/examples/mid.rpc.getcertificate.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.GetCertificate`` korral.
+Possible error messages for the request ``RPC.GetCertificate``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:MID_BAD_CERTIFICATE: Viga valija Mobiil-ID allkirjastamissertifikaadiga.
-:MID_GENERAL: Viga Mobiil-ID teenuse töös.
-:MID_NOT_USER: Telefoninumber ei kuulu Mobiil-ID kliendile.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:MID_BAD_CERTIFICATE: Error with the voter's Mobile-ID signing certificate.
+:MID_GENERAL: Error in the Mobile-ID service operation.
+:MID_NOT_USER: The phone number does not belong to a Mobile-ID client.
+:VOTING_END: The voting period has ended.
 
 
-Valijarakendus teeb päringu ``RPC.Sign`` hääle allkirjastamise algatamiseks.
-Mobiil-ID kontrollkoodi arvutab valijarakendus andmevälja ``Hash`` väärtusest.
+The voter application makes the request ``RPC.Sign`` to initiate vote signing.
+The voter application computes the Mobile-ID verification code from the value
+of the ``Hash`` data field.
 
-:params.AuthMethod: Toetatud ainult autentimismeetod ``ticket``.
-:params.AuthToken: Mobiil-ID autentimistõend.
-:params.Hash: BASE64-kodeeritud elektroonilise hääle räsi
-:params.HashType: Räsifunktsiooni nimi Mobiil-ID teenusele edastamiseks, kas
-                  ``SHA256``, ``SHA384`` või  ``SHA512``
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.PhoneNo: Hääle allkirjastaja telefoninumber
+:params.AuthMethod: Only the authentication method ``ticket`` is supported.
+:params.AuthToken: Mobile-ID authentication token.
+:params.Hash: BASE64-encoded hash of the electronic vote
+:params.HashType: Name of the hash function for transmission to the Mobile-ID
+                  service, either ``SHA256``, ``SHA384``, or ``SHA512``
+:params.OS: Operating system on which the voter application is used.
+:params.PhoneNo: Phone number of the vote signer
 
 .. literalinclude:: ../../common/examples/mid.rpc.sign.query.json
    :language: json
    :linenos:
 
-:result.SessionCode: Mobiil-ID seansiidentifikaator edasiste poll-päringute
-                     jaoks.
+:result.SessionCode: Mobile-ID session identifier for subsequent poll requests.
 
 .. literalinclude:: ../../common/examples/mid.rpc.sign.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Sign`` korral.
+Possible error messages for the request ``RPC.Sign``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.
 
 
-Valijarakendus teeb päringu ``RPC.SignStatus`` allkirjastamisprotsessi seisundi
-hindamiseks.
+The voter application makes the request ``RPC.SignStatus`` to check the
+status of the signing process.
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.SessionCode: Mobiil-ID seansiidentifikaator
+:params.OS: Operating system on which the voter application is used.
+:params.SessionCode: Mobile-ID session identifier
 
 .. literalinclude:: ../../common/examples/mid.rpc.signstatus.query.json
    :language: json
    :linenos:
 
-:result.Signature: Juhul kui vastuse ``Status`` väli on ``OK``, BASE-64 kodeeritud
-                   PKCS1-vormingus signatuur, vastasel juhul ``null``.
-:result.Algorithm: Juhul kui vastuse ``Status`` väli on ``OK``, Mobiil-ID teenuse
-                   poolt tagastatud signatuuri algoritm. Võimalikud väärtused on
-                   ``SHA256WithECEncryption``, ``SHA256WithRSAEncryption``,
+:result.Signature: If the response ``Status`` field is ``OK``, a BASE-64
+                    encoded PKCS1 format signature; otherwise ``null``.
+:result.Algorithm: If the response ``Status`` field is ``OK``, the signature
+                   algorithm returned by the Mobile-ID service. Possible values
+                   are ``SHA256WithECEncryption``, ``SHA256WithRSAEncryption``,
                    ``SHA384WithECEncryption``, ``SHA384WithRSAEncryption``,
-                   ``SHA512WithECEncryption`` ja ``SHA512WithRSAEncryption``.
-:result.Status: Päringu staatus - ``POLL`` viitab vajadusele päringut korrata, ``OK``
-                viitab edukale allkirjastamisele. Vastuse muud väljad sisaldavad
-                infot vaid siis kui väärtus on ``OK``.
+                   ``SHA512WithECEncryption``, and ``SHA512WithRSAEncryption``.
+:result.Status: Request status - ``POLL`` indicates the need to repeat the
+                request, ``OK`` indicates successful signing. Other response
+                fields contain information only when the value is ``OK``.
 
 .. literalinclude:: ../../common/examples/mid.rpc.signstatus.response.json
    :language: json
@@ -384,103 +388,108 @@ hindamiseks.
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.SignStatus`` korral.
+Possible error messages for the request ``RPC.SignStatus``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:MID_ABSENT: Valija mobiiltelefon ei ole kättesaadav.
-:MID_BAD_CERTIFICATE: Viga valija Mobiil-ID allkirjastamissertifikaadiga.
-:MID_OPERATOR: Probleem valija mobiiltelefoni SIM kaardiga, mille lahendamiseks
-               tuleb pöörduda mobiilioperaatori poole.
-:MID_CANCELED: Valija katkestas Mobiil-ID seansi.
-:MID_EXPIRED: Mobiil-ID seanss on aegunud.
-:MID_GENERAL: Viga Mobiil-ID teenuse töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:MID_ABSENT: The voter's mobile phone is not reachable.
+:MID_BAD_CERTIFICATE: Error with the voter's Mobile-ID signing certificate.
+:MID_OPERATOR: Problem with the voter's mobile phone SIM card, which requires
+               contacting the mobile operator to resolve.
+:MID_CANCELED: The voter cancelled the Mobile-ID session.
+:MID_EXPIRED: The Mobile-ID session has expired.
+:MID_GENERAL: Error in the Mobile-ID service operation.
+:VOTING_END: The voting period has ended.
 
 
-Hääletamine Smart-ID'ga
+Voting with Smart-ID
 ------------------------
 
-Smart-ID kasutamine allkirjastamis- ning autentimisvahendina tingib Smart-ID
-teenusega liidestuva abiteenuse (SNI ``smartid.ivxv.invalid``) kasutamise
-autentimistõendi hankimiseks enne valikute nimekirja hankimist ning hääle
-allkirjastamiseks enne talletamist.
+Using Smart-ID as a signing and authentication tool requires the use of
+a helper service interfacing with the Smart-ID service (SNI
+``smartid.ivxv.invalid``) to obtain an authentication token before obtaining
+the choices list and for signing the vote before storage.
 
 
-Autentimistõendi hankimine
+Obtaining the Authentication Token
 **************************
 
-Valijarakendus teeb päringu ``RPC.Challenge`` Smart-ID kontrollkoodi hankimiseks.
+The voter application makes the request ``RPC.Challenge`` to obtain the
+Smart-ID verification code.
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
+:params.OS: Operating system on which the voter application is used.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.challenge.query.json
    :language: json
    :linenos:
 
-:result.Challenge: Räsi, millest arvutada Smart-ID kontrollkood valijarakenduses
-                   kuvamiseks
-:result.XSmartIDAuth: Päringu küpsis, kus talletatakse Smart-ID kontrollkoodi
-                      räsi, selle eluea ajatempel ja seansiidentifikaator
+:result.Challenge: Hash from which to compute the Smart-ID verification code
+                   for display in the voter application
+:result.XSmartIDAuth: Request cookie, storing the hash of the Smart-ID
+                      verification code, its lifetime timestamp, and session
+                      identifier
 
 .. literalinclude:: ../../common/examples/smartid.rpc.challenge.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Authenticate`` korral.
+Possible error messages for the request ``RPC.Authenticate``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.
 
-Valijarakendus teeb päringu ``RPC.Authenticate`` Smart-ID autentimise
-algatamiseks.
+The voter application makes the request ``RPC.Authenticate`` to initiate
+Smart-ID authentication.
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.XSmartIDAuth: Päringu küpsis, kus talletatakse Smart-ID kontrollkoodi
-                      räsi, selle eluea ajatempel ja seansiidentifikaator
-:params.Identifier: Smart-ID kasutaja isikukood.
+:params.OS: Operating system on which the voter application is used.
+:params.XSmartIDAuth: Request cookie, storing the hash of the Smart-ID
+                      verification code, its lifetime timestamp, and session
+                      identifier
+:params.Identifier: Personal identification code of the Smart-ID user.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.authenticate.query.json
    :language: json
    :linenos:
 
-:result.SessionCode: Smart-ID seansiidentifikaator edasiste poll-päringute
-                     jaoks
+:result.SessionCode: Smart-ID session identifier for subsequent poll requests
 
 .. literalinclude:: ../../common/examples/smartid.rpc.authenticate.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Authenticate`` korral.
+Possible error messages for the request ``RPC.Authenticate``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.
 
-Valijarakendus teeb päringu ``RPC.AuthenticateStatus`` autentimisprotsessi oleku
-hindamiseks.
+The voter application makes the request ``RPC.AuthenticateStatus`` to check
+the status of the authentication process.
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.XSmartIDAuth: Päringu küpsis, kus talletatakse Smart-ID kontrollkoodi
-                      räsi, selle eluea ajatempel ja seansiidentifikaator
-:params.SessionCode: Autentimisseansi identifikaator
+:params.OS: Operating system on which the voter application is used.
+:params.XSmartIDAuth: Request cookie, storing the hash of the Smart-ID
+                      verification code, its lifetime timestamp, and session
+                      identifier
+:params.SessionCode: Authentication session identifier
 
 .. literalinclude:: ../../common/examples/smartid.rpc.authenticatestatus.query.json
    :language: json
    :linenos:
 
 
-:result.AuthToken: Autentimistõend teistele IVXV teenustele esitamiseks või
-                   ``null``, kui päringu töötlemine alles käib.
-:result.DataToken: Hääletaja Smart-ID dokumendi number või
-                   ``null``, kui päringu töötlemine alles käib.
-:result.GivenName: Eduka autentimise korral valija eesnimi
-:result.PersonalCode: Eduka autentimise korral valija isikukood
-:result.Status: Päringu staatus - ``POLL`` viitab vajadusele päringut korrata, ``OK``
-                viitab edukale autentimisele. Vastuse muud väljad sisaldavad
-                infot vaid siis kui väärtus on ``OK``.
-:result.Surname: Eduka autentimise korral valija perekonnanimi
+:result.AuthToken: Authentication token for presenting to other IVXV services,
+                   or ``null`` if request processing is still ongoing.
+:result.DataToken: The voter's Smart-ID document number, or ``null`` if
+                   request processing is still ongoing.
+:result.GivenName: The voter's given name upon successful authentication
+:result.PersonalCode: The voter's personal identification code upon successful
+                      authentication
+:result.Status: Request status - ``POLL`` indicates the need to repeat the
+                request, ``OK`` indicates successful authentication. Other
+                response fields contain information only when the value is
+                ``OK``.
+:result.Surname: The voter's surname upon successful authentication
 
 
 .. literalinclude:: ../../common/examples/smartid.rpc.authenticatestatus.response.json
@@ -491,56 +500,56 @@ hindamiseks.
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.AuthenticateStatus`` korral.
+Possible error messages for the request ``RPC.AuthenticateStatus``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:SMARTID_BAD_CERTIFICATE: Viga valija Smart-ID isikutuvastussertifikaadiga.
-:SMARTID_VERIFICATION: Valija valis vale verifitseerimiskoodi.
-:SMARTID_ACCOUNT: Viga valija Smart-ID kontos.
-:SMARTID_CANCELED: Valija katkestas Smart-ID seansi.
-:SMARTID_EXPIRED: Smart-ID seanss on aegunud.
-:SMARTID_GENERAL: Viga Smart-ID teenuse töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:SMARTID_BAD_CERTIFICATE: Error with the voter's Smart-ID identity certificate.
+:SMARTID_VERIFICATION: The voter selected the wrong verification code.
+:SMARTID_ACCOUNT: Error with the voter's Smart-ID account.
+:SMARTID_CANCELED: The voter cancelled the Smart-ID session.
+:SMARTID_EXPIRED: The Smart-ID session has expired.
+:SMARTID_GENERAL: Error in the Smart-ID service operation.
+:VOTING_END: The voting period has ended.
 
 
-Hääle allkirjastamine
+Vote Signing
 *********************
 
-Valijarakendus teeb päringu ``RPC.GetCertificateChoice`` allkirjastamissertifikaadi
-valikuks.
+The voter application makes the request ``RPC.GetCertificateChoice`` to choose
+the signing certificate.
 
-:params.AuthMethod: Toetatud ainult autentimismeetod ``ticket``.
-:params.AuthToken: Smart-ID autentimistõend.
-:params.DataToken: Hääletaja Smart-ID dokumendi number.
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
+:params.AuthMethod: Only the authentication method ``ticket`` is supported.
+:params.AuthToken: Smart-ID authentication token.
+:params.DataToken: The voter's Smart-ID document number.
+:params.OS: Operating system on which the voter application is used.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.getcertificatechoice.query.json
    :language: json
    :linenos:
 
-:result.SessionCode: Smart-ID seansiidentifikaator edasiste poll-päringute
-                     jaoks
+:result.SessionCode: Smart-ID session identifier for subsequent poll requests
 
 .. literalinclude:: ../../common/examples/smartid.rpc.getcertificatechoice.response.json
    :language: json
    :linenos:
 
-Valijarakendus teeb päringu ``RPC.GetCertificateChoiceStatus`` allkirjastamissertifikaadi
-oleku hindamiseks.
+The voter application makes the request ``RPC.GetCertificateChoiceStatus`` to
+check the status of the signing certificate.
 
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.SessionCode: Autentimisseansi identifikaator
+:params.OS: Operating system on which the voter application is used.
+:params.SessionCode: Authentication session identifier
 
 .. literalinclude:: ../../common/examples/smartid.rpc.getcertificatechoicestatus.query.json
    :language: json
    :linenos:
 
-:result.Certificate: Allkirjastamissertifikaat X509-vormingus
-:result.Status: Päringu staatus - ``POLL`` viitab vajadusele päringut korrata, ``OK``
-                viitab edukale autentimisele. Vastuse muud väljad sisaldavad
-                infot vaid siis kui väärtus on ``OK``.
+:result.Certificate: Signing certificate in X509 format
+:result.Status: Request status - ``POLL`` indicates the need to repeat the
+                request, ``OK`` indicates successful authentication. Other
+                response fields contain information only when the value is
+                ``OK``.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.getcertificatechoicestatus.response.json
    :language: json
@@ -550,63 +559,63 @@ oleku hindamiseks.
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.GetCertificateChoiceStatus`` korral.
+Possible error messages for the request ``RPC.GetCertificateChoiceStatus``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:SMARTID_BAD_CERTIFICATE: Viga valija Smart-ID allkirjastamissertifikaadiga.
-:SMARTID_GENERAL: Viga Smart-ID teenuse töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:SMARTID_BAD_CERTIFICATE: Error with the voter's Smart-ID signing certificate.
+:SMARTID_GENERAL: Error in the Smart-ID service operation.
+:VOTING_END: The voting period has ended.
 
 
-Valijarakendus teeb päringu ``RPC.Sign`` hääle allkirjastamise algatamiseks.
-Smart-ID kontrollkoodi arvutab valijarakendus andmevälja ``Hash`` väärtusest.
+The voter application makes the request ``RPC.Sign`` to initiate vote signing.
+The voter application computes the Smart-ID verification code from the value
+of the ``Hash`` data field.
 
-:params.AuthMethod: Toetatud ainult autentimismeetod ``ticket``.
-:params.AuthToken: Smart-ID autentimistõend.
-:params.Hash: BASE64-kodeeritud elektroonilise hääle räsi
-:params.HashType: Räsifunktsiooni nimi Smart-ID teenusele edastamiseks, kas
-                  ``SHA256``, ``SHA384`` või  ``SHA512``
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.DataToken: Hääletaja Smart-ID dokumendi number.
+:params.AuthMethod: Only the authentication method ``ticket`` is supported.
+:params.AuthToken: Smart-ID authentication token.
+:params.Hash: BASE64-encoded hash of the electronic vote
+:params.HashType: Name of the hash function for transmission to the Smart-ID
+                  service, either ``SHA256``, ``SHA384``, or ``SHA512``
+:params.OS: Operating system on which the voter application is used.
+:params.DataToken: The voter's Smart-ID document number.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.sign.query.json
    :language: json
    :linenos:
 
-:result.SessionCode: Smart-ID seansiidentifikaator edasiste poll-päringute
-                     jaoks.
+:result.SessionCode: Smart-ID session identifier for subsequent poll requests.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.sign.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Sign`` korral.
+Possible error messages for the request ``RPC.Sign``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.
 
 
-Valijarakendus teeb päringu ``RPC.SignStatus`` allkirjastamisprotsessi seisundi
-hindamiseks.
+The voter application makes the request ``RPC.SignStatus`` to check the status
+of the signing process.
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.SessionCode: Smart-ID seansiidentifikaator
+:params.OS: Operating system on which the voter application is used.
+:params.SessionCode: Smart-ID session identifier
 
 .. literalinclude:: ../../common/examples/smartid.rpc.signstatus.query.json
    :language: json
    :linenos:
 
-:result.Signature: Juhul kui vastuse ``Status`` väli on ``OK``, BASE-64 kodeeritud
-                    signatuur, vastasel juhul ``null``.
-:result.Algorithm: Juhul kui vastuse ``Status`` väli on ``OK``, Smart-ID teenuse
-                   poolt tagastatud signatuuri algoritm. Võimalikud väärtused on
-                   ``sha256WithRSAEncryption``, ``sha384WithRSAEncryption``,
-                   ja ``sha512WithRSAEncryption``.
-:result.Status: Päringu staatus - ``POLL`` viitab vajadusele päringut korrata, ``OK``
-                viitab edukale allkirjastamisele. Vastuse muud väljad sisaldavad
-                infot vaid siis kui väärtus on ``OK``.
+:result.Signature: If the response ``Status`` field is ``OK``, a BASE-64
+                    encoded signature; otherwise ``null``.
+:result.Algorithm: If the response ``Status`` field is ``OK``, the signature
+                   algorithm returned by the Smart-ID service. Possible values
+                   are ``sha256WithRSAEncryption``, ``sha384WithRSAEncryption``,
+                   and ``sha512WithRSAEncryption``.
+:result.Status: Request status - ``POLL`` indicates the need to repeat the
+                request, ``OK`` indicates successful signing. Other response
+                fields contain information only when the value is ``OK``.
 
 .. literalinclude:: ../../common/examples/smartid.rpc.signstatus.response.json
    :language: json
@@ -616,93 +625,96 @@ hindamiseks.
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.SignStatus`` korral.
+Possible error messages for the request ``RPC.SignStatus``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:SMARTID_BAD_CERTIFICATE: Viga valija Smart-ID isikutuvastussertifikaadiga.
-:SMARTID_VERIFICATION: Valija valis vale verifitseerimiskoodi.
-:SMARTID_ACCOUNT: Viga valija Smart-ID kontos.
-:SMARTID_CANCELED: Valija katkestas Smart-ID seansi.
-:SMARTID_EXPIRED: Smart-ID seanss on aegunud.
-:SMARTID_GENERAL: Viga Smart-ID teenuse töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:SMARTID_BAD_CERTIFICATE: Error with the voter's Smart-ID identity certificate.
+:SMARTID_VERIFICATION: The voter selected the wrong verification code.
+:SMARTID_ACCOUNT: Error with the voter's Smart-ID account.
+:SMARTID_CANCELED: The voter cancelled the Smart-ID session.
+:SMARTID_EXPIRED: The Smart-ID session has expired.
+:SMARTID_GENERAL: Error in the Smart-ID service operation.
+:VOTING_END: The voting period has ended.
 
-Hääletamine Web eID'ga
+Voting with Web eID
 ------------------------
 
-Web eID kasutamine autentimisvahendina tingib Web eID
-teenusega liidestuva abiteenuse (SNI ``webeid.ivxv.invalid``) kasutamise
-autentimistõendi hankimiseks enne valikute nimekirja hankimist.
+Using Web eID as an authentication tool requires the use of a helper service
+interfacing with the Web eID service (SNI ``webeid.ivxv.invalid``) to obtain
+an authentication token before obtaining the choices list.
 
 
-Autentimistõendi hankimine
+Obtaining the Authentication Token
 **************************
 
-Valijarakendus teeb päringu ``RPC.Challenge`` Web eID autentimise
-algatamiseks.
+The voter application makes the request ``RPC.Challenge`` to initiate Web eID
+authentication.
 
-:params.OS: Operatsioonisüsteem, millel valijarakendust kasutatakse.
+:params.OS: Operating system on which the voter application is used.
 
 .. literalinclude:: ../../common/examples/webeid.rpc.challenge.query.json
    :language: json
    :linenos:
 
-:result.Challenge: Base64 kodeeritud räsi, mille dekodeeritud väärtust peab
-                   valijarakendus kasutama autentimistõendi allkirja loomiseks.
-:params.SessionID: Seansiidentifikaator.
-:params.Bearer:    Küpsis, mida server kasutab räsi verifitseerimiseks.
+:result.Challenge: Base64 encoded hash, the decoded value of which the voter
+                   application must use to create the authentication token
+                   signature.
+:params.SessionID: Session identifier.
+:params.Bearer:    Cookie used by the server to verify the hash.
 
 .. literalinclude:: ../../common/examples/webeid.rpc.challenge.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Challenge`` korral.
+Possible error messages for the request ``RPC.Challenge``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.
 
-Valijarakendus teeb päringu ``RPC.Token`` autentimistõendi valideerimiseks.
+The voter application makes the request ``RPC.Token`` to validate the
+authentication token.
 
-:params.OS:        Operatsioonisüsteem, millel valijarakendust kasutatakse.
-:params.SessionID: Seansiidentifikaator.
-:params.Token:     Web eID autentimistõend.
-:params.Bearer:    Küpsis, mida server kasutab räsi verifitseerimiseks.
+:params.OS:        Operating system on which the voter application is used.
+:params.SessionID: Session identifier.
+:params.Token:     Web eID authentication token.
+:params.Bearer:    Cookie used by the server to verify the hash.
 
 .. literalinclude:: ../../common/examples/webeid.rpc.token.query.json
    :language: json
    :linenos:
 
-:result.AuthToken: Autentimistõend teistele IVXV teenustele esitamiseks
-:result.GivenName: Eduka autentimise korral valija eesnimi
-:result.PersonalCode: Eduka autentimise korral valija isikukood
-:result.Status: Päringu staatus - ``OK`` viitab edukale autentimisele.
-                Vastuse muud väljad sisaldavad infot vaid siis kui
-                väärtus on ``OK``.
-:result.Surname: Eduka autentimise korral valija perekonnanimi
+:result.AuthToken: Authentication token for presenting to other IVXV services
+:result.GivenName: The voter's given name upon successful authentication
+:result.PersonalCode: The voter's personal identification code upon successful
+                      authentication
+:result.Status: Request status - ``OK`` indicates successful authentication.
+                Other response fields contain information only when the
+                value is ``OK``.
+:result.Surname: The voter's surname upon successful authentication
 
 
 .. literalinclude:: ../../common/examples/webeid.rpc.token.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Token`` korral.
+Possible error messages for the request ``RPC.Token``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:BAD_CERTIFICATE: Viga valija Web eID isikutuvastussertifikaadiga.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:BAD_CERTIFICATE: Error with the voter's Web eID identity certificate.
+:VOTING_END: The voting period has ended.
 
-Hääle kontrollimine
+Vote Verification
 -------------------
 
-Kontrollrakendus teeb päringu ``RPC.Verify`` allkirjastatud hääle ning häält
-kvalifitseerivate tõendite allalaadimiseks kogumisteenusest.
+The verification application makes the request ``RPC.Verify`` to download the
+signed vote and the proofs qualifying the vote from the collection service.
 
-:params.OS: Operatsioonisüsteem, millel kontrollrakendust kasutatakse.
-:params.VoteID: QR-koodi vahendusel valijarakendusest saadud hääle
-                identifikaator talletusteenuses.
+:params.OS: Operating system on which the verification application is used.
+:params.VoteID: The vote identifier in the storage service, obtained from the
+                voter application via a QR code.
 
 .. literalinclude:: ../../common/examples/ver.rpc.verify.query.json
    :language: json
@@ -710,83 +722,85 @@ kvalifitseerivate tõendite allalaadimiseks kogumisteenusest.
 
 :result.Qualification.ocsp:
 :result.Qualification.tspreg:
-    Vaata peatükki hääle verifitseerimisest
+    See the chapter on vote verification
 
-
-:result.Type: Allkirjastatud hääle vorming. Hetkel on ainus toetatud väärtus
-              ``bdoc``.
-:result.Vote: BASE64-kodeeritud hääl ``SignedVote`` eelpoolmääratud vormingus
-              (:ref:`signed-vote`).
-:result.ChoicesList: JSON-vormingus ringkonnapõhine valikute nimekiri.
+:result.Type: Format of the signed vote. Currently the only supported value
+              is ``bdoc``.
+:result.Vote: BASE64-encoded vote ``SignedVote`` in the previously defined
+              format (:ref:`signed-vote`).
+:result.ChoicesList: District-based choices list in JSON format.
 
 .. literalinclude:: ../../common/examples/ver.rpc.verify.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Verify`` korral.
+Possible error messages for the request ``RPC.Verify``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.
 
 
-E-hääletamise jooksev nimekiri
+E-Voting Running List
 ------------------------------
 
-X-tee teenusega(xroad-service) liidestuva abiteenuse (SNI ``votesorder.ivxv.invalid``) kasutatakse
-informatsiooni edastamiseks X-tee turvaserverile.
+The helper service interfacing with the X-Road service (xroad-service) (SNI
+``votesorder.ivxv.invalid``) is used to transmit information to the X-Road
+security server.
 
 
-Viimane järjenumber
+Last Sequence Number
 *******************
-X-tee teenus(xroad-service) teeb päringu ``RPC.VotesSeqNo`` viimase järjenumbri saamiseks.
+The X-Road service (xroad-service) makes the request ``RPC.VotesSeqNo`` to
+obtain the last sequence number.
 
 .. literalinclude:: ../../common/examples/votesorder.rpc.votesseqno.query.json
    :language: json
    :linenos:
 
 :result.SeqNo:
-    Viimane järjenumber.
+    Last sequence number.
 
 .. literalinclude:: ../../common/examples/votesorder.rpc.votesseqno.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.VotesSeqNo`` korral.
+Possible error messages for the request ``RPC.VotesSeqNo``.
 
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.
 
-E-hääletamiste pakk
+E-Voting Batch
 *******************
-X-tee teenus(xroad-service) teeb päringu ``RPC.Votes`` e-hääletamise paki saamiseks.
+The X-Road service (xroad-service) makes the request ``RPC.Votes`` to obtain
+the e-voting batch.
 
-:params.VotesFrom: E-hääled alates sellest järjenumbrist.
-:params.BatchMaxSize: E-hääletamise paki suurus.
+:params.VotesFrom: E-votes starting from this sequence number.
+:params.BatchMaxSize: Size of the e-voting batch.
 
 .. literalinclude:: ../../common/examples/votesorder.rpc.votes.query.json
    :language: json
    :linenos:
 
 :result.batchRecords:
-         E-häälte loend
+         List of e-votes
 :result.batchRecords.seqNo:
-         Hääle järjenumber
+         Vote sequence number
 :result.batchRecords.idCode:
-         Hääletaja isikukood
+         Voter's personal identification code
 :result.batchRecords.voterName:
-         Hääletaja nimi
+         Voter's name
 :result.batchRecords.kovCode:
-         KOV EHAK kood
+         Local government EHAK code
 :result.batchRecords.electoralDistrictNo:
-         Valimisringkonna number
+         Electoral district number
 
 .. literalinclude:: ../../common/examples/votesorder.rpc.votes.response.json
    :language: json
    :linenos:
 
-Võimalikud veateated päringu ``RPC.Votes`` korral.
+Possible error messages for the request ``RPC.Votes``.
 
-:BAD_REQUEST: Vigane päring.
-:INTERNAL_SERVER_ERROR: Viga serveri sisemises töös.
-:VOTING_END: Hääletusperiood on lõppenud.
+:BAD_REQUEST: Invalid request.
+:INTERNAL_SERVER_ERROR: Internal server error.
+:VOTING_END: The voting period has ended.

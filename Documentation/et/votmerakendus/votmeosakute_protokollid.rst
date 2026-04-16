@@ -1,372 +1,371 @@
-..  IVXV tehniline dokumentatsioon
+..  IVXV technical documentation
 
-Eritüübiliste võtmeosakute protokollide liidestamine
-====================================================
+Interfacing Different Types of Key Share Protocols
+==================================================
 
-Võtmeosakute genereerimise protokolli liides
---------------------------------------------
+Key Share Generation Protocol Interface
+---------------------------------------
 
-Klass `ee.ivxv.key.protocol.GenerationProtocol` defineerib liidese, mida
-ElGamali või RSA võtmeosakute genereerimise protokoll peab täitma. Liides on
-järgnev::
+The class `ee.ivxv.key.protocol.GenerationProtocol` defines the interface that
+an ElGamal or RSA key share generation protocol must implement. The interface is
+as follows::
 
     public interface GenerationProtocol {
         byte[] generateKey() throws ProtocolException;
     }
 
-Eritüübiliste võtmeosakute genereerimiseks peab implementeerima `generateKey()`
-meetodi, mis tagastab kodeeritud avaliku võtme X.509 sertifikaadina DER
-formaadis. Protokolli klass peab olema paki `ee.ivxv.key.protocol.generation`
-alampakis.
+To generate different types of key shares, the `generateKey()` method must be
+implemented, which returns the encoded public key as an X.509 certificate in DER
+format. The protocol class must be in a subpackage of
+`ee.ivxv.key.protocol.generation`.
 
-Protokolli parameetrid tuleb määrata protokolli klassiinstantsi
-initsialiseerimise ajal.
+The protocol parameters must be set during the initialization of the protocol
+class instance.
 
-Dekrüpteerimise protokolli liides
----------------------------------
+Decryption Protocol Interface
+-----------------------------
 
-Dekrüpteerimise ja võtmeosakute genereerimise protokoll ei pea olema üksüheses
-seoses, st. võtmeosakute genereerimise protokollile võib vastata mitu
-dekrüpteerimise protokolli. Seega on dekrüpteerimise protokolli liides
-defineeritud sõltumatult võtmeosakute genereerimise liidesest. Protokoll peab
-implementeerima `ee.ivxv.key.protocol.DecryptionProtocol` liidese::
+The decryption and key share generation protocols do not have to be in a
+one-to-one relationship, i.e., a key share generation protocol may correspond to
+multiple decryption protocols. Therefore, the decryption protocol interface is
+defined independently of the key share generation interface. The protocol must
+implement the `ee.ivxv.key.protocol.DecryptionProtocol` interface::
 
     public interface DecryptionProtocol {
         ElGamalDecryptionProof decryptMessage(byte[] msg) throws ProtocolException;
     }
 
-Meetod `decryptMessage()` võtab sisendina krüptogrammi DER formaadis ning
-väljastab `ElGamalDecryptionProof` instantsi. Juhul kui protokoll ei toeta
-lugemistõendi väljastamist, siis on vastavad väljad väärtustatud tühiväärtusega
+The method `decryptMessage()` takes a cryptogram in DER format as input and
+returns an `ElGamalDecryptionProof` instance. If the protocol does not support
+issuing a decryption proof, the corresponding fields are set to null
 (`null`).
 
-Analoogselt võtmeosakute genereerimise protokollile tuleb protokolli
-parameetrid määrata klassiinstantsi initsialiseerimise ajal.
+Similarly to the key share generation protocol, the protocol parameters must be
+set during the initialization of the class instance.
 
-Allkirjastamise protokolli liides
----------------------------------
+Signing Protocol Interface
+--------------------------
 
-Lisaks dekrüpteerimise protokollile saab implementeerida ka allkirjastamise
-protokolli. Sarnaselt dekrüpteerimisprotokollile võib ühele võtmegenereerimise
-meetodile vastata mitu allkirjastamise protokolli. Protokoll peab
-implementeerima `ee.ivxv.key.protocol.SigningProtocol` liidese::
+In addition to the decryption protocol, a signing protocol can also be
+implemented. Similarly to the decryption protocol, a single key generation
+method may correspond to multiple signing protocols. The protocol must
+implement the `ee.ivxv.key.protocol.SigningProtocol` interface::
 
     public interface SigningProtocol {
         byte[] sign(byte[] msg) throws ProtocolException;
     }
 
-Meetod `sign()` võtab sisendina sõnumi, mida soovitakse allkirjastada, ja
-väljastab RSA-PSS allkirja järgnevate parameetritega:
+The method `sign()` takes as input the message to be signed and returns an
+RSA-PSS signature with the following parameters:
 
 .. _RSA-PSS parameetrid:
 
-- sõnumi räsifunktsioon: SHA2-256
-- maski genereerimise funktsioon: MGF1, maski räsifunktsioon SHA2-256 ja maski
-  pikkus 32 baiti
-- soola pikkus: 32 baiti
-- sababait: `0xbc`
+- message hash function: SHA2-256
+- mask generation function: MGF1, mask hash function SHA2-256, and mask length
+  32 bytes
+- salt length: 32 bytes
+- trailer byte: `0xbc`
 
-Analoogselt võtmeosakute genereerimise protokollile tuleb protokolli
-parameetrid määrata klassiinstantsi initsialiseerimise ajal.
+Similarly to the key share generation protocol, the protocol parameters must be
+set during the initialization of the class instance.
 
-Toetatud protokollid
+Supported Protocols
 --------------------
 
-Hetkel on teostatud järgnevad võtmeosakute genereerimise protokollid:
+Currently, the following key share generation protocols are implemented:
 
-* `ee.ivxv.key.protocol.generation.desmedt.DesmedtGeneration`: Võtmeosakud on
-  sellised, et oleks võimalik kasutada [DF89]_ hajutatud
-  dekrüpteerimisprotokolli. Võtmeosakud salvestatakse otse PKCS15 liidest
-  toetavale pääsmikule. Klassiinstantsi initsialiseerimise ajal saab anda
-  järgnevaid argumente:
+* `ee.ivxv.key.protocol.generation.desmedt.DesmedtGeneration`: Key shares are
+  such that it would be possible to use the [DF89]_ distributed
+  decryption protocol. Key shares are stored directly on a token supporting
+  the PKCS15 interface. The following arguments can be provided during class
+  instance initialization:
 
-  + `PKCS15Card[] cards`: järjend objektides mis implementeerivad PKCS15Card
-    liidest (nt. kiipkaardid või tarkvaralised pääsmikud).
-  + `ElGamalParameters params`: ElGamali krüptosüsteemi parameetrid.
-  + `ThresholdParameters tparams`: läviskeemi parameetrid.
-  + `Rnd rnd`: juhuslikkuse sisend võtmeosakute genereerimisel
-  + `byte[] cardShareAID`: võtmeosaku ligipääsuidentifikaator PKCS15
-    pääsmikul. Defineerib, millise ligipääsutunnusega pääseb võtmeosakule
-    ligi.
-  + `byte[] cardShareName`: võtmeosaku identifikaator PKCS15 pääsmikul.
+  + `PKCS15Card[] cards`: an array of objects implementing the PKCS15Card
+    interface (e.g., smart cards or software tokens).
+  + `ElGamalParameters params`: ElGamal cryptosystem parameters.
+  + `ThresholdParameters tparams`: threshold scheme parameters.
+  + `Rnd rnd`: randomness input for key share generation
+  + `byte[] cardShareAID`: key share access identifier on the PKCS15
+    token. Defines which access identifier is used to access the key share.
+  + `byte[] cardShareName`: key share identifier on the PKCS15 token.
 
-* `ee.ivxv.key.protocol.generation.shoup.ShoupGeneration`: Võtmeosakud on
-  sellised, et oleks võimalik kasutada [Shoup00]_ põhinevat hajutatud
-  allkirjastamisprotokolli. Võtmeosakud salvestatakse otse PKCS15 liidest
-  toetavale pääsmikule. Klassiinstantsi initsialiseerimise ajal saab anda
-  järgnevaid argumente:
+* `ee.ivxv.key.protocol.generation.shoup.ShoupGeneration`: Key shares are
+  such that it would be possible to use a [Shoup00]_-based distributed
+  signing protocol. Key shares are stored directly on a token supporting
+  the PKCS15 interface. The following arguments can be provided during class
+  instance initialization:
 
-  + `PKCS15Card[] cards`: järjend objektidest, mis implementeerivad PKCS15Card
-    liidest (nt. kiipkaardid või tarkvaralised pääsmikud).
-  + `int modLen`: RSA võtme pikkus bittides
-  + `ThresholdParameters tparams`: läviskeemi parameetrid.
-  + `Rnd rnd`: juhuslikkuse sisend võtmeosakute genereerimisel
-  + `byte[] cardShareAID`: võtmeosaku ligipääsuidentifikaator PKCS15
-    pääsmikul. Defineerib, millise ligipääsutunnusega pääseb võtmeosakule
-    ligi.
-  + `byte[] cardShareName`: võtmeosaku identifikaator PKCS15 pääsmikul.
+  + `PKCS15Card[] cards`: an array of objects implementing the PKCS15Card
+    interface (e.g., smart cards or software tokens).
+  + `int modLen`: RSA key length in bits
+  + `ThresholdParameters tparams`: threshold scheme parameters.
+  + `Rnd rnd`: randomness input for key share generation
+  + `byte[] cardShareAID`: key share access identifier on the PKCS15
+    token. Defines which access identifier is used to access the key share.
+  + `byte[] cardShareName`: key share identifier on the PKCS15 token.
 
-On teostatud järgnevad dekrüpteerimise protokollid:
+The following decryption protocols are implemented:
 
-* `ee.ivxv.key.protocol.decryption.recover.RecoverDecryption`: Loetakse PKCS15
-  liidest toetavatelt pääsmikelt võtmeosakud, rekonstrueeritakse nende abil
-  operatiivmälus salajane võti ning teostatakse dekrüpteerimine lugemistõendiga.
-  Klassiinstantsi initsialiseerimise ajal saab anda järgnevaid argumente:
+* `ee.ivxv.key.protocol.decryption.recover.RecoverDecryption`: Key shares are
+  read from tokens supporting the PKCS15 interface, the private key is
+  reconstructed from them in memory, and decryption with a decryption proof is
+  performed. The following arguments can be provided during class instance
+  initialization:
 
-  + `PKCS15Card[] cards`: järjend objektides mis implementeerivad PKCS15Card
-    liidest (nt. kiipkaardid või tarkvaralised pääsmikud).
-  + `ThresholdParameters tparams`: läviskeemi parameetrid.
-  + `byte[] cardShareAID`: võtmeosaku ligipääsuidentifikaator PKCS15
-    pääsmikul. Defineerib, millise ligipääsutunnusega pääseb võtmeosakule
-    ligi.
-  + `byte[] cardShareName`: võtmeosaku identifikaator PKCS15 pääsmikul.
+  + `PKCS15Card[] cards`: an array of objects implementing the PKCS15Card
+    interface (e.g., smart cards or software tokens).
+  + `ThresholdParameters tparams`: threshold scheme parameters.
+  + `byte[] cardShareAID`: key share access identifier on the PKCS15
+    token. Defines which access identifier is used to access the key share.
+  + `byte[] cardShareName`: key share identifier on the PKCS15 token.
 
-On teostatud järgnevad allkirjastamise protokollid:
+The following signing protocols are implemented:
 
-* `ee.ivxv.key.protocol.signing.shoup.ShoupSigning`: Loetakse PKCS15 liidest
-  toetavatelt pääsmikelt võtmeosakud, konstrueeritakse mälus allkirjastamise
-  osakud ilma võtit rekonstrueerimata ning kombineeritakse allkirjastamise
-  osakud RSA-PSS allkirjaks. Klassiinstantsi initsialiseerimise ajal saab anda
-  järgnevaid argumente:
+* `ee.ivxv.key.protocol.signing.shoup.ShoupSigning`: Key shares are read from
+  tokens supporting the PKCS15 interface, signing shares are constructed in
+  memory without reconstructing the key, and the signing shares are combined
+  into an RSA-PSS signature. The following arguments can be provided during
+  class instance initialization:
 
-  + `PKCS15Card[] cards`: järjend objektides mis implementeerivad PKCS15Card
-    liidest (nt. kiipkaardid või tarkvaralised pääsmikud).
-  + `ThresholdParameters tparams`: läviskeemi parameetrid.
-  + `Rnd rnd`: juhuslikkuse sisend RSA-PSS allkirja soola genereerimisel.
-  + `byte[] cardShareAID`: võtmeosaku ligipääsuidentifikaator PKCS15
-    pääsmikul. Defineerib, millise ligipääsutunnusega pääseb võtmeosakule
-    ligi.
-  + `byte[] cardShareName`: võtmeosaku identifikaator PKCS15 pääsmikul.
+  + `PKCS15Card[] cards`: an array of objects implementing the PKCS15Card
+    interface (e.g., smart cards or software tokens).
+  + `ThresholdParameters tparams`: threshold scheme parameters.
+  + `Rnd rnd`: randomness input for RSA-PSS signature salt generation.
+  + `byte[] cardShareAID`: key share access identifier on the PKCS15
+    token. Defines which access identifier is used to access the key share.
+  + `byte[] cardShareName`: key share identifier on the PKCS15 token.
 
-Protokollide võtmerakendusega liidestamine
-------------------------------------------
+Interfacing Protocols with the Key Application
+----------------------------------------------
 
-Järgnev kirjeldus käib nii võtmeosakute genereerimise ja dekrüpteerimise
-protokollide kohta.
+The following description applies to both key share generation and decryption
+protocols.
 
-.. note:: Praegune kirjeldus on üldine. Kui konfi- ja argumentide parsimine on
-   lõplikult välja töötatud ning protokollid võtmerakendusega liidestatud, siis
-   tuleks järgnevat lõiku täiendada.
+.. note:: The current description is general. Once the configuration and
+   argument parsing has been finalized and the protocols have been interfaced
+   with the key application, the following section should be updated.
 
-Liidestamaks uut protokolli võtmerakendusega, tuleb kõigepealt teostada vastava
-protokolli liidest täitev klass. Võtmerakendus peab töö alguses seadistuse
-töötlemise käigus aru saama kas käsureaargumentidest või seadistusfailist,
-millist protokolli soovitakse kasutada. Seejärel tuleb vastava klassi staatilise
-meetodi abil ülejäänud käsureaargumentide või seadistusfaili abil
-initsialiseerida uus protokolliklassi instants. Seejärel tuleb genereerida võti
-või dekrüpteerida sõnum.
+To interface a new protocol with the key application, a class implementing the
+corresponding protocol interface must first be created. The key application must
+determine at startup, during configuration processing, from either command-line
+arguments or the configuration file, which protocol is to be used. Then, using
+the corresponding class's static method, a new protocol class instance must be
+initialized using the remaining command-line arguments or configuration file.
+After that, the key can be generated or the message can be decrypted.
 
-Toetatud protokollide kirjeldused
----------------------------------
+Descriptions of Supported Protocols
+------------------------------------
 
-Shamiri saladuse jagamise skeem
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Shamir's Secret Sharing Scheme
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Olgu meil salajane väärtus :math:`s = a_0` ja soovime seda jagada :math:`n`
-osapoole vahel selliselt, et vähemalt :math:`t` osapoolt saaksid selle saladuse
-rekonstrueerida.  Selleks valime koefitsiendid :math:`a_1` kuni :math:`a_{t-1}`
-ning vaatame polünoomi muutuja :math:`x` suhtes:
+Let us have a secret value :math:`s = a_0` and we wish to share it among
+:math:`n` parties such that at least :math:`t` parties can reconstruct the
+secret. For this, we choose coefficients :math:`a_1` through :math:`a_{t-1}`
+and consider the polynomial in variable :math:`x`:
 
 .. math::
     P(x) = a_{t-1}  x^{t-1} + .. + a_1  x + a_0
 
-Olgu :math:`x_1` kuni :math:`x_n` nullist erinevad unikaalsed väärtused
-(üldiselt :math:`1` kuni :math:`n`), sellisel juhul saame osakud :math:`s_i =
-P(x_i)` ning salajase väärtuse :math:`s = P(0)`.
+Let :math:`x_1` through :math:`x_n` be unique non-zero values (generally
+:math:`1` through :math:`n`), in which case we get the shares :math:`s_i =
+P(x_i)` and the secret value :math:`s = P(0)`.
 
-Geomeetriliselt vaadates on :math:`P(x)` polünoom ning osakud punktid sellel
-polünoomil. Põhikoolimatemaatikast teame, et :math:`t-1` järku polünoomi
-joonistamiseks piisab meile :math:`t` punktist (sirge jaoks kaks punkti,
-parabooli jaoks kolm punkti jne.). Salajane väärtus on selle polünoomi väärtus
-y-telje lõikepunktis.
+Geometrically speaking, :math:`P(x)` is a polynomial and the shares are points
+on that polynomial. From elementary mathematics we know that to draw a polynomial
+of degree :math:`t-1`, :math:`t` points are sufficient (two points for a line,
+three points for a parabola, etc.). The secret value is the value of this
+polynomial at the y-axis intercept.
 
-Vaadates rekonstrueerimist arvuliselt, mitte geomeetriliselt, saame kasutades
-Lagrange interpoleerimise meetodit. Tähist :math:`\prod` kasutame me mitme
-liikmega korrutise tähistamiseks ja tähist :math:`\sum` kasutame me mitme
-liikmega summa tähistamiseks.
+Looking at reconstruction numerically rather than geometrically, we can use the
+Lagrange interpolation method. The symbol :math:`\prod` denotes a product of
+multiple terms, and the symbol :math:`\sum` denotes a sum of multiple terms.
 
-Nüüd, tähistame lisaks :math:`t` osapoolt, kes osalevad salajase väärtuse
-rekonstrueerimisel tähisega :math:`U`. Lagrange interpoleerimise valem ütleb:
+Now, let us additionally denote the :math:`t` parties participating in the
+secret value reconstruction as :math:`U`. The Lagrange interpolation formula
+states:
 
 .. math::
     \overline{P}(x) = \sum\limits_{j \in U} s_j \frac{\prod\limits_{i \in U, j \neq i}x-x_i}{\prod\limits_{i \in U, j \neq i}x_j-x_i}
 
-Tõepoolest: fikseerime :math:`j` - paneme tähele, et kui :math:`x = x_j`, siis
-murru väärtus on :math:`1` (kuna lugejas ja nimetajas olevad kordajad taandavad
-üksteist) ja kui :math:`x \neq x_j`, kuid :math:`x = x_k`, mingi muu :math:`k
-\in U` korral, siis murd on :math:`0` (kuna lugejas on :math:`x_k - x_i = 0`
-mingi :math:`i \in U` korral). Seega:
+Indeed: let us fix :math:`j` — note that when :math:`x = x_j`, the value of the
+fraction is :math:`1` (since the factors in the numerator and denominator cancel
+each other out) and when :math:`x \neq x_j`, but :math:`x = x_k`, for some
+other :math:`k \in U`, the fraction is :math:`0` (since the numerator contains
+:math:`x_k - x_i = 0` for some :math:`i \in U`). Therefore:
 
 .. math::
     \overline{P}(x_j) = s_j + 0 \sum_{i \in U, i \neq j} s_i = s_j = P(x_j)
 
-Kuna osapooled teavad väärtuseid :math:`s_i = P(x_i)` (osakud), siis
-kombineerides ning korrutades need läbi baaspolünoomiga
+Since the parties know the values :math:`s_i = P(x_i)` (shares), by combining
+and multiplying them with the basis polynomial
 
 .. math::
     L(U,x,j) = \frac{\prod\limits_{i \in U, j \neq i}x - x_i}{\prod\limits_{i \in U, j \neq i}x_j - x_i}
 
-ja fikseerides :math:`x = 0`, saame jagatud saladuse.
+and fixing :math:`x = 0`, we obtain the shared secret.
 
 `ee.ivxv.key.protocol.generation.desmedt.DesmedtGeneration`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Arvestades, et ElGamali võtmeparameetriks on rühm :math:`G` koos generaatoriga
-:math:`g`, siis salajaseks võtmeks valitakse :math:`x`, mis on ülimalt
-:math:`ord(g)`, st. :math:`g` multiplikatiivne järk rühmas :math:`G`. Vastavaks
-avalikuks võtmeks võetakse väärtus :math:`y = g^x`. Salajase võtme komplektiks
-saab väärtus :math:`(G, g, x)` ja avaliku võtme komplektiks väärtus :math:`(G,
-g, y)`. Rühm :math:`G` valitakse selliselt, et tema järk on mingi algarv
-:math:`p` selliselt, et kehtib :math:`p = 2  q + 1`, kus :math:`q` on samuti
-algarv. Selliselt juhul kirjeldab :math:`G` väärtust algarv :math:`p`.
+Considering that the ElGamal key parameter is a group :math:`G` with generator
+:math:`g`, the private key is chosen as :math:`x`, which is at most
+:math:`ord(g)`, i.e., the multiplicative order of :math:`g` in group :math:`G`.
+The corresponding public key is the value :math:`y = g^x`. The private key
+set becomes the value :math:`(G, g, x)` and the public key set becomes the
+value :math:`(G, g, y)`. The group :math:`G` is chosen such that its order is
+some prime :math:`p` such that :math:`p = 2  q + 1`, where :math:`q` is also
+a prime. In this case, the group :math:`G` is described by the prime :math:`p`.
 
-Algebrast teame, et kui :math:`G` järk on :math:`2q + 1`, siis iga selle rühma
-elemendi järk on kas :math:`1`, :math:`2`, :math:`q` või :math:`2q`. Me oleme
-huvitatud selliselt generaatorist, mille järk on :math:`q` ja mis on ruutjääk,
-kuna see genereerib piisavalt suure alamrühma, mille kõik elemendid on
-ruutjäägid. Vastasel juhul võib toimuda ühe biti lekkimine krüpteeritud sõnumi
-kohta. Sellise generaatori leidmiseks vaatame me rühma suvalisi elemente ning
-kontrollime tema järku ning ruutjäägilisust kuni leiame sobiva elemendi. Sellise
-elemendi määrame generaatoriks.
+From algebra we know that if the order of :math:`G` is :math:`2q + 1`, then the
+order of every element of this group is either :math:`1`, :math:`2`, :math:`q`,
+or :math:`2q`. We are interested in a generator whose order is :math:`q` and
+which is a quadratic residue, as it generates a sufficiently large subgroup
+whose all elements are quadratic residues. Otherwise, one bit of information
+about the encrypted message could leak. To find such a generator, we examine
+random elements of the group and check their order and quadratic residuosity
+until we find a suitable element. We designate such an element as the generator.
 
-Instants genereerib juhusliku :math:`0<x<q` salajaseks võtmeks, jagab selle
-Shamiri ühissalastuse abil argumentidena antud osapoolte vahel. Iga salajase
-võtme osak kodeeritakse kui ühissalastamata salajase võtme komplekt.
+The instance generates a random :math:`0<x<q` as the private key, shares it
+among the parties given as arguments using Shamir's secret sharing. Each private
+key share is encoded as an unshared private key set.
 
-Seejärel arvutatakse :math:`y = g^x` ning tagastatakse kodeeritud avaliku võtme
-komplekt.
+Then :math:`y = g^x` is computed and the encoded public key set is returned.
 
 `ee.ivxv.key.protocol.generation.shoup.ShoupGeneration`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-RSA võtmepaar genereeritakse järgnevalt: genereeritakse kaks algarvu :math:`p`
-ja :math:`q` bitipikkusega :math:`\textit{modLen}/2` ning võetakse :math:`n =
-pq`. Avalik võti :math:`e` võetakse selliselt et :math:`\gcd(e, \phi(n)) = 1`,
-kuid antud protokollis on :math:`e` fikseeritud :math:`e=65537`. Seega tuleb
-valida :math:`p` ja :math:`q` nii pikalt kui see tingimus kehtib. Salajane võti
-:math:`d` võetakse selliselt, et :math:`de \equiv 1 \pmod{\phi(n)}`, kus
-:math:`\phi` on Euleri :math:`\phi`.
+The RSA key pair is generated as follows: two primes :math:`p` and :math:`q`
+of bit length :math:`\textit{modLen}/2` are generated and :math:`n = pq` is
+computed. The public key :math:`e` is chosen such that :math:`\gcd(e, \phi(n))
+= 1`, but in this protocol :math:`e` is fixed as :math:`e=65537`. Therefore,
+:math:`p` and :math:`q` must be chosen until this condition holds. The private
+key :math:`d` is chosen such that :math:`de \equiv 1 \pmod{\phi(n)}`, where
+:math:`\phi` is Euler's :math:`\phi`.
 
-Arv :math:`\phi(n)` näitab, kui paljud arvudest :math:`1 \leq m < n` on sellised
-et :math:`\gcd(m,n) = 1`, kus :math:`\gcd(a,b)` on kahe arvu :math:`a` ja
-:math:`b` suurim ühistegur. On ilmne, et kui :math:`p` on algarv, siis
-:math:`\phi(p) = p-1`. Lisaks on lihtne näidata, et kui :math:`p` ja :math:`q`
-on algarvud, siis :math:`\phi(pq) = \phi(p)\phi(q)`.
+The number :math:`\phi(n)` indicates how many of the numbers :math:`1 \leq m <
+n` are such that :math:`\gcd(m,n) = 1`, where :math:`\gcd(a,b)` is the greatest
+common divisor of two numbers :math:`a` and :math:`b`. It is obvious that if
+:math:`p` is a prime, then :math:`\phi(p) = p-1`. Additionally, it is easy to
+show that if :math:`p` and :math:`q` are primes, then :math:`\phi(pq) =
+\phi(p)\phi(q)`.
 
-Euleri teoreem ütleb, et kui :math:`a` ja :math:`n` on ühistegurita, siis:
+Euler's theorem states that if :math:`a` and :math:`n` are coprime, then:
 
 .. math::
     a^{\phi(n)} \equiv 1 \pmod{n}
 
-Seega, kui sõnumi :math:`m` allkirjastamiseks tehakse :math:`s \equiv m^d
-\pmod{n}`, siis verifitseerimiseks kontrollitakse kas :math:`s^e \equiv m
-\pmod{n}`. Tõepoolest: :math:`(m^d)^e \equiv m^{de} \equiv m^{k\phi(n)+1} \equiv
+Therefore, if for signing message :math:`m` we compute :math:`s \equiv m^d
+\pmod{n}`, then for verification we check whether :math:`s^e \equiv m
+\pmod{n}`. Indeed: :math:`(m^d)^e \equiv m^{de} \equiv m^{k\phi(n)+1} \equiv
 m^{k\phi(n)}m \equiv 1^km \equiv m \pmod{n}`.
 
-Salajane võti :math:`d` jagatakse Shamiri salastuse jagamisega osadeks, iga osa
-kodeeritakse kui jagamata salajase võtme komponent ning salvestatakse
-osapoolele. Avalik võtme komplekt kodeeritakse ning tagastatakse.
+The private key :math:`d` is split into parts using Shamir's secret sharing,
+each part is encoded as an unshared private key component and stored for the
+corresponding party. The public key set is encoded and returned.
 
 `ee.ivxv.key.protocol.decryption.recover.RecoverDecryption`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Protokoll toimib, rekonstrueerides ElGamali võtme ning dekrüpteerides sellega
-krüptogramme.
+The protocol works by reconstructing the ElGamal key and decrypting cryptograms
+with it.
 
-Täpsemalt, olgu :math:`U` indeksid kaartidest, mis moodustavad argumendiks antud
-:math:`\mathit{cards}` muutuja. Instants loeb salajase võtme komplektid
-kaartidelt, kontrollib võtmekomplektide terviklust (st. rühma :math:`G` ja
-generaatori :math:`g` kirjelduse ühesust), dekodeerib igast komplektist salajase
-võtme :math:`x_i`.
+More precisely, let :math:`U` be the indices of the cards that form the
+:math:`\mathit{cards}` variable given as an argument. The instance reads the
+private key sets from the cards, verifies the integrity of the key sets (i.e.,
+the consistency of the group :math:`G` and generator :math:`g` descriptions),
+and decodes the private key :math:`x_i` from each set.
 
-Seejärel arvutatakse salajane võti :math:`x` kasutades Lagrange
-interpoleerimist:
+Then the private key :math:`x` is computed using Lagrange interpolation:
 
 .. math::
     x = P(0) = \sum\limits_{j\in U} s_j \frac{\prod\limits_{i\in U, j \neq i} -x_i}{\prod\limits_{i\in U, j \neq i} x_j-x_i}
 
-Krüptogrammi :math:`c=(c_1,c_2)=(my^r,g^r)` dekrüpteerimiseks arvutatakse:
+To decrypt the cryptogram :math:`c=(c_1,c_2)=(my^r,g^r)`, the following is
+computed:
 
 .. math::
     d = \frac{c_1}{c_{2}^x}
 
-Dekrüpteerimise lugemistõendi jaoks valitakse juhuslik :math:`r` ning
-konstrueeritakse järgnevad pühendumused:
+For the decryption proof, a random :math:`r` is chosen and the following
+commitments are constructed:
 
 .. math::
     a = c_{2}^r \\
     b = g^r
 
-Seejärel arvutatakse Fiat-Shamiri pretensioon järgnevalt, kus `H` on
-räsifunktsioon `SHA2-256` ning `B2I` on meetod, mis teisendab baidijada
-täisarvuks ühtlaselt vahemikus::
+Then the Fiat-Shamir challenge is computed as follows, where `H` is the hash
+function `SHA2-256` and `B2I` is a method that converts a byte array to an
+integer uniformly in the range::
 
     K = H("DECRYPTION" || y || c || d || a || b)
     k = B2I(K, q)
 
-Nüüd arvutatakse lugemistõendi vastus:
+Now the decryption proof response is computed:
 
 .. math::
     s = kx + r
 
-Kogu lugemistõend on komplekt :math:`(a,b,s)`. Tagastatakse :math:`(d,(a,b,s))`.
+The complete decryption proof is the set :math:`(a,b,s)`. The return value is
+:math:`(d,(a,b,s))`.
 
 `ee.ivxv.key.protocol.signing.shoup.ShoupSigning`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Antud protokollis ei toimu võtme rekonstrueerimist.
+In this protocol, key reconstruction does not take place.
 
-Olgu :math:`U` indeksid kaartidest, mis moodustavad argumendiks antud
-:math:`\mathit{cards}` muutuja. Klassiinstants loeb salajase võtme komplektid ja
-kontrollib nende terviklust (st. mooduli ja avaliku võtme ühesus). Loetakse
-mällu võtme moodul :math:`n` ja avalik võti :math:`e`. Lisaks dekodeeritakse ja
-loetakse mällu salajased võtmed :math:`d_i`. Allkirja genereerimiseks sõnumile
-:math:`m` rakendatakse sellele EMSA-PSS kodeerimist [RFC8017]_, kus on kasutusel
-varasemalt defineeritud `RSA-PSS parameetrid`_, saades allkirjastamiseks sõnumi
-:math:`M`.
+Let :math:`U` be the indices of the cards that form the :math:`\mathit{cards}`
+variable given as an argument. The class instance reads the private key sets and
+verifies their integrity (i.e., the consistency of the modulus and public key).
+The key modulus :math:`n` and public key :math:`e` are read into memory.
+Additionally, the private keys :math:`d_i` are decoded and read into memory. To
+generate a signature for message :math:`m`, EMSA-PSS encoding [RFC8017]_ is
+applied to it, using the previously defined `RSA-PSS parameetrid`_, yielding the
+message :math:`M` for signing.
 
-Me tähistame tähisega :math:`n!` arvu :math:`n` faktoriaali, st. :math:`n! = 1
-\cdot 2 \cdot 3 \cdot \ldots \cdot n`. Meenutame, et Lagrange interpolatsiooni
-baaspolünoom oli:
+We denote by :math:`n!` the factorial of the number :math:`n`, i.e., :math:`n!
+= 1 \cdot 2 \cdot 3 \cdot \ldots \cdot n`. Recall that the Lagrange
+interpolation basis polynomial was:
 
 .. math::
     L(U,x,j) = \frac{\prod\limits_{i\in U, j \neq i} x-x_i}{\prod\limits_{i\in U, j \neq i} x_j-x_i}
 
-Defineerime modifitseeritud Lagrange baaspolünoomi järgnevalt:
+We define the modified Lagrange basis polynomial as follows:
 
 .. math::
     L'(U,x,j) = n! \frac{\prod\limits_{i\in U, j \neq i} x-x_i}{\prod\limits_{i\in U, j \neq i} x_j- x_i}
 
-Kuna me teame, et punktid :math:`1 \leq x_i,x_j \leq n`, siis
-:math:`|x_j-x_i|<n`. Seega, korrutades Lagrange baaspolünoomi läbi :math:`n!`,
-saame, et :math:`L'(U,j)` on alati täisarv.
+Since we know that the points :math:`1 \leq x_i,x_j \leq n`, we have
+:math:`|x_j-x_i|<n`. Therefore, by multiplying the Lagrange basis polynomial
+by :math:`n!`, we get that :math:`L'(U,j)` is always an integer.
 
-.. warning: Kuna kehtib `|k|=|-k|`, siis võib mingitel juhtudel faktoriaalist
-   tegurid ära taandada ja saada murdarvu. Me oleme eksperimentaalselt
-   kontrollinud kõiki juhte kuni 15 osapoolega skeemideni ning siis ei teki
-   murdarvu. Rohkemate osapoolte korral tuleb kontrollida murrulisust ja
-   vajadusel muuta protokolli.
+.. warning: Since `|k|=|-k|`, in some cases factors from the factorial may
+   cancel out, resulting in a fraction. We have experimentally verified all
+   cases up to schemes with 15 parties, and no fractions occur. For more
+   parties, fractionality must be checked and the protocol modified if
+   necessary.
 
-Allkirja konstrueerimiseks arvutame:
+To construct the signature, we compute:
 
 .. math::
     s = \prod\limits_{j\in U} {(M^{x_j})}^{L'(U,0,j)} = M^{\sum\limits_{j\in U} x_j L'(U,0,j)} = M^{n!d}
 
-Kuna kasutasime modifitseeritud Lagrange interpoleerimist, siis võrreldes
-tavalise RSA allkirjaga on see astendatud :math:`n!`-ga. Bezout' lemmast teame,
-et :math:`x` ja :math:`y` korral leiduvad :math:`a` ja :math:`b` selliselt, et
-:math:`ax+by=\gcd(x,y)`. Veel enam, selliseid :math:`a` ja :math:`b` väärtuseid
-on võimalik leida laiendatud Eukleidese algoritmiga suurima ühisteguri
-leidmiseks.
+Since we used modified Lagrange interpolation, compared to a regular RSA
+signature, this is raised to the power of :math:`n!`. From Bézout's lemma we
+know that for :math:`x` and :math:`y`, there exist :math:`a` and :math:`b` such
+that :math:`ax+by=\gcd(x,y)`. Moreover, such values of :math:`a` and :math:`b`
+can be found using the extended Euclidean algorithm for finding the greatest
+common divisor.
 
-Kasutades Eukleidese laiendatud algoritmi, leitakse :math:`a` ja :math:`b`,
-selliselt et :math:`ae+bn!=\gcd(e,n!)`. Kuna avalik võti :math:`e` on valitud
-algarv, siis :math:`\gcd(e,n!)=1`. Arvutame:
+Using the extended Euclidean algorithm, :math:`a` and :math:`b` are found such
+that :math:`ae+bn!=\gcd(e,n!)`. Since the public key :math:`e` is a chosen
+prime, :math:`\gcd(e,n!)=1`. We compute:
 
 .. math::
     \sigma = M^as^b
 
-Arvestades, et :math:`de = 1 \pmod{\phi(n)}`, on see tõesti korrektne allkiri:
+Considering that :math:`de = 1 \pmod{\phi(n)}`, this is indeed a correct
+signature:
 
 .. math::
     \sigma^e &= M^{ae}s^{be}      \\
@@ -377,4 +376,4 @@ Arvestades, et :math:`de = 1 \pmod{\phi(n)}`, on see tõesti korrektne allkiri:
              &= M^{\gcd(e,n!)}       \\
              &= M
 
-Protokolli instants tagastab :math:`\sigma` allkirjana.
+The protocol instance returns :math:`\sigma` as the signature.

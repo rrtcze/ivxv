@@ -1,135 +1,136 @@
-..  IVXV protokollid
+..  IVXV protocols
 
 =====
-Lisad
+Appendices
 =====
 
-Andmestruktuuride ASN.1 spetsifikatsioon
+ASN.1 Specification of Data Structures
 ========================================
 
 .. literalinclude:: ivxv-elgamal-general.asn1
    :language: asn1
    :name: asn-general
    :linenos:
-   :caption: IVXV ElGamal üldised andmestruktuurid
+   :caption: IVXV ElGamal general data structures
 
 .. literalinclude:: ivxv-elgamal-modp.asn1
    :language: asn1
    :name: asn-modp
    :linenos:
-   :caption: IVXV ElGamal ModP spetsiifilised andmestruktuurid
+   :caption: IVXV ElGamal ModP specific data structures
 
 .. literalinclude:: ivxv-elgamal-ecc.asn1
    :language: asn1
    :name: asn-ecc
    :linenos:
-   :caption: IVXV ElGamal ECC spetsiifilised andmestruktuurid
+   :caption: IVXV ElGamal ECC specific data structures
 
 
 
-Elektroonilise hääle vormingu spetsifikatsioon
+Specification of the Electronic Vote Format
 ==============================================
 
-Käesoleva protokolliversiooniga kooskõlaline ettepanek VVK otsuseks
-hääletamissedeli ja elektroonilise hääle vormi kehtestamiseks.
+A proposal consistent with the current protocol version for the NEC decision
+to establish the format of the ballot and the electronic vote.
 
 .. literalinclude:: paragraph.txt
 
 
-Vead töötlemisprotsessis
+Errors in the Processing Process
 ========================
 
-Anname ülevaate veakoodidest töötlemisprotsessis. Veakoodid kirjeldavad vigu
-üksiku elemendi verifitseerimisel - hääl, registreerimistõend,
-registreerimispäring - ning häälte, registreerimistõendite ja
-registreerimispäringute vahelise vastavuse loomisel.
+We provide an overview of error codes in the processing process. The error
+codes describe errors in the verification of individual elements - vote,
+registration proof, registration request - and in establishing correspondence
+between votes, registration proofs, and registration requests.
 
-Enamus veaolukordi on pigem hüpoteetilised (nt. `REG_NO_NONCE`), siiski on
-tegemist olukordadega, mis programselt võivad esineda ning seetõttu tuleb neid
-ka käsitleda.
+Most error situations are rather hypothetical (e.g., `REG_NO_NONCE`), yet these
+are situations that may occur programmatically and therefore must also be
+handled.
 
-Veaolukord tähendab, et konkreetne element ei liigu edasi töötlemise järgmisesse faasi.
+An error situation means that the specific element does not proceed to the
+next phase of processing.
 
-.. list-table:: Töötlemisprotsessi veakoodid
+.. list-table:: Processing process error codes
    :widths: 40 60
    :header-rows: 1
 
-   * - Veakood
-     - Selgitus
+   * - Error code
+     - Description
    * - ``INVALID_FILE_NAME``
-     - Failinimi ei vasta oodatud mustrile. Viitab tundmatule failile urnis.
+     - The file name does not match the expected pattern. Refers to an unknown file in the ballot box.
    * - ``MISSING_FILE``
-     - Mõni hääle koosseisuks vajalik fail puudub. Nt. ajatempel.
+     - A file required as part of the vote is missing. E.g., timestamp.
    * - ``REPEATED_FILE``
-     - Mõnda hääle koosseisuks vajalikku faili on mitu. Nt. kehtivuskinnitus.
+     - A file required as part of the vote appears multiple times. E.g., validity confirmation.
    * - ``UNKNOWN_FILE_TYPE``
-     - Faili tüüp on tundmatu või mittetoetatud.
+     - The file type is unknown or unsupported.
    * - ``INVALID_FILE_SIZE``
-     - Allkirjastatud hääle faili suurus ei vasta seadistustes nõutud kriteeriumitele.
+     - The size of the signed vote file does not meet the criteria required in the configuration.
    * - ``INVALID_BALLOT_SIGNATURE``
-     - Hääl on vigase allkirjaga.
+     - The vote has an invalid signature.
    * - ``MISSING_VOTER_SIGNATURE``
-     - Hääl ei sisalda valija allkirja.
+     - The vote does not contain the voter's signature.
    * - ``VOTER_NOT_FOUND``
-     - Valija ei olnud hääletamise hetkel valijate nimekirjas.
+     - The voter was not in the voter list at the time of voting.
    * - ``VOTERLIST_NOT_FOUND``
-     - Versioonile vastavat valijate nimekirja ei leitud.
+     - The voter list corresponding to the version was not found.
    * - ``TIME_BEFORE_START``
-     - Hääl on antud enne hääletamisperioodi algust. Viitab testhäälele.
+     - The vote was cast before the start of the voting period. Refers to a test vote.
    * - ``REG_RESP_INVALID``
-     - Registreerimistõend/ajatempel on vigane. Viga ATOs või töötlejas.
+     - The registration proof/timestamp is invalid. Error in the TSA or processor.
    * - ``REG_REQ_INVALID``
-     - Registreerimispäring on vigane. Viga kogumisteenuses või töötlejas.
+     - The registration request is invalid. Error in the collection service or processor.
    * - ``REG_RESP_NOT_UNIQUE``
-     - Registreerimistõend ei ole unikaalne. Viga kogumisteenuses või töötlejas.
+     - The registration proof is not unique. Error in the collection service or processor.
    * - ``REG_REQ_NOT_UNIQUE``
-     - Registreerimispäring ei ole unikaalne. Sama räsiga häält on esitatud korduvalt.
+     - The registration request is not unique. A vote with the same hash has been submitted repeatedly.
    * - ``REG_NO_NONCE``
-     - Registreerimistõendis puudub nonss.
+     - The registration proof does not contain a nonce.
    * - ``REG_NONCE_NOT_SIG``
-     - Esitatud nonss ei ole IVXV protokolli kohaselt allkirjastatud.
+     - The submitted nonce is not signed in accordance with the IVXV protocol.
    * - ``REG_NONCE_ALG_MISMATCH``
-     - Nonssi allkirjastamisel kasutatud algoritm ei vasta oodatule.
+     - The algorithm used for signing the nonce does not match the expected one.
    * - ``REG_NONCE_SIG_INVALID``
-     - Nonssi allkiri on vigane.
+     - The nonce signature is invalid.
    * - ``UNKNOWN_FILE_IN_VOTE_CONTAINER``
-     - Hääle konteineris on tundmatu fail.
+     - The vote container contains an unknown file.
    * - ``TECHNICAL_ERROR``
-     - Töötlemise ajal tekkis tehniline viga.
+     - A technical error occurred during processing.
    * - ``REG_RESP_REQ_UNMATCH``
-     - Registreerimistõendi andmed ei vasta registreerimispäringu andmetele.
+     - The registration proof data does not match the registration request data.
    * - ``REG_REQ_WITHOUT_BALLOT``
-     - Esitatud on registreerimispäring, kuid hääl puudub urnist. Kogumisteenuse viga.
+     - A registration request has been submitted, but the vote is missing from the ballot box. Collection service error.
    * - ``BALLOT_WITHOUT_REG_REQ``
-     - Hääl on esitatud ilma vastava registreerimispäringuta. ATO viga.
+     - A vote has been submitted without a corresponding registration request. TSA error.
    * - ``SAME_TIME_AS_LATEST``
-     - Kaks häält samalt valijalt võivad olla arvesse võetavad viimasena.
+     - Two votes from the same voter may both be eligible as the last one.
    * - ``INVALID_SIGNATURE_PROFILE``
-     - Hääle allkirjaprofiil on vigane.
+     - The vote's signature profile is invalid.
 
 
-Töötlemise käigus tuvastatakse kehtetud sedelid sellisel määral, mil seda
-võimaldavad kontrollid avaliku võtmega. Kuigi kogumisteenus ei luba kehtetuid
-sedeleid talletada, peab töötlemisrakendus kontrolle siiski kordama tagamaks
-mh. võimalike tarkvaravigade vältimise.
+During processing, invalid ballots are identified to the extent that
+public key checks allow. Although the collection service does not allow
+invalid ballots to be stored, the processing application must repeat the
+checks to ensure, among other things, the avoidance of possible software bugs.
 
 
-.. list-table:: Krüptogrammide kehtivuse kontrolli veakoodid
+.. list-table:: Cryptogram validity check error codes
    :widths: 30 70
    :header-rows: 1
 
-   * - Veakood
-     - Selgitus
+   * - Error code
+     - Description
    * - ``INVALID_BYTES``
-     - Baidijada ei ole dekodeeritav ElGamalCiphertext'na
+     - The byte sequence is not decodable as ElGamalCiphertext
    * - ``INVALID_GROUP``
-     - Väärtus ei ole oodatud rühma element
+     - The value is not an element of the expected group
    * - ``INVALID_RANGE``
-     - Väärtus on lubatud vahemikust väljas.
+     - The value is outside the permitted range.
    * - ``INVALID_QR``
-     - Väärtus ei ole ruutjääk (MODP).
+     - The value is not a quadratic residue (MODP).
    * - ``INVALID_POINT``
-     - Väärtus ei ole kõvera punkt (ECC).
+     - The value is not a point on the curve (ECC).
    * - ``INVALID``
-     - Vigane šifreeritud tekst.
+     - Invalid ciphertext.
 

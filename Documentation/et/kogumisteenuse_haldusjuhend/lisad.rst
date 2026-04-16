@@ -1,22 +1,22 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
-Lisad
-=====
+Appendices
+==========
 
 .. _utiliidid:
 
-Utiliidid
+Utilities
 ---------
 
-Kogumisteenuse haldamise käsureautiliitide ülevaade ja abiteave.
+Overview and help text of collector service management command-line utilities.
 
 .. contents:: .
    :local:
    :depth: 1
 
 
-Andmehoidla utiliidid
-^^^^^^^^^^^^^^^^^^^^^
+Data Store Utilities
+^^^^^^^^^^^^^^^^^^^^
 
 .. include:: utiliitide-abiteave/ivxv-create-data-dirs.inc
 
@@ -25,28 +25,28 @@ Andmehoidla utiliidid
 .. include:: utiliitide-abiteave/ivxv-db-dump.inc
 
 
-Teenuse seisundi utiliidid
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Service State Utilities
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: utiliitide-abiteave/ivxv-status.inc
 
 .. include:: utiliitide-abiteave/ivxv-service.inc
 
 
-Sündmuste logi utiliidid
-^^^^^^^^^^^^^^^^^^^^^^^^
+Event Log Utilities
+^^^^^^^^^^^^^^^^^^^^
 
 .. include:: utiliitide-abiteave/ivxv-eventlog-dump.inc
 
 
-Kasutajate halduse utiliidid
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+User Management Utilities
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: utiliitide-abiteave/ivxv-users-list.inc
 
 
-Seadistusutiliidid
-^^^^^^^^^^^^^^^^^^
+Configuration Utilities
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: utiliitide-abiteave/ivxv-collector-init.inc
 
@@ -56,47 +56,47 @@ Seadistusutiliidid
 
 .. include:: utiliitide-abiteave/ivxv-config-apply.inc
 
-Seadistuste rakendamine hallatavatele teenustele on võimalik siis, kui
-haldusteenusesse on laaditud kogumisteenuse tehnilised seadistused.
+Applying settings to managed services is possible once the collector service
+technical settings have been loaded into the management service.
 
-Seadistuste rakendamise järjekord:
+Configuration application order:
 
-#. Tehnilised seadistused koos usaldusjuure seadistustega.
+#. Technical settings together with trust root settings.
 
-   #. Teenuse tarkvara paigaldamine;
+   #. Installing service software;
 
-   #. Haldusteenuse ligipääsu loomine hallatava teenuse kontole;
+   #. Creating management service access to the managed service account;
 
-   #. Teenuse logimisseadistuste rakendamine;
+   #. Applying service logging settings;
 
-   #. Haldusteenuse ligipääsu eemaldamine teenuse hosti juurkasutaja kontole
-      (ainult juhul, kui teenusmasinas pole rohkem seadistamata teenuseid);
+   #. Removing management service access to the service host root account
+      (only if there are no more unconfigured services on the service machine);
 
-   #. Usaldusjuure rakendamine teenusele;
+   #. Applying trust root to the service;
 
-   #. Tehniliste seadistuste rakendamine teenusele;
+   #. Applying technical settings to the service;
 
-#. Valikute nimekiri;
+#. Choices list;
 
-#. Ringkondade nimekiri;
+#. District list;
 
-#. Valijate nimekirjad;
+#. Voter lists;
 
-Logikogumisteenus erineb teistest hallatavatest teenustest:
+The log collection service differs from other managed services:
 
-#. Logikogumisteenus seadistatakse enne teisi teenuseid, et tagada võimalikult
-   varajane logi kogumine.
+#. The log collection service is configured before other services to ensure
+   the earliest possible log collection.
 
-#. Logikogumisteenustele ei rakendata muid seadistusi peale logikogumisteenuse
-   seadistuste (usaldusjuure seadistusi, kogumisteenuse tehnilised seadistusi
-   ja valimiste seadistusi logikogumisteenus ei vaja).
+#. No other settings besides log collection service settings are applied to the
+   log collection services (the log collection service does not need trust root
+   settings, collector service technical settings, or election settings).
 
-Valimisnimekirjade (valikute ja valijate nimekirjad) rakendamine tähendab
-nimekirja ülekandmist talletusteenusesse vastavat nimekirja teenindava teenuse kaudu.
+Applying election lists (choices and voter lists) means transferring the list
+to the storage service through the service that serves the corresponding list.
 
-Näiteks valikute nimekiri rakendatakse vaid ühele (juhuslikult valitud)
-nimekirjateenusele, mis kannab nimekirja talletusteenusesse. Talletusteenuse
-kaudu on nimekiri kättesaadav kõigile teistele nimekirjateenustele.
+For example, the choices list is applied to only one (randomly selected)
+choices service, which transfers the list to the storage service. Through the
+storage service, the list is available to all other choices services.
 
 .. include:: utiliitide-abiteave/ivxv-voter-list-download.inc
 
@@ -109,8 +109,8 @@ kaudu on nimekiri kättesaadav kõigile teistele nimekirjateenustele.
 .. include:: utiliitide-abiteave/ivxv-backup-crontab.inc
 
 
-Andmete eksportimise ja varundamise utiliidid
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Data Export and Backup Utilities
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: utiliitide-abiteave/ivxv-export-votes.inc
 
@@ -123,32 +123,32 @@ Andmete eksportimise ja varundamise utiliidid
 .. include:: utiliitide-abiteave/ivxv-voting-sessions.inc
 
 
-Deemonid
+Daemons
 ^^^^^^^^
 
 .. include:: utiliitide-abiteave/ivxv-agent-daemon.inc
 
 
-Sisemised utiliidid
+Internal Utilities
 ^^^^^^^^^^^^^^^^^^^
 
 .. attention::
 
-   Sisemised utiliidid on kasutusel haldusdeemoni poolt alamteenuste
-   haldamiseks ja neid ei ole reeglina tarvis eraldi käivitada.
+   Internal utilities are used by the management daemon for managing
+   sub-services and generally do not need to be run separately.
 
 .. include:: utiliitide-abiteave/ivxv-admin-helper.inc
 
 .. include:: utiliitide-abiteave/ivxv-admin-sudo.inc
 
 
-Seadistusfailid
----------------
+Configuration Files
+--------------------
 
 .. _ivxv-logcollector.conf:
 
-Logikogumisteenuse seadistusfail
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Log Collection Service Configuration File
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. literalinclude:: ../../../common/collector/config/rsyslog-logcollector.conf
    :name: /etc/rsyslog.d/ivxv-logcollector.conf
@@ -156,60 +156,61 @@ Logikogumisteenuse seadistusfail
    :linenos:
 
 
-Lisaseadistused
----------------
+Additional Settings
+--------------------
 
 .. _configure-ssh-idcard-auth:
 
-SSH kasutajate autentimine ID-kaardi abil
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SSH User Authentication Using ID Card
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-SSH-teenusesse on võimalik autentida ID-kaardi avaliku võtmega abil, kasutades
-selleks PKCS#11 toega SSH-klienti ``kitty.exe`` (http://kitty.9bis.net/).
+It is possible to authenticate to the SSH service using an ID card public key,
+using the PKCS#11-capable SSH client ``kitty.exe`` (http://kitty.9bis.net/).
 
-Turvakaalutustel tuleks keelata haldusliidese SSH-teenusesse parooliga
-autentimine. Parooliga autentimise keelamiseks tuleb seadistusfailis
-:file:`/etc/ssh/sshd_config` määrata parameetri ``PasswordAuthentication``
-väärtuseks ``no``::
+For security reasons, password authentication to the management interface SSH
+service should be disabled. To disable password authentication, set the parameter
+``PasswordAuthentication`` to ``no`` in the configuration file
+:file:`/etc/ssh/sshd_config`::
 
    # To disable tunneled clear text passwords, change to no here!
    PasswordAuthentication no
 
-Volitatud kasutajate faili asukoht (:file:`/etc/ssh/kasutajad`) tuleb failis
-:file:`/etc/ssh/sshd_config` määrata parameetriga ``AuthorizedKeysFile``:
+The location of the authorized users file (:file:`/etc/ssh/kasutajad`) must be
+specified in the file :file:`/etc/ssh/sshd_config` using the parameter
+``AuthorizedKeysFile``:
 
    ``AuthorizedKeysFile /etc/ssh/kasutajad``
 
 .. important::
 
-   Seadistusfailis ``/etc/ssh/sshd_config`` tehtud muutuse rakendamiseks tuleb
-   SSH teenus taaskäivitada::
+   To apply changes made in the configuration file ``/etc/ssh/sshd_config``,
+   the SSH service must be restarted::
 
       # service ssh restart
       [ ok ] Restarting OpenBSD Secure Shell server: sshd.
 
-ID-kaardi isikutuvastamise sertifikaadiga autenditava kasutaja ülesseadmine
-käib järgmiselt:
+Setting up a user to authenticate with an ID card authentication certificate
+is done as follows:
 
-#. Kasutajale konto loomine:
+#. Creating a user account:
 
    .. code-block:: shell-session
 
       # adduser --disabled-password kasutajanimi
       # usermod -a -G www-data kasutajanimi
 
-#. Kasutaja ID-kaardi isikutuvastamise sertifikaadi salvestamine PEM-vormingus
-   faili :file:`usercert.cer` (ID-kaardi haldusvahendi abil);
+#. Saving the user's ID card authentication certificate in PEM format
+   to the file :file:`usercert.cer` (using the ID card management tool);
 
-#. Sertifikaadist kasutaja avaliku võtme eraldamine ja salvestamine faili
-   :file:`userpubkey.pem`:
+#. Extracting the user's public key from the certificate and saving it to the
+   file :file:`userpubkey.pem`:
 
    .. code-block:: shell-session
 
       # openssl x509 -in usercert.cer -pubkey -noout > userpubkey.pem
 
-#. Avaliku võtme teisendamine PKCS#8 vormingusse, kasutaja tunnusega
-   varustamine ja salvestamine SSH volitatud kasutajate faili
+#. Converting the public key to PKCS#8 format, adding the user identifier,
+   and saving it to the SSH authorized users file
    :file:`/etc/ssh/kasutajad`:
 
    .. code-block:: shell-session
@@ -217,8 +218,8 @@ käib järgmiselt:
       # KEY=$(ssh-keygen -i -m PKCS8 -f userpubkey.pem)
       # echo "$KEY kasutaja@eesti.ee" >> /etc/ssh/kasutajad
 
-#. Kontrollimine, kas lisatud kirje on kujul ``ssh-rsa PKCS8-võti``
-   kasutajatunnus:
+#. Verifying that the added entry is in the format ``ssh-rsa PKCS8-key``
+   user-identifier:
 
    .. code-block:: shell-session
 
@@ -228,206 +229,206 @@ käib järgmiselt:
       DwbLbbdD5y3puGcLH+sLuwba6Vuc3aU0QuqzenYmY9pV7w9y0wc= kasutaja@eesti.ee
 
 
-Andmehoidla
+Data Store
 -----------
 
-Haldusteenuse andmeid hoitakse failisüsteemis ja andmebaasis. Failisüsteemis
-hoitakse andmeid, mis on pärit välistest süsteemidest ja on haldusteenusesse
-üle kantud faili kujul. Andmebaasis hoitakse andmeid, mis on genereeritud
-haldusteenuse töö käigus.
+Management service data is stored in the file system and in a database. Data
+from external systems that has been transferred to the management service in
+file form is stored in the file system. Data generated during the operation of
+the management service is stored in the database.
 
 
-Failisüsteemis hoitavad andmed
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Data Stored in the File System
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*  :file:`/etc/ivxv/` -- kogumisteenusele rakendatud ja hetkel kehtivad
-   seadistus- ja nimekirjafailid;
+*  :file:`/etc/ivxv/` — configuration and list files applied to and currently
+   valid for the collector service;
 
-*  :file:`/var/lib/ivxv/` -- kogumisteenuse haldusteenuse andmefailid;
+*  :file:`/var/lib/ivxv/` — collector service management service data files;
 
-*  :file:`/var/lib/ivxv/admin-ui-data/` -- haldusteenuse veebiliidese jaoks
-   serveeritavad JSON-failid;
+*  :file:`/var/lib/ivxv/admin-ui-data/` — JSON files served for the management
+   service web interface;
 
-*  :file:`/var/lib/ivxv/admin-ui-data/status.json` -- kogumisteenuse seisundi
-   koondandmed;
+*  :file:`/var/lib/ivxv/admin-ui-data/status.json` — collector service status
+   summary data;
 
-*  :file:`/var/lib/ivxv/admin-ui-permissions/` -- haldusteenuse veebiliidese
-   kasutajaõigused (Apache veebiserveri jaoks);
+*  :file:`/var/lib/ivxv/admin-ui-permissions/` — management service web interface
+   user permissions (for the Apache web server);
 
-*  :file:`/var/lib/ivxv/ballot-box/` -- allalaaditava e-valimiskasti salvestamise kataloog;
+*  :file:`/var/lib/ivxv/ballot-box/` — directory for storing the downloaded e-ballot box;
 
-*  :file:`/var/lib/ivxv/commands/` -- kogumisteenuse juhtimiseks rakendatud
-   korraldusfailide ajalugu;
+*  :file:`/var/lib/ivxv/commands/` — history of command files applied for
+   managing the collector service;
 
-*  :file:`/var/lib/ivxv/commands/<command-type>-<timestamp>.bdoc` --
-   digitaalselt allkirjastatud korraldus ``ASiC-E`` vormingus.
+*  :file:`/var/lib/ivxv/commands/<command-type>-<timestamp>.bdoc` —
+   digitally signed command in ``ASiC-E`` format.
 
-*  :file:`/var/lib/ivxv/commands/<command-type>-<timestamp>.json` --
-   korralduse olekufail JSON-vormingus.
+*  :file:`/var/lib/ivxv/commands/<command-type>-<timestamp>.json` —
+   command status file in JSON format.
 
-*  :file:`/var/lib/ivxv/db/` -- haldusteenuse andmebaasi kataloog;
+*  :file:`/var/lib/ivxv/db/` — management service database directory;
 
-*  :file:`/var/lib/ivxv/db/ivxv-management.db` -- haldusteenuse andmebaasi
-   fail;
+*  :file:`/var/lib/ivxv/db/ivxv-management.db` — management service database
+   file;
 
-*  :file:`/var/lib/ivxv/ivxv-management-events.log` -- haldusteenuse sündmuste
-   logi;
+*  :file:`/var/lib/ivxv/ivxv-management-events.log` — management service event
+   log;
 
-*  :file:`/var/lib/ivxv/service/` -- muud teenusespetsiifilised failid
-   (nt. registreerimisvõtmest eraldatud avalik võti);
+*  :file:`/var/lib/ivxv/service/` — other service-specific files
+   (e.g., public key extracted from the registration key);
 
-*  :file:`/var/lib/ivxv/upload/` -- kogumisteenusesse veebiliidese kaudu
-   laaditud failid;
+*  :file:`/var/lib/ivxv/upload/` — files loaded into the collector service
+   through the web interface;
 
-Andmebaasis hoitavad andmed
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Data Stored in the Database
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Andmevälja nimi ja kirjeldus:
+Data field name and description:
 
-* ``collector/state`` -- kogumisteenuse olek;
+* ``collector/state`` — collector service state;
 
-* ``config/election`` -- kogumisteenuses rakendatud valimiste seadistusele
-  digiallkirja andnud volitatud kasutaja andmed kujul ``<CN> <timestamp>``;
+* ``config/election`` — authorized user data of the person who digitally signed
+  the election settings applied to the collector service in the format ``<CN> <timestamp>``;
 
-* ``config/technical`` -- kogumisteenuses rakendatud tehnilisele seadistusele
-  digiallkirja andnud volitatud kasutaja andmed kujul ``<CN> <timestamp>``;
+* ``config/technical`` — authorized user data of the person who digitally signed
+  the technical settings applied to the collector service in the format ``<CN> <timestamp>``;
 
-* ``config/trust`` -- kogumisteenuses rakendatud usaldusjuure seadistusele
-  digiallkirja andnud volitatud kasutaja andmed kujul ``<CN> <timestamp>``;
+* ``config/trust`` — authorized user data of the person who digitally signed
+  the trust root settings applied to the collector service in the format ``<CN> <timestamp>``;
 
-* ``election/election-id`` -- valimiste identifikaator;
+* ``election/election-id`` — election identifier;
 
-* ``election/electionstart`` -- valimiste algusaeg;
+* ``election/electionstart`` — election start time;
 
-* ``election/electionstop`` -- valimiste lõpuaeg;
+* ``election/electionstop`` — election end time;
 
-* ``election/servicestart`` -- kogumisteenuse käivitamise aeg;
+* ``election/servicestart`` — collector service start time;
 
-* ``election/servicestop`` -- kogumisteenuse seiskamise aeg;
+* ``election/servicestop`` — collector service stop time;
 
-* ``host/<hostname>/state`` -- teenushosti seisund;
+* ``host/<hostname>/state`` — service host state;
 
-* ``list/choices`` -- haldusteenusesse laaditud valikute nimekirjale
-  digiallkirja andnud volitatud kasutaja andmed kujul ``<CN> <timestamp>``;
+* ``list/choices`` — authorized user data of the person who digitally signed
+  the choices list loaded into the management service in the format ``<CN> <timestamp>``;
 
-* ``list/choices-loaded`` -- nimekirjateenustesse laaditud valikute
-  nimekirjale digiallkirja andnud volitatud kasutaja andmed kujul ``<CN>
+* ``list/choices-loaded`` — authorized user data of the person who digitally
+  signed the choices list loaded into the choices services in the format ``<CN>
   <timestamp>``;
 
-* ``list/districts`` -- nimekirjateenustesse laaditud ringkondade
-  nimekirjale digiallkirja andnud volitatud kasutaja andmed kujul ``<CN>
+* ``list/districts`` — authorized user data of the person who digitally signed
+  the district list loaded into the choices services in the format ``<CN>
   <timestamp>``;
 
-* ``list/districts-loaded`` -- nimekirjateenustesse laaditud ringkondade
-  nimekirjale digiallkirja andnud volitatud kasutaja andmed kujul ``<CN>
+* ``list/districts-loaded`` — authorized user data of the person who digitally
+  signed the district list loaded into the choices services in the format ``<CN>
   <timestamp>``;
 
-* ``list/voters0000`` -- haldusteenusesse laaditud valijate algnimekirjale
-  digiallkirja andnud volitatud kasutaja andmed kujul ``<CN> <timestamp>``;
+* ``list/voters0000`` — authorized user data of the person who digitally signed
+  the initial voter list loaded into the management service in the format ``<CN> <timestamp>``;
 
-* ``list/voters<list-number>`` (``list-number >= 01``) -- haldusteenusesse
-  laaditud valijate muudatusnimekirja allalaadimise hetke ajatempel;
+* ``list/voters<list-number>`` (``list-number >= 01``) — timestamp of the
+  download time of the voter change list loaded into the management service;
 
-* ``list/voters<list-number>-state`` -- nimekirjateenustesse laaditud valijate
-  nimekirja olek.
+* ``list/voters<list-number>-state`` — state of the voter list loaded into the
+  choices services.
 
-  Võimalikud väärtused:
+  Possible values:
 
-  1. ``PENDING`` - laaditud haldusteenusesse;
+  1. ``PENDING`` — loaded into the management service;
 
-  2. ``APPLIED`` - rakendatud nimekirjateenusele;
+  2. ``APPLIED`` — applied to the choices service;
 
-  3. ``INVALID`` - nimekiri on märgitud vigaseks ja ootab halduri otsust
-     vahelejätmise kohta (ainult muudatusnimekirja korral);
+  3. ``INVALID`` — the list is marked as faulty and awaits the administrator's
+     decision on skipping (only for change lists);
 
-  4. ``SKIPPED`` - nimekiri on vahele jäetud (ainult muudatusnimekirja korral).
+  4. ``SKIPPED`` — the list has been skipped (only for change lists).
 
-* ``logmonitor/address`` -- seireteenuse aadress või võrgunimi;
+* ``logmonitor/address`` — monitoring service address or network name;
 
-* ``logmonitor/last-data`` -- viimase seireteenusest statistikafaili hankimise
-  aeg;
+* ``logmonitor/last-data`` — time of the last statistics file retrieval from
+  the monitoring service;
 
-* ``user/<idcode>`` -- haldusteenuse kasutaja nimi ja rollid kujul
+* ``user/<idcode>`` — management service user name and roles in the format
   ``<surname,name> <role>[,<role>]``;
 
-* ``service/<service-id>/service-type`` -- Teenuse liik;
+* ``service/<service-id>/service-type`` — Service type;
 
-* ``service/<service-id>/technical-conf-version`` -- Teenusele rakendatud
-  tehnilise seadistuse versioon;
+* ``service/<service-id>/technical-conf-version`` — Version of the technical
+  configuration applied to the service;
 
-* ``service/<service-id>/election-conf-version`` -- Teenusele rakendatud
-  valimiste seadistuse versioon;
+* ``service/<service-id>/election-conf-version`` — Version of the election
+  configuration applied to the service;
 
-* ``service/<service-id>/network`` -- Teenusele alamvõrgu nimi;
+* ``service/<service-id>/network`` — Service subnet name;
 
-* ``service/<service-id>/state`` -- Teenuse olek;
+* ``service/<service-id>/state`` — Service state;
 
-* ``service/<service-id>/ping-errors`` -- Teenuse elusoleku kontrollimise
-  järjestikuste vigade arv;
+* ``service/<service-id>/ping-errors`` — Number of consecutive errors in
+  service liveness checks;
 
-* ``service/<service-id>/last-data`` -- Teenuse viimase oleku hankimise aeg;
+* ``service/<service-id>/last-data`` — Time of the last service status retrieval;
 
-* ``service/<service-id>/ip-address`` -- Teenuse IP-aadress;
+* ``service/<service-id>/ip-address`` — Service IP address;
 
-* ``service/<service-id>/bg_info`` -- Teenuse taustainfo stringina (näiteks
-  elusoleku kontrolli käigus genereeritud veateade);
+* ``service/<service-id>/bg_info`` — Service background information as a string
+  (e.g., error message generated during a liveness check);
 
-* ``service/<service-id>/backup-times`` -- Varundusteenuse automaatvarunduse
-  kellaajad;
+* ``service/<service-id>/backup-times`` — Backup service automatic backup
+  times;
 
-* ``service/<service-id>/mid-token-key`` -- Mobiil-ID/Smart-ID/Web eID tugiteenuse
-  identsustõendi võtmefaili kontrollsumma (SHA256);
+* ``service/<service-id>/mid-token-key`` — Mobile-ID/Smart-ID/Web eID support
+  service identity token key file checksum (SHA256);
 
-* ``service/<service-id>/tls-cert`` -- Teenuse TLS-sertifikaadi faili
-  kontrollsumma (SHA256);
+* ``service/<service-id>/tls-cert`` — Service TLS certificate file
+  checksum (SHA256);
 
-* ``service/<service-id>/tls-key`` -- Teenuse TLS-sertifikaadi võtmefaili
-  kontrollsumma (SHA256);
+* ``service/<service-id>/tls-key`` — Service TLS certificate key file
+  checksum (SHA256);
 
-* ``service/<service-id>/tspreg-key`` -- Hääletamisteenuse ajatempliteenuse
-  signeerimisvõtme faili kontrollsumma (SHA256);
+* ``service/<service-id>/tspreg-key`` — Voting service time-stamping service
+  signing key file checksum (SHA256);
 
-Kasutatud tähised:
+Symbols used:
 
-* ``<command-type>`` -- korralduse liik:
+* ``<command-type>`` — command type:
 
-   #. ``trust`` -- usaldusjuure seadistused;
+   #. ``trust`` — trust root settings;
 
-   #. ``technical`` kogumisteenuse seadistused;
+   #. ``technical`` — collector service settings;
 
-   #. ``election`` valimiste seadistused;
+   #. ``election`` — election settings;
 
-* ``<CN>`` -- ID-kaardi CN väli kujul ``PEREKONNANIMI,EESNIMI,ISIKUKOOD``;
+* ``<CN>`` — ID card CN field in the format ``SURNAME,FIRSTNAME,PERSONALCODE``;
 
-* ``<config-type>`` on seadistuse liik. Usaldusjuure seadistus on ``trust``,
-  valimiste seadistus on ``election`` ja kogumisteenuse tehniline
-  seadistus on ``tech``;
+* ``<config-type>`` is the configuration type. The trust root configuration is
+  ``trust``, the election configuration is ``election``, and the collector
+  service technical configuration is ``tech``;
 
-* ``<hostname>`` teenushosti nimi;
+* ``<hostname>`` — service host name;
 
-* ``<list-number>`` valimisnimekirja kahekohaline järjekorranumber, esimene nimekiri
-  kannab numbrit 01.
+* ``<list-number>`` — two-digit sequence number of the election list; the first
+  list is numbered 01.
 
-* ``<service-id>`` teenuse identifikaator kogumisteenuse seadistustest;
+* ``<service-id>`` — service identifier from the collector service settings;
 
-* ``<timestamp>`` on ajatempel ISO-8601 vormingus.
+* ``<timestamp>`` is a timestamp in ISO-8601 format.
 
 
 .. _etcd-zabbix:
 
-Klastri seisundi monitoorimine Zabbixiga
-----------------------------------------
+Monitoring Cluster State with Zabbix
+--------------------------------------
 
-Etcd klaster tagab süsteemi toimimise ka olukorras, kus mõni klastriliige kaotab
-töövõime (krahh, võrguühenduse kadumine jms.). Siiski on oluline selliseid
-sündmuseid monitoorida ning nende algpõhjus tuvastada. Etcd krahhimise
-tuvastamiseks tuleb talletusteenuste logidest (``ivxv-YYYY-MM-DD-HH.log``) monitoorida
-``ivxv.ee/service/storage.EtcdTerminatedError`` kirjet.
+The etcd cluster ensures system operation even in situations where a cluster
+member loses functionality (crash, network connection loss, etc.). However, it
+is important to monitor such events and identify their root cause. To detect
+etcd crashes, the entry ``ivxv.ee/service/storage.EtcdTerminatedError`` should
+be monitored in the storage service logs (``ivxv-YYYY-MM-DD-HH.log``).
 
-Täiendavalt saab etcd käsureakliendiga küsida klastri liikmete olekut. Kuna
-IVXV klastris on kõik klient-päringud autenditud, siis tuleb korraldus
-käivitada mõnes ``ivxv-storage`` teenuse masinas kasutajakonto
-``ivxv-storage`` (või juurkasutaja) õigustes:
+Additionally, the etcd command-line client can be used to query the status of
+cluster members. Since all client requests in the IVXV cluster are
+authenticated, the command must be executed on one of the ``ivxv-storage``
+service machines under the ``ivxv-storage`` user account (or root) privileges:
 
 .. code-block:: shell-session
 
@@ -442,38 +443,38 @@ käivitada mõnes ``ivxv-storage`` teenuse masinas kasutajakonto
    ivxv2:2379, d4a9ae16c8557764, 3.2.17, 25 kB, false, 12, 15
    ivxv3:2379, e8914f4e0b89b80f, 3.2.17, 25 kB, false, 12, 15
 
-Vastuses on veergude tähendused järgmised:
+The column meanings in the response are as follows:
 
- #. klastri liige;
- #. klastri liikme identifikaator;
- #. etcd versioon;
- #. baasi suurus (max 8GB ehk 8589934592);
- #. kas konkreetne klastri liige on hetkel juht;
- #. RAFT ametiaeg (sisuliselt toimunud juhi-valimiste arv);
- #. RAFT indeks - etcd kirjutamisoperatsioonide arv (sh.
-    konfiguratsiooni muutused).
+ #. cluster member;
+ #. cluster member identifier;
+ #. etcd version;
+ #. database size (max 8GB i.e., 8589934592);
+ #. whether the specific cluster member is currently the leader;
+ #. RAFT term (essentially the number of leader elections that have occurred);
+ #. RAFT index — number of etcd write operations (including
+    configuration changes).
 
-Monitooringule on oluline parameeter RAFT ametiaeg. Selle väärtuse muutumine
-tähendab juhivahetust, mis üldjuhul on seotud probleemidega klastri töös -
-olemasolev juht ei vasta piisavalt kiiresti klastri liikmete päringutele.
+An important parameter for monitoring is the RAFT term. A change in its value
+indicates a leader change, which is usually associated with problems in cluster
+operation — the existing leader does not respond quickly enough to cluster
+member requests.
 
-Käsurea seletus:
+Command-line explanation:
 
- * ``env ETCDCTL_API=3``: kasutame etcd API versiooni 3 (Ubuntu versioonis
-   20.04 LTS on ``etcdctl`` API vaikeversioon veel 2);
- * ``--cacert``: usaldame ainult servereid, mille sertifikaat on antud selle CA
-   poolt;
- * ``--cert`` ja ``--key``: kasutame klient-autentimiseks ivxv1 talletusteenuse
-   sertifikaati ja võtit;
- * ``--endpoints``: millistele serveritele päring saata. Siin võib kõigi kolme
-   asemel ka ainult ühe loetleda: sellisel juhul on väljundis vaid üks rida.
-   Kasulik nt kui Zabbix tahab igas talletusteenuses küsida ainult selle isendi
-   kohta;
- * ``endpoint status``: küsime loetletud serverite olekut.
+ * ``env ETCDCTL_API=3``: we use etcd API version 3 (in Ubuntu version
+   20.04 LTS, the ``etcdctl`` default API version is still 2);
+ * ``--cacert``: we only trust servers whose certificate is issued by this CA;
+ * ``--cert`` and ``--key``: we use the ivxv1 storage service certificate and
+   key for client authentication;
+ * ``--endpoints``: which servers to send the request to. Here, instead of
+   listing all three, only one can be listed: in that case, the output will
+   contain only one row. Useful, e.g., when Zabbix wants to query only that
+   instance in each storage service;
+ * ``endpoint status``: we query the status of the listed servers.
 
 
-Väljundit on võimalik küsida ka masinloetavas JSON-vormingus
-(parameeter ``-w json``):
+The output can also be requested in machine-readable JSON format
+(parameter ``-w json``):
 
    .. code-block:: shell-session
 

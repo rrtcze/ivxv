@@ -1,14 +1,14 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
-IVXV kogumisteenuse haldusjuhend
+IVXV Collector Service Administration Guide
 ========================================================================
 
 .. raw:: html
 
    <p style="background-color: #f99; padding: 20px;">
      <strong>NB!</strong>
-     See on HTML-versioon dokumendist.
-     Tellijale antakse üle PDF-versioon.
+     This is the HTML version of the document.
+     The PDF version is delivered to the customer.
    </p>
 
 .. toctree::

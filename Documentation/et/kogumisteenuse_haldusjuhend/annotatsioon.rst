@@ -1,9 +1,9 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
-Annotatsioon
-------------
+Abstract
+--------
 
-Käesolev juhend käsitleb tööd elektroonilise hääletamise raamistiku IVXV
-kogumisteenuse tarkvaraga süsteemiülema vaatepunktist ning kirjeldab tarkvara
-kõiki võimalusi kogu e-hääletusprotsessi ulatuses. Süsteemiülemalt eeldatakse
-e-hääletuse põhiterminoloogia tundmist.
+This guide covers working with the IVXV electronic voting framework collector
+service software from the system administrator's perspective and describes all
+software capabilities throughout the entire e-voting process. The system
+administrator is expected to be familiar with basic e-voting terminology.

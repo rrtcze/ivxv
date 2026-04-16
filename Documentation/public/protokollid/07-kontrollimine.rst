@@ -1,601 +1,636 @@
-..  IVXV protokollid
+..  IVXV protocols
 
 ================================================================================
-Elektroonilise hääle kontrollimine eraldi ja e-valimiskasti koosseisus
+Verification of an Electronic Vote Individually and as Part of the E-Ballot Box
 ================================================================================
 
-Elektroonilist häält kontrollitakse töötlemisrakenduses, kogumisteenuses,
-valijarakenduses ja kontrollrakenduses.
+An electronic vote is verified in the processing application, the collection
+service, the voter application, and the verification application.
 
-Kõige põhjalikuma kontrolli läbib elektrooniline hääl e-valimiskasti koosseisus
-töötlemisrakenduses, kus otsustatakse konkreetse hääle lugemisele saatmine või
-mittesaatmine. Nende kontrollide käigus vaadeldakse e-häält nii eraldi kui ka
-suhtes kõigi teiste sama valija poolt antud häältega. Täiendavalt kõrvutatakse
-e-valimiskasti registreerimisteenuse väljavõttega.
+The most thorough verification of an electronic vote takes place as part of the
+e-ballot box in the processing application, where the decision is made whether
+to send a specific vote for counting or not. During these checks, the e-vote is
+examined both individually and in relation to all other votes cast by the same
+voter. Additionally, the e-ballot box is compared with the registration service
+extract.
 
-Iga üksiku hääle kohta läbitakse töötlemisrakendusega analoogsel tasemel
-kontroll valijarakenduses, kus veendutakse, et kogumisteenus on hääle
-kvalifitseerinud selliselt, et töötlemisrakenduses tehtavad kontrollid
-õnnestuvad. Valijarakenduse kontrollidega samaväärsed kontrollid viib läbi
-kontrollrakendus.
+For each individual vote, a verification at a level analogous to the processing
+application is performed in the voter application, where it is ensured that the
+collection service has qualified the vote such that the checks performed in the
+processing application will succeed. The verification application performs checks
+equivalent to those of the voter application.
 
-Kogumisteenus on lisaks vastutav mitme hääle lõplikuks kvalifitseerumiseks
-vajaliku elemendi hankimise eest ning teostab ka nende hankimise järgselt kontrollid.
+The collection service is additionally responsible for obtaining several
+elements necessary for the final qualification of the vote and also performs
+checks after obtaining them.
 
 
-Lõpliku elektroonilise hääle komponendid
+Components of the Final Electronic Vote
 ----------------------------------------
 
-Elemendid, mis on kättesaadavad otsustamise hetkel, kas hääl kvalifitseerub
-lugemisele saatmiseks või mitte:
+Elements available at the time of deciding whether a vote qualifies for
+counting or not:
 
-   #. elektroonilist häält sisaldav konteiner - :ref:`entity-haale-konteiner`;
+   #. the container containing the electronic vote - :ref:`entity-haale-konteiner`;
 
-      #. krüpteeritud sedel - :ref:`entity-krypteeritud-sedel`;
+      #. the encrypted ballot - :ref:`entity-krypteeritud-sedel`;
 
-      #. valija signatuur krüpteeritud sedelil - :ref:`entity-haale-signatuur`;
+      #. the voter's signature on the encrypted ballot - :ref:`entity-haale-signatuur`;
 
-      #. valija allkiri krüpteeritud sedelil - :ref:`entity-haale-allkiri`;
+      #. the voter's digital signature on the encrypted ballot - :ref:`entity-haale-allkiri`;
 
-      #. valija allkirjastamissertifikaat - :ref:`entity-valija-sertifikaat`;
+      #. the voter's signing certificate - :ref:`entity-valija-sertifikaat`;
 
-      #. valija isikukood - :ref:`entity-valija-identiteet`;
+      #. the voter's personal identification code - :ref:`entity-valija-identiteet`;
 
-   #. kvalifitseeriv element - valija sertifikaadi kehtivuskinnitus -
+   #. qualifying element - validity confirmation of the voter's certificate -
       :ref:`entity-kehtivuskinnitus`;
 
-   #. kvalifitseeriv element - ajatempel allkirjastatud krüpteeritud sedelile -
+   #. qualifying element - timestamp on the signed encrypted ballot -
       :ref:`entity-ajatempel`;
 
-   #. kvalifitseeriv element - registreerimispäringu konteiner
+   #. qualifying element - registration request container
       :ref:`entity-registreerimisparing-konteiner`;
 
-      #. kvalifitseeriv element - registreerimispäring allkirjastatud
-         krüpteeritud sedelile - :ref:`entity-registreerimisparing`;
+      #. qualifying element - registration request for the signed encrypted
+         ballot - :ref:`entity-registreerimisparing`;
 
-   #. kvalifitseeriv element - registreerimistõend allkirjastatud krüpteeritud
-      sedeli kohta - :ref:`entity-registreerimistoend`;
+   #. qualifying element - registration proof for the signed encrypted
+      ballot - :ref:`entity-registreerimistoend`;
 
-   #. valija ringkonnakuuluvuse tõend hääle andmise hetkel -
+   #. proof of the voter's district affiliation at the time of voting -
       :ref:`entity-nimekirjatunnus`.
 
 
-Elemendid, mis on kättesaadavad otsustamise hetkel, kuidas häält kokkulugemisel
-arvesse võtta:
+Elements available at the time of deciding how to count a vote:
 
-   #. miksitud krüpteeritud sedel - :ref:`entity-miksitud-krypteeritud-sedel`;
+   #. mixed encrypted ballot - :ref:`entity-miksitud-krypteeritud-sedel`;
 
-   #. valija tahteavaldus avakujul - :ref:`entity-tahteavaldus`;
+   #. the voter's plaintext expression of will - :ref:`entity-tahteavaldus`;
 
-   #. ringkonnakuuluvuse tunnus - :ref:`entity-ringkonnatunnus`;
+   #. district affiliation identifier - :ref:`entity-ringkonnatunnus`;
 
-   #. ringkonnapõhine valikute nimekiri - :ref:`entity-ringkonna-valikutenimekiri`.
+   #. district-based choices list - :ref:`entity-ringkonna-valikutenimekiri`.
 
 
-Täiendavad elemendid:
+Additional elements:
 
-   #. krüpteerimisel kasutatud juhuslikkus - :ref:`entity-juhuslikkus`; -
-      luuakse valijarakenduses hääle krüpteerimisel ning vahendatakse ainult
-      kontrollrakendusele.
+   #. randomness used during encryption - :ref:`entity-juhuslikkus`; -
+      created in the voter application during vote encryption and mediated
+      only to the verification application.
 
 
 .. _entity-tahteavaldus:
 
-````````````
-TAHTEAVALDUS
-````````````
+````````````````````
+EXPRESSION OF WILL
+````````````````````
 
-Olem moodustatakse valijarakenduses ning tuvastatakse võtmerakenduses. Tegemist
-on EHS spetsiifilises vormingus UTF-8 kodeeringus baidijadaga.
+The entity is created in the voter application and identified in the key
+application. It is a byte sequence in UTF-8 encoding in EHS-specific format.
 
 .. _check-tahteavaldus-correctness:
 
-TAHTEAVALDUS, vormingu korrektsus
-`````````````````````````````````
+EXPRESSION OF WILL, format correctness
+`````````````````````````````````````
 
-Tahteavalduse vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the expression of will against this
+specification.
 
 
 .. _check-tahteavaldus-ringkonnatunnus-valikutenimekiri-consistency:
 
-TAHTEAVALDUS, RINGKONNATUNNUS, RINGKONNA VALIKUTENIMEKIRI kooskõlalisus
-```````````````````````````````````````````````````````````````````````
+EXPRESSION OF WILL, DISTRICT IDENTIFIER, DISTRICT CHOICES LIST, consistency
+```````````````````````````````````````````````````````````````````````````
 
-Tahteavalduses sisalduva valiku kontroll ringkonnatunnuse ja valikute nimekirja
-suhtes. Kontroll õnnestub, kui tuvastatud valik on kättesaadav antud
-ringkonnas.
+Verification of the choice contained in the expression of will against the
+district identifier and the choices list. The check succeeds if the identified
+choice is available in the given district.
 
 .. _check-tahteavaldus-ringkonna-valikutenimekiri-consistency:
 
-TAHTEAVALDUS, RINGKONNA VALIKUTENIMEKIRI, kooskõlalisus
+EXPRESSION OF WILL, DISTRICT CHOICES LIST, consistency
 ```````````````````````````````````````````````````````
 
-Tahteavalduses sisalduva valiku kontroll ringkonnapõhise valikute nimekirja
-suhtes. Kontroll õnnestub, kui tuvastatud valik on kättesaadav antud ringkonnas.
+Verification of the choice contained in the expression of will against the
+district-based choices list. The check succeeds if the identified choice is
+available in the given district.
 
 
 .. _entity-juhuslikkus:
 
 ```````````
-JUHUSLIKKUS
+RANDOMNESS
 ```````````
 
-Olem moodustatakse valijarakenduses ning kasutatakse ka kontrollrakenduses.
-Olem esitatakse EHS spetsiifilises vormingus baidijadana ning peab olema
-ühilduv avaliku võtme parameetrite poolt määratud matemaatilise rühmaga.
+The entity is created in the voter application and also used in the verification
+application. The entity is presented as a byte sequence in EHS-specific format
+and must be compatible with the mathematical group determined by the public key
+parameters.
 
 .. _check-juhuslikkus-correctness:
 
-JUHUSLIKKUS, vormingu korrektsus
+RANDOMNESS, format correctness
 ````````````````````````````````
 
-Juhuslikkuse vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the randomness against this
+specification.
 
 .. _check-juhuslikkus-public-key-consistency:
 
-JUHUSLIKKUS, kooskõlalisus avaliku võtmega
+RANDOMNESS, consistency with the public key
 ``````````````````````````````````````````
 
-Juhuslikkuse kooskõlalisuse kontroll avaliku võtmega. Kontroll õnnestub kui
-juhuslikkus on kasutatav skalaarina arvutusteks avaliku võtme parameetrite
-poolt määratud matemaatilises rühmas.
+Verification of the consistency of the randomness with the public key. The
+check succeeds if the randomness can be used as a scalar for computations
+in the mathematical group determined by the public key parameters.
 
 .. _entity-krypteeritud-sedel:
 
 ``````````````````
-KRÜPTEERITUD SEDEL
+ENCRYPTED BALLOT
 ``````````````````
 
-Olem moodustatakse valijarakenduses. Tegemist on EHS spetsiifilises vormingus
-DER-kodeeritud andmestruktuuriga, mille kontrollimise aluseks on EHS avalik
-võti, mis muuhulgas määratleb krüpteerimisel kasutatud matemaatilise rühma.
+The entity is created in the voter application. It is a DER-encoded data
+structure in EHS-specific format, whose verification is based on the EHS
+public key, which among other things defines the mathematical group used
+for encryption.
 
 .. _check-krypteeritud-sedel-correctness:
 
-KRÜPTEERITUD SEDEL, vormingu korrektsus
-```````````````````````````````````````
+ENCRYPTED BALLOT, format correctness
+```````````````````````````````````
 
-Krüpteeritud sedeli vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the encrypted ballot against this
+specification.
 
 
 .. _check-krypteeritud-sedel-public-key-consistency:
 
-KRÜPTEERITUD SEDEL, kooskõlalisus avaliku võtmega
+ENCRYPTED BALLOT, consistency with the public key
 `````````````````````````````````````````````````
 
-Krüpteeritud sedeli kooskõlalisuse kontroll avaliku võtmega. Kontroll õnnestub kui
-krüpteeritud sedeli komponendid on kasutatavad rühma liikmetena arvutusteks
-avaliku võtme parameetrite poolt määratud matemaatilises rühmas.
+Verification of the consistency of the encrypted ballot with the public key.
+The check succeeds if the components of the encrypted ballot can be used as
+group members for computations in the mathematical group determined by the
+public key parameters.
 
 .. _check-krypteeritud-sedel-juhuslikkus-consistency:
 
-KRÜPTEERITUD SEDEL, JUHUSLIKKUS, kooskõlalisus
-``````````````````````````````````````````````
+ENCRYPTED BALLOT, RANDOMNESS, consistency
+``````````````````````````````````````````
 
-Krüpteeritud sedeli kooskõlalisuse kontroll juhuslikkusega lähtudes rühma
-parameetritest. Kontroll õnnestub kui õnnestub näidata, et antud juhuslikkust
-on kasutatud krüpteeritud sedeli komponendi `uBlind` arvutamiseks antud rühma
-parameetrite järgi.
+Verification of the consistency of the encrypted ballot with the randomness
+based on the group parameters. The check succeeds if it can be shown that the
+given randomness was used to compute the `uBlind` component of the encrypted
+ballot according to the given group parameters.
 
 
 .. _entity-valija-sertifikaat:
 
 ``````````````````
-VALIJA SERTIFIKAAT
+VOTER CERTIFICATE
 ``````````````````
 
-Olem on valijale omistatud süsteemiväliselt. Tegemist on X.509 vormingus
-sertifikaadiga, mille kehtivuse kontrolli aluseks on samasse avaliku võtme
-infrastruktuuri kuuluvad juursertifikaadid ja kehtivuskinnitusteenuse osutaja.
+The entity is assigned to the voter externally. It is a certificate in X.509
+format, whose validity verification is based on root certificates and the
+validity confirmation service provider belonging to the same public key
+infrastructure.
 
 .. _check-valija-sertifikaat-correctness:
 
-VALIJA SERTIFIKAAT, vormingu korrektsus
-```````````````````````````````````````
+VOTER CERTIFICATE, format correctness
+```````````````````````````````````
 
-Valija sertifikaadi vormingu korrektsuse kontroll lähtudes X.509 spetsifikatsioonist.
+Verification of the format correctness of the voter's certificate based on
+the X.509 specification.
 
 .. _check-valija-sertifikaat-consistency-protocol-settings:
 
-VALIJA SERTIFIKAAT, protokollikohane kooskõlalisus valimise seadistustega
+VOTER CERTIFICATE, protocol-compliant consistency with election configuration
 `````````````````````````````````````````````````````````````````````````
 
-Valija sertifikaadi protokollikohase kooskõlalisuse kontroll valimise
-seadistustega. Kontroll õnnestub kui:
+Verification of the protocol-compliant consistency of the voter's certificate
+with the election configuration. The check succeeds if:
 
-   #. Valija sertifikaat on kehtiv lähtudes sertifikaadis sisalduvast kehtivusajast;
+   #. The voter's certificate is valid based on the validity period contained
+      in the certificate;
 
-   #. Valija sertifikaat kuulub mõnda valimise seadistustes kirjeldatud
-      sertifitseerimishierarhiatest.
+   #. The voter's certificate belongs to one of the certification hierarchies
+      described in the election configuration.
 
 
 .. _check-valija-sertifikaat-kehtivuskinnitus-consistency:
 
-VALIJA SERTIFIKAAT, KEHTIVUSKINNITUS, protokollikohane kooskõlalisus valimise seadistustega
-```````````````````````````````````````````````````````````````````````````````````````````
+VOTER CERTIFICATE, VALIDITY CONFIRMATION, protocol-compliant consistency with election configuration
+```````````````````````````````````````````````````````````````````````````````````````````````
 
-Valija sertifikaadi ja kehtivuskinnituse protokollikohase kooskõlalisuse
-kontroll valimise seadistustega. Kontroll õnnestub kui:
+Verification of the protocol-compliant consistency of the voter's certificate
+and the validity confirmation with the election configuration. The check
+succeeds if:
 
-   #. Kehtivuskinnitus on korrektselt allkirjastatud kehtivuskinnituse teenuse
-      osutaja poolt, kellel on seadistuste kohaselt voli valija sertifikaadi
-      kehtivust tõendada
+   #. The validity confirmation is correctly signed by a validity confirmation
+      service provider that has the authority under the configuration to confirm
+      the validity of the voter's certificate;
 
-   #. Kehtivuskinnitus on väljastatud valija sertifikaadi kohta;
+   #. The validity confirmation has been issued for the voter's certificate;
 
-   #. Kehtivuskinnitus näitab valija sertifikaadi OCSP olekuks 'Kehtiv'.
+   #. The validity confirmation shows the OCSP status of the voter's
+      certificate as 'Valid'.
 
 
 .. _entity-valija-identiteet:
 
 `````````````````
-VALIJA IDENTITEET
+VOTER IDENTITY
 `````````````````
 
-Olem on valijale omistatud süsteemiväliselt. Tegemist on isikukoodiga, mille
-kontrollimise aluseks on VALIJA SERTIFIKAAT.
+The entity is assigned to the voter externally. It is a personal identification
+code, whose verification is based on the VOTER CERTIFICATE.
 
 .. _check-valija-identiteet-correctness:
 
-VALIJA IDENTITEET, vormingu korrektsus
-``````````````````````````````````````
+VOTER IDENTITY, format correctness
+``````````````````````````````````
 
-Valija identiteedi vormingu korrektsuse kontroll lähtudes Eesti Vabariigi
-isikukoodi vormingust.
+Verification of the format correctness of the voter's identity based on the
+Republic of Estonia personal identification code format.
 
 .. _check-valija-identiteet-nimekirjatunnus-eligibility:
 
-VALIJA IDENTITEET, NIMEKIRJATUNNUS, hääleõigus
+VOTER IDENTITY, LIST IDENTIFIER, voting right
 ``````````````````````````````````````````````
 
-Hääleõiguse kontroll valija identiteedi ja nimekirjatunnuse alusel. Kontroll
-õnnestub, kui valija identiteet on kantud nimekirjatunnusele vastavasse
-valijate nimekirja. Sellisel juhul on identiteedile omistatud ka
-ringkonnatunnus, mis määrab ringkonnaspetsiifilise valikute nimekirja.
+Verification of voting rights based on the voter's identity and the list
+identifier. The check succeeds if the voter's identity is entered in the
+voter list corresponding to the list identifier. In that case, a district
+identifier is also assigned to the identity, which determines the
+district-specific choices list.
 
 .. _entity-haale-signatuur:
 
 ```````````````
-HÄÄLE SIGNATUUR
+VOTE SIGNATURE
 ```````````````
 
-Olem arvutatakse allkirjastamise vahendi poolt lähtudes valijarakenduse poolt
-sisendiks antud KRÜPTEERITUD SEDELI räsist.
+The entity is computed by the signing tool based on the hash of the ENCRYPTED
+BALLOT provided as input by the voter application.
 
 .. _check-haale-signatuur-correctness:
 
-HÄÄLE SIGNATUUR, vormingu korrektsus
+VOTE SIGNATURE, format correctness
 ````````````````````````````````````
 
-Hääle signatuuri vormingu korrektsuse kontroll lähtudes konkreetsest
-signeerimismeetodist.
+Verification of the format correctness of the vote signature based on the
+specific signing method.
 
 .. _check-haale-signatuur-krypteeritud-sedel-valija-sertifikaat-consistency:
 
-HÄÄLE SIGNATUUR, KRÜPTEERITUD SEDEL, VALIJA SERTIFIKAAT, kooskõlalisus
+VOTE SIGNATURE, ENCRYPTED BALLOT, VOTER CERTIFICATE, consistency
 ``````````````````````````````````````````````````````````````````````
 
-Kontroll, mis õnnestub siis ja ainult siis kui õnnestub verifitseerida, et
-hääle signatuur on arvutatud krüpteeritud sedeli räsist kasutades valija
-sertifikaadis leiduvale avalikule võtmele vastavat privaatvõtit.
+A check that succeeds if and only if it can be verified that the vote signature
+was computed from the hash of the encrypted ballot using the private key
+corresponding to the public key found in the voter's certificate.
 
 .. _entity-haale-allkiri:
 
 `````````````
-HÄÄLE ALLKIRI
+VOTE DIGITAL SIGNATURE
 `````````````
 
-Olem moodustatakse valijarakenduses, talletades hääle signatuuri allkirja vormingusse.
+The entity is created in the voter application, placing the vote signature
+into the signature format.
 
 .. _check-haale-allkiri-correctness:
 
-HÄÄLE ALLKIRI, vormingu korrektsus
-``````````````````````````````````
+VOTE DIGITAL SIGNATURE, format correctness
+``````````````````````````````````````````
 
-Hääle allkirja vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the vote digital signature against
+this specification.
 
 .. _check-haale-allkiri-haale-signatuur-consistency:
 
-HÄÄLE ALLKIRI, HÄÄLE SIGNATUUR, kooskõlalisus
-`````````````````````````````````````````````
+VOTE DIGITAL SIGNATURE, VOTE SIGNATURE, consistency
+`````````````````````````````````````````````````
 
-Hääle allkirja ja hääle signatuuri kooskõlalisuse kontroll. Kontroll õnnestub,
-kui antud allkiri sisaldab antud signatuuri.
+Verification of the consistency of the vote digital signature and the vote
+signature. The check succeeds if the given digital signature contains the
+given signature.
 
 .. _entity-haale-konteiner:
 
 ```````````````
-HÄÄLE KONTEINER
+VOTE CONTAINER
 ```````````````
 
-Olem moodustatakse valijarakenduses, luues vormingukohane konteiner, mis
-sisaldab muuhulgas krüpteeritud sedelit, hääle allkirja ja valija sertifikaati.
+The entity is created in the voter application by creating a format-compliant
+container that contains, among other things, the encrypted ballot, the vote
+digital signature, and the voter's certificate.
 
 .. _check-haale-konteiner-correctness:
 
-HÄÄLE KONTEINER, vormingu korrektsus
+VOTE CONTAINER, format correctness
 ````````````````````````````````````
 
-Hääle konteineri vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the vote container against this
+specification.
 
 .. _check-haale-konteiner-haale-allkiri-valija-sertifikaat-krypteeritud-sedel-consistency:
 
-HÄÄLE KONTEINER, HÄÄLE ALLKIRI, VALIJA SERTIFIKAAT, KRÜPTEERITUD SEDEL, kooskõlalisus
+VOTE CONTAINER, VOTE DIGITAL SIGNATURE, VOTER CERTIFICATE, ENCRYPTED BALLOT, consistency
 `````````````````````````````````````````````````````````````````````````````````````
 
-Hääle konteineri, hääle allkirja, valija sertifikaadi ja krüpteeritud sedeli
-kooskõlalisuse kontroll. Kontroll õnnestub kui antud konteiner sisaldab
-konkreetset hääle allkirja, valija sertifikaati ja krüpteeritud sedelit.
+Verification of the consistency of the vote container, vote digital signature,
+voter certificate, and encrypted ballot. The check succeeds if the given
+container contains the specific vote digital signature, voter certificate,
+and encrypted ballot.
 
 .. _entity-kehtivuskinnitus:
 
 ````````````````
-KEHTIVUSKINNITUS
+VALIDITY CONFIRMATION
 ````````````````
 
-Olemi hankimise eest vastutab kogumisteenus. Tegemist on OCSP vormingus
-kinnitusega valija sertifikaadi oleku kohta.
+The collection service is responsible for obtaining the entity. It is a
+confirmation of the status of the voter's certificate in OCSP format.
 
 .. _check-kehtivuskinnitus-correctness:
 
-KEHTIVUSKINNITUS, vormingu korrektsus
+VALIDITY CONFIRMATION, format correctness
 `````````````````````````````````````
 
-Kehtivuskinnituse vormingu korrektsuse kontroll OCSP spetsifikatsiooni suhtes.
+Verification of the format correctness of the validity confirmation against
+the OCSP specification.
 
 
 .. _check-kehtivuskinnitus-ajatempel-order:
 
-KEHTIVUSKINNITUS, AJATEMPEL, ajaline järgnevus
+VALIDITY CONFIRMATION, TIMESTAMP, temporal order
 ``````````````````````````````````````````````
 
-Kehtivuskinnituse ja ajatempli ajalise järgnevuse kontroll. Kontroll õnnestub, kui
+Verification of the temporal order of the validity confirmation and the
+timestamp. The check succeeds if:
 
-   #. ajatempel ei ole väljastatud hiljem kui kehtivuskinnitus;
+   #. the timestamp was not issued later than the validity confirmation;
 
-   #. ajatempli ja kehtivuskinnituse väljastamise ajaline vahe on väiksem kui
-      valimise seadistustes ette nähtud aeg.
+   #. the time difference between the issuance of the timestamp and the
+      validity confirmation is less than the time specified in the election
+      configuration.
 
 
 .. _entity-ajatempel:
 
 `````````
-AJATEMPEL
+TIMESTAMP
 `````````
 
-Olemi hankimise eest vastutab kogumisteenus. Tegemist on PKIX vormingus ajatempliga.
+The collection service is responsible for obtaining the entity. It is a
+timestamp in PKIX format.
 
 .. _check-ajatempel-correctness:
 
-AJATEMPEL, vormingu korrektsus
+TIMESTAMP, format correctness
 ``````````````````````````````
 
-Ajatempli vormingu korrektsuse kontroll PKIX spetsifikatsiooni suhtes.
+Verification of the format correctness of the timestamp against the PKIX
+specification.
 
 
 .. _check-ajatempel-consistency-protocol-settings:
 
-AJATEMPEL, HÄÄLE ALLKIRI, protokollikohane kooskõlalisus valimise seadistustega
+TIMESTAMP, VOTE DIGITAL SIGNATURE, protocol-compliant consistency with election configuration
 ```````````````````````````````````````````````````````````````````````````````
 
-Ajatempli protokollikohase kooskõlalisuse kontroll valimise seadistustega.
-Kontroll õnnestub kui:
+Verification of the protocol-compliant consistency of the timestamp with the
+election configuration. The check succeeds if:
 
-   #. ajatempel on korrektselt allkirjastatud valimise seadistuses volitatud
-      ajatempliteenuse osutaja poolt;
+   #. the timestamp is correctly signed by a timestamp service provider
+      authorized in the election configuration;
 
-   #. ajatempel on võetud hääle allkirjale.
+   #. the timestamp was taken on the vote digital signature.
 
 .. _entity-registreerimisparing:
 
 ````````````````````
-REGISTREERIMISPÄRING
+REGISTRATION REQUEST
 ````````````````````
 
-Olem moodustatakse kogumisteenuses. Olemi talletamise eest vastutab
-registreerimisteenuse osutaja.
+The entity is created in the collection service. The registration service
+provider is responsible for storing the entity.
 
 .. _check-registreerimisparing-correctness:
 
-REGISTREERIMISPÄRING, vormingu korrektsus
+REGISTRATION REQUEST, format correctness
 `````````````````````````````````````````
 
-Registreerimispäringu vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the registration request against
+this specification.
 
 
 .. _check-registreerimisparing-haale-allkiri-consistency:
 
-REGISTREERIMISPÄRING, HÄÄLE ALLKIRI, protokollikohane kooskõlalisus valimise seadistustega
-``````````````````````````````````````````````````````````````````````````````````````````
+REGISTRATION REQUEST, VOTE DIGITAL SIGNATURE, protocol-compliant consistency with election configuration
+``````````````````````````````````````````````````````````````````````````````````````````````````````
 
-Registreerimispäringu ja hääle allkirja protokollikohase kooskõlalisuse
-kontroll valimise seadistustega. Kontroll õnnestub kui:
+Verification of the protocol-compliant consistency of the registration request
+and the vote digital signature with the election configuration. The check
+succeeds if:
 
-   #. Registreerimispäring on koostatud hääle allkirjale;
+   #. The registration request is composed for the vote digital signature;
 
-   #. Registreerimispäring on korrektselt allkirjastatud valimise seadistuses
-      viidatud kogumisteenuse poolt.
+   #. The registration request is correctly signed by the collection service
+      referenced in the election configuration.
 
 
 .. _check-registreerimisparing-registreerimistoend-consistency:
 
-REGISTREERIMISPÄRING, REGISTREERIMISTÕEND, kooskõlalisus
+REGISTRATION REQUEST, REGISTRATION PROOF, consistency
 ```````````````````````````````````````````````````````````````````````
 
-Registreerimispäringu ja registreerimistõendi protokollikohase kooskõlalisuse
-kontroll valimise seadistustega. Kontroll õnnestub kui:
+Verification of the protocol-compliant consistency of the registration request
+and the registration proof with the election configuration. The check succeeds
+if:
 
-   #. Registreerimispäring on korrektselt allkirjastatud valimise seadistuses
-      viidatud kogumisteenuse poolt.
+   #. The registration request is correctly signed by the collection service
+      referenced in the election configuration.
 
-   #. Registreerimistõend on koostatud vastuseks samale registreerimispäringule;
+   #. The registration proof is composed in response to the same registration
+      request;
 
-   #. Registreerimistõend on korrektselt allkirjastatud valimise seadistuses
-      viidatud registreerimisteenuse poolt.
+   #. The registration proof is correctly signed by the registration service
+      referenced in the election configuration.
 
 
 .. _entity-registreerimisparing-konteiner:
 
 ```````````````````````````````
-REGISTREERIMISPÄRINGU KONTEINER
+REGISTRATION REQUEST CONTAINER
 ```````````````````````````````
 
-Olem moodustatakse kogumisteenuses. Olemi talletamise eest vastutab
-registreerimisteenuse osutaja.
+The entity is created in the collection service. The registration service
+provider is responsible for storing the entity.
 
 .. _check-registreerimisparing-konteiner-correctness:
 
-REGISTREERIMISPÄRINGU KONTEINER, vormingu korrektsus
+REGISTRATION REQUEST CONTAINER, format correctness
 ````````````````````````````````````````````````````
 
-Registreerimispäringu konteineri vormingu korrektsuse kontroll käesoleva
-spetsifikatsiooni suhtes.
+Verification of the format correctness of the registration request container
+against this specification.
 
 
 .. _check-registreerimisparing-konteiner-registreerimispäring-consistency:
 
-REGISTREERIMISPÄRINGU KONTEINER, REGISTREERIMISPÄRING, protokollikohane kooskõlalisus valimise seadistustega
-````````````````````````````````````````````````````````````````````````````````````````````````````````````
+REGISTRATION REQUEST CONTAINER, REGISTRATION REQUEST, protocol-compliant consistency with election configuration
+````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 
-Registreerimispäringu konteineri ja registreerimispäringu protokollikohase kooskõlalisuse
-kontroll valimise seadistustega. Kontroll õnnestub kui:
+Verification of the protocol-compliant consistency of the registration request
+container and the registration request with the election configuration. The
+check succeeds if:
 
-   #. Registreerimispäringu konteiner sisaldab registreerimispäringut;
+   #. The registration request container contains the registration request;
 
-   #. Registreerimispäring on korrektselt allkirjastatud valimise seadistuses
-      viidatud kogumisteenuse poolt.
+   #. The registration request is correctly signed by the collection service
+      referenced in the election configuration.
 
 
 .. _entity-registreerimistoend:
 
 ```````````````````
-REGISTREERIMISTÕEND
+REGISTRATION PROOF
 ```````````````````
 
-Olemi hankimise eest vastutab kogumisteenus, olemi moodustab
-registreerimisteenuse osutaja.
+The collection service is responsible for obtaining the entity; the entity
+is created by the registration service provider.
 
 .. _check-registreerimistoend-correctness:
 
-REGISTREERIMISTÕEND, vormingu korrektsus
+REGISTRATION PROOF, format correctness
 ````````````````````````````````````````
 
-Registreerimistõendi vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the registration proof against
+this specification.
 
 
 .. _check-registreerimistoend-haale-allkiri-consistency:
 
-REGISTREERIMISTÕEND, HÄÄLE ALLKIRI, protokollikohane kooskõlalisus valimise seadistustega
+REGISTRATION PROOF, VOTE DIGITAL SIGNATURE, protocol-compliant consistency with election configuration
 `````````````````````````````````````````````````````````````````````````````````````````
 
-Registreerimistõendi ja hääle allkirja protokollikohase kooskõlalisuse
-kontroll valimise seadistustega. Kontroll õnnestub kui:
+Verification of the protocol-compliant consistency of the registration proof
+and the vote digital signature with the election configuration. The check
+succeeds if:
 
-   #. Registreerimistõend on koostatud hääle allkirjale;
+   #. The registration proof is composed for the vote digital signature;
 
-   #. Registreerimistõend sisaldab kogumisteenuse poolt korrektselt
-      allkirjastatud registreerimispäringut;
+   #. The registration proof contains a registration request correctly signed
+      by the collection service;
 
-   #. Registreerimistõend on korrektselt allkirjastatud valimise seadistuses
-      viidatud registreerimisteenuse poolt.
+   #. The registration proof is correctly signed by the registration service
+      referenced in the election configuration.
 
 
 .. _entity-nimekirjatunnus:
 
 ```````````````
-NIMEKIRJATUNNUS
+LIST IDENTIFIER
 ```````````````
 
-Olem moodustatakse kogumisteenuses ning identifitseerib ühe konkreetse
-versiooni valijate nimekirjast.
+The entity is created in the collection service and identifies one specific
+version of the voter list.
 
 .. _check-nimekirjatunnus-correctness:
 
-NIMEKIRJATUNNUS, vormingu korrektsus
+LIST IDENTIFIER, format correctness
 ````````````````````````````````````
 
-Nimekirjatunnuse vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the list identifier against this
+specification.
 
 .. _check-nimekirjatunnus-consistency-protocol-settings:
 
-NIMEKIRJATUNNUS, protokollikohane kooskõlalisus valimise seadistusega
+LIST IDENTIFIER, protocol-compliant consistency with election configuration
 `````````````````````````````````````````````````````````````````````
 
-Nimekirjatunnuse protokollikohase kooskõlalisuse kontroll valimise
-seadistusega. Kontroll õnnestub kui valimise seadistuses sisalduvate
-muudatusnimekirjade alusel on võimalik koostada nimekirjatunnusele vastav
-nimekiri.
+Verification of the protocol-compliant consistency of the list identifier
+with the election configuration. The check succeeds if, based on the
+amendment lists contained in the election configuration, it is possible to
+compose the list corresponding to the list identifier.
 
 
 .. _entity-miksitud-krypteeritud-sedel:
 
 ```````````````````````````
-MIKSITUD KRÜPTEERITUD SEDEL
+MIXED ENCRYPTED BALLOT
 ```````````````````````````
 
-Olem moodustatakse miksimisrakenduses. Miksitud krüpteeritud sedel on
-sisuliselt krüpteeritud sedel ning rakenduvad samad kontrollid, mis
-krüpteeritud sedelilegi.
+The entity is created in the mixing application. A mixed encrypted ballot is
+essentially an encrypted ballot and the same checks apply as for an encrypted
+ballot.
 
 .. _check-miksitud-krypteeritud-sedel-correctness:
 
-MIKSITUD KRÜPTEERITUD SEDEL, vormingu korrektsus
-````````````````````````````````````````````````
+MIXED ENCRYPTED BALLOT, format correctness
+````````````````````````````````````````````
 
-Miksitud krüpteeritud sedeli vormingu korrektsuse kontroll käesoleva
-spetsifikatsiooni suhtes.
+Verification of the format correctness of the mixed encrypted ballot against
+this specification.
 
 .. _check-miksitud-krypteeritud-sedel-public-key-consistency:
 
-MIKSITUD KRÜPTEERITUD SEDEL, kooskõlalisus avaliku võtmega
-``````````````````````````````````````````````````````````
+MIXED ENCRYPTED BALLOT, consistency with the public key
+``````````````````````````````````````````````````````
 
-Miksitud krüpteeritud sedeli kooskõlalisuse kontroll avaliku võtmega. Kontroll
-õnnestub kui miksitud krüpteeritud sedeli komponendid on kasutatavad rühma
-liikmetena arvutusteks avaliku võtme parameetrite poolt määratud matemaatilises
-rühmas.
+Verification of the consistency of the mixed encrypted ballot with the public
+key. The check succeeds if the components of the mixed encrypted ballot can be
+used as group members for computations in the mathematical group determined by
+the public key parameters.
 
 
 .. _entity-ringkonnatunnus:
 
 ```````````````
-RINGKONNATUNNUS
+DISTRICT IDENTIFIER
 ```````````````
 
-Olem moodustatakse töötlemisrakenduses ning viitab ringkonnapõhisele valikute
-nimekirjale.
+The entity is created in the processing application and refers to the
+district-based choices list.
 
 .. _check-ringkonnatunnus-correctness:
 
-RINGKONNATUNNUS, vormingu korrektsus
+DISTRICT IDENTIFIER, format correctness
 ````````````````````````````````````
 
-Ringkonnatunnuse vormingu korrektsuse kontroll käesoleva spetsifikatsiooni suhtes.
+Verification of the format correctness of the district identifier against
+this specification.
 
 .. _entity-ringkonna-valikutenimekiri:
 
 `````````````````````````````````
-RINGKONNAPÕHINE VALIKUTE NIMEKIRI
+DISTRICT-BASED CHOICES LIST
 `````````````````````````````````
 
-Olem on valijale omistatud süsteemiväliselt.
+The entity is assigned to the voter externally.
 
 .. _check-ringkonna-valikutenimekiri-correctness:
 
-RINGKONNAPÕHINE VALIKUTE NIMEKIRI, vormingu korrektsus
-``````````````````````````````````````````````````````
+DISTRICT-BASED CHOICES LIST, format correctness
+``````````````````````````````````````````````````
 
-Ringkonnapõhise valikute nimekirja vormingu korrektsuse kontroll VIS liideste
-spetsifikatsiooni suhtes.
+Verification of the format correctness of the district-based choices list
+against the VIS interface specification.
 
-Kontrollid kogumisteenuses
+Checks in the Collection Service
 --------------------------
 
-Kogumisteenus käsitleb talletatavat häält sõltumatult teistest häältest.
-Kogumisteenuse ülesandeks on hääle talletamine kogu hääletamisperioodi vältel
-ja häälele töötlemise käigus kvalifitseerumiseks vajalike elementide hankimine.
+The collection service handles each vote to be stored independently of other
+votes. The task of the collection service is to store the vote throughout the
+entire voting period and to obtain the elements necessary for the vote to
+qualify during processing.
 
-Kogumisteenus saab valijarakenduselt järgmised olemid:
+The collection service receives the following entities from the voter application:
 
    #. :ref:`entity-krypteeritud-sedel`
 
@@ -609,7 +644,8 @@ Kogumisteenus saab valijarakenduselt järgmised olemid:
 
    #. :ref:`entity-haale-konteiner`
 
-Kogumisteenus hangib hääle töötlemise käigus välistelt teenustelt järgmised olemid:
+The collection service obtains the following entities from external services
+during vote processing:
 
    #. :ref:`entity-kehtivuskinnitus`
 
@@ -617,7 +653,7 @@ Kogumisteenus hangib hääle töötlemise käigus välistelt teenustelt järgmis
 
    #. :ref:`entity-registreerimistoend`
 
-Kogumisteenus tuvastab / loob ise järgmised olemid:
+The collection service identifies / creates the following entities itself:
 
    #. :ref:`entity-registreerimisparing`
 
@@ -629,7 +665,7 @@ Kogumisteenus tuvastab / loob ise järgmised olemid:
 
    #. :ref:`entity-ringkonna-valikutenimekiri`
 
-Kogumisteenus ei puutu vahetult kokku järgmiste olemitega:
+The collection service does not directly interact with the following entities:
 
    #. :ref:`entity-tahteavaldus`
 
@@ -637,9 +673,9 @@ Kogumisteenus ei puutu vahetult kokku järgmiste olemitega:
 
    #. :ref:`entity-miksitud-krypteeritud-sedel`
 
-Kogumisteenus viib läbi järgmised tegevused ja teostab järgmised kontrollid:
+The collection service performs the following activities and checks:
 
-   #. Hääle talletamise päringu vastuvõtmine valijarakenduselt
+   #. Receiving the vote storage request from the voter application
 
       #. :ref:`check-valija-sertifikaat-correctness`
       #. :ref:`check-valija-sertifikaat-consistency-protocol-settings`
@@ -654,56 +690,58 @@ Kogumisteenus viib läbi järgmised tegevused ja teostab järgmised kontrollid:
       #. :ref:`check-krypteeritud-sedel-correctness`
       #. :ref:`check-krypteeritud-sedel-public-key-consistency`
 
-   #. Kehtivuskinnituse hankimine - :ref:`entity-kehtivuskinnitus`
+   #. Obtaining the validity confirmation - :ref:`entity-kehtivuskinnitus`
 
       #. :ref:`check-kehtivuskinnitus-correctness`
       #. :ref:`check-valija-sertifikaat-kehtivuskinnitus-consistency`
 
-   #. Ajatempli hankimine - :ref:`entity-ajatempel`
+   #. Obtaining the timestamp - :ref:`entity-ajatempel`
 
       #. :ref:`check-ajatempel-correctness`
       #. :ref:`check-ajatempel-consistency-protocol-settings`
 
-   #. Registreerimispäringu loomine - :ref:`entity-registreerimisparing`
+   #. Creating the registration request - :ref:`entity-registreerimisparing`
 
-   #. Registreerimistõendi hankimine - :ref:`entity-registreerimistoend`
+   #. Obtaining the registration proof - :ref:`entity-registreerimistoend`
 
       #. :ref:`check-registreerimisparing-registreerimistoend-consistency`
       #. :ref:`check-registreerimistoend-correctness`
       #. :ref:`check-registreerimistoend-haale-allkiri-consistency`
       #. :ref:`check-kehtivuskinnitus-ajatempel-order`
 
-   #. Hääle talletamine, kvalifitseerivate elementide ja unikaalse
-      identifikaatori tagastamine valijarakendusele.
+   #. Storing the vote, returning the qualifying elements and a unique
+      identifier to the voter application.
 
-Kontrollid valijarakenduses
+Checks in the Voter Application
 ---------------------------
 
-Valijarakendus moodustab valija avakujul tahteavalduse põhjal krüpteeritud
-sedeli ning allkirjastab selle valija allkirja andmise vahendiga.
+The voter application creates the encrypted ballot based on the voter's
+plaintext expression of will and signs it using the voter's signing tool.
 
-Valijarakenduse rolliks peale hääle allkirjastamist on veenduda, et
-kogumisteenus käitus häält kvalifitseerivate elementide võtmisel
-protokollikohaselt ning et hääl on talletatud selliselt, et ta saab
-töötlemisrakenduse poolt arvesse võetud.
+The role of the voter application after signing the vote is to ensure that the
+collection service behaved in accordance with the protocol when obtaining the
+vote-qualifying elements and that the vote is stored such that it can be taken
+into account by the processing application.
 
-Valijarakendus viib läbi minimaalselt järgmised kontrollid:
+The voter application performs at minimum the following checks:
 
-#. Kogumisteenus võttis kehtivuskinnituse valija sertifikaadile volitatud
-   kehtivuskinnitusteenuselt. Valijarakendus kontrollib allkirja
-   kehtivuskinnitusteenuse vastusel.
+#. The collection service obtained the validity confirmation for the voter's
+   certificate from an authorized validity confirmation service. The voter
+   application verifies the signature on the validity confirmation service
+   response.
 
-#. Kogumisteenus registreeris valija poolt allkirjastatud hääle volitatud
-   registreerimisteenuses. Valijarakendus kontrollib, et kogumisteenuse poolt
-   moodustatud päring oli kogumisteenuse poolt signeeritud ning viitas
-   korrektselt allkirjastatud häälele. Valijarakendus kontrollib, et
-   registreerimisteenuse vastus on allkirjastatud õige registreerimisteenuse
-   osutaja poolt ning sisaldab kogumisteenuse poolt allkirjastatud päringut.
+#. The collection service registered the vote signed by the voter in an
+   authorized registration service. The voter application verifies that the
+   request composed by the collection service was signed by the collection
+   service and correctly referenced the signed vote. The voter application
+   verifies that the registration service response is signed by the correct
+   registration service provider and contains the request signed by the
+   collection service.
 
-Kui hääle kvalifitseerimiseks vajalike elementide kontroll ei õnnestu, siis
-teavitab valijarakendus sellest kasutajat.
+If the verification of elements necessary for qualifying the vote does not
+succeed, the voter application informs the user.
 
-Valijarakendus loob ise järgmised olemid:
+The voter application creates the following entities itself:
 
    #. :ref:`entity-tahteavaldus`
 
@@ -715,7 +753,7 @@ Valijarakendus loob ise järgmised olemid:
 
    #. :ref:`entity-haale-konteiner`
 
-Valijarakendus saab järgmised olemid teistelt osapooltelt:
+The voter application receives the following entities from other parties:
 
    #. :ref:`entity-valija-sertifikaat`
 
@@ -733,7 +771,7 @@ Valijarakendus saab järgmised olemid teistelt osapooltelt:
 
    #. :ref:`entity-registreerimisparing`
 
-Valijarakendus ei puutu vahetult kokku järgmiste olemitega:
+The voter application does not directly interact with the following entities:
 
    #. :ref:`entity-registreerimisparing-konteiner`
 
@@ -743,9 +781,9 @@ Valijarakendus ei puutu vahetult kokku järgmiste olemitega:
 
    #. :ref:`entity-miksitud-krypteeritud-sedel`
 
-Valijarakendus viib läbi järgmised tegevused ja teostab järgmised kontrollid:
+The voter application performs the following activities and checks:
 
-   #. eID vahendi aktiveerimine ja valija identiteedi tuvastamine
+   #. activating the eID tool and identifying the voter
 
       #. :ref:`entity-valija-sertifikaat`
       #. :ref:`entity-valija-identiteet`
@@ -754,27 +792,27 @@ Valijarakendus viib läbi järgmised tegevused ja teostab järgmised kontrollid:
       #. :ref:`check-valija-sertifikaat-consistency-protocol-settings`
       #. :ref:`check-valija-identiteet-correctness`
 
-   #. Ringkonnapõhise valikutenimekirja tuvastamine -
+   #. Identifying the district-based choices list -
       :ref:`entity-ringkonna-valikutenimekiri`
 
-   #. Tahteavalduse moodustamine - :ref:`entity-tahteavaldus`
+   #. Creating the expression of will - :ref:`entity-tahteavaldus`
 
-   #. Juhuarvu genereerimine - :ref:`entity-juhuslikkus`
+   #. Generating the random number - :ref:`entity-juhuslikkus`
 
-   #. Sedeli krüpteerimine - :ref:`entity-krypteeritud-sedel`
+   #. Encrypting the ballot - :ref:`entity-krypteeritud-sedel`
 
-   #. Krüpteeritud sedeli signeerimine - :ref:`entity-haale-signatuur`
+   #. Signing the encrypted ballot - :ref:`entity-haale-signatuur`
 
-   #. Allkirja moodustamine signatuurist - :ref:`entity-haale-allkiri`
+   #. Creating the digital signature from the signature - :ref:`entity-haale-allkiri`
 
       #. :ref:`check-haale-signatuur-correctness`
       #. :ref:`check-haale-signatuur-krypteeritud-sedel-valija-sertifikaat-consistency`
 
-   #. Allkirjastatud konteineri moodustamine - :ref:`entity-haale-konteiner`
+   #. Creating the signed container - :ref:`entity-haale-konteiner`
 
-   #. Allkirjastatud konteineri edastamine kogumisteenusele.
+   #. Transmitting the signed container to the collection service.
 
-   #. Kogumisteenuse vastuse kontrollimine
+   #. Verifying the collection service response
 
       #. :ref:`entity-kehtivuskinnitus`
       #. :ref:`entity-ajatempel`
@@ -793,26 +831,28 @@ Valijarakendus viib läbi järgmised tegevused ja teostab järgmised kontrollid:
       #. :ref:`check-registreerimistoend-correctness`
       #. :ref:`check-registreerimistoend-haale-allkiri-consistency`
 
-Kontrollid kontrollrakenduses
+Checks in the Verification Application
 -----------------------------
 
-Sarnaselt valijarakendusele on kontrollrakenduse rolliks peale hääle
-allkirjastamist veenduda, et kogumisteenus käitus häält kvalifitseerivate
-elementide võtmisel protokollikohaselt ning et hääl on talletatud selliselt, et
-ta saab töötlemisrakenduse poolt arvesse võetud.
+Similarly to the voter application, the role of the verification application
+after the vote has been signed is to ensure that the collection service
+behaved in accordance with the protocol when obtaining the vote-qualifying
+elements and that the vote is stored such that it can be taken into account
+by the processing application.
 
-Täiendavalt on kontrollrakenduse ülesandeks anda valijale tagasisidet, kas tema
-tahteavaldus sai valijarakenduse poolt korrektselt hääleks vormistatud.
+Additionally, the task of the verification application is to provide the voter
+with feedback on whether their expression of will was correctly formalized as
+a vote by the voter application.
 
-Kui hääle kvalifitseerimiseks vajalike elementide kontroll ei õnnestu, siis
-teavitab kontrollrakendus sellest kasutajat. Tahteavalduse korrektsuses peab
-valija ise veenduma.
+If the verification of elements necessary for qualifying the vote does not
+succeed, the verification application informs the user. The voter must verify
+the correctness of the expression of will themselves.
 
-Kontrollrakendus tuvastab ise järgmised olemid:
+The verification application identifies the following entities itself:
 
    #. :ref:`entity-tahteavaldus`
 
-Kontrollrakendus saab järgmised olemid teistelt osapooltelt:
+The verification application receives the following entities from other parties:
 
    #. :ref:`entity-juhuslikkus`
 
@@ -838,7 +878,7 @@ Kontrollrakendus saab järgmised olemid teistelt osapooltelt:
 
    #. :ref:`entity-ringkonna-valikutenimekiri`
 
-Kontrollrakendus ei puutu vahetult kokku järgmiste olemitega:
+The verification application does not directly interact with the following entities:
 
    #. :ref:`entity-registreerimisparing-konteiner`
 
@@ -848,7 +888,7 @@ Kontrollrakendus ei puutu vahetult kokku järgmiste olemitega:
 
    #. :ref:`entity-miksitud-krypteeritud-sedel`
 
-Kontrollrakendus viib läbi järgmised tegevused ja teostab järgmised kontrollid:
+The verification application performs the following activities and checks:
 
    #. :ref:`check-valija-sertifikaat-correctness`
    #. :ref:`check-valija-sertifikaat-consistency-protocol-settings`
@@ -878,22 +918,22 @@ Kontrollrakendus viib läbi järgmised tegevused ja teostab järgmised kontrolli
    #. :ref:`check-tahteavaldus-correctness`
    #. :ref:`check-tahteavaldus-ringkonna-valikutenimekiri-consistency`
 
-Kontrollid töötlemisrakenduses
+Checks in the Processing Application
 ------------------------------
 
-Töötlemisrakenduse sisendiks on e-valimiskast ja registreerimisteenuse
-väljavõte registreerimispäringutest. Töötlemisrakendus kontrollib mõlema
-andmehulga elemente kõigepealt eraldi ning seejärel püüab luua vastavuse nende
-vahel.
+The input of the processing application is the e-ballot box and the
+registration service extract of registration requests. The processing
+application first checks the elements of both data sets individually and then
+attempts to establish a correspondence between them.
 
-Töötlemisrakendus otsustab, milline valija häältest oli viimane ning liigub
-töötlemise järgmisesse etappi. S.t. üks häält kvalifitseerivatest elementidest
-täidab hääle talletamise aja fikseerimise rolli ning selle elemendi põhjal
-moodustatakse üksikute häälte ajaline järgnevus. Olenevalt IVXV profiilist võib
-see element olla kehtivuskinnituse koosseisus (BDOC-TM), eraldi ajatemplina
-(BDOC-TS) või registreerimistõendi koosseisus (BDOC-TS).
+The processing application decides which of the voter's votes was the last one
+and proceeds to the next processing stage. I.e., one of the vote-qualifying
+elements fulfills the role of fixing the vote storage time, and based on this
+element, the temporal order of individual votes is established. Depending on the
+IVXV profile, this element may be part of the validity confirmation (BDOC-TM),
+a separate timestamp (BDOC-TS), or part of the registration proof (BDOC-TS).
 
-Töötlemisrakendusele tehakse kättesaadavaks järgmised olemid:
+The following entities are made available to the processing application:
 
    #. :ref:`entity-krypteeritud-sedel`
 
@@ -921,12 +961,12 @@ Töötlemisrakendusele tehakse kättesaadavaks järgmised olemid:
 
    #. :ref:`entity-ringkonna-valikutenimekiri`
 
-Töötlemisrakendus tuvastab/loob järgmised olemid:
+The processing application identifies/creates the following entities:
 
    #. :ref:`entity-ringkonnatunnus`
 
 
-Töötlemisrakendus ei puutu vahetult kokku järgmiste olemitega:
+The processing application does not directly interact with the following entities:
 
    #. :ref:`entity-miksitud-krypteeritud-sedel`
 
@@ -934,20 +974,20 @@ Töötlemisrakendus ei puutu vahetult kokku järgmiste olemitega:
 
    #. :ref:`entity-juhuslikkus`
 
-Töötlemisrakenduse töö jaguneb neljaks etapiks:
+The work of the processing application is divided into four stages:
 
-   #. Kontrollimine
+   #. Verification
 
-   #. Korduvhäälte eemaldamine
+   #. Removal of repeated votes
 
-   #. Tühistamine/-ennistamine
+   #. Revocation/restoration
 
-   #. Anonüümimine
+   #. Anonymization
 
 
-Töötlemisrakendus teostab kontrollimise etapis järgmised kontrollid:
+The processing application performs the following checks in the verification stage:
 
-   #. e-valimiskasti elementide kontrollid teostatakse kõigi hääle elementide kohta:
+   #. e-ballot box element checks are performed for all vote elements:
 
       #. :ref:`check-valija-sertifikaat-correctness`
       #. :ref:`check-valija-sertifikaat-consistency-protocol-settings`
@@ -970,55 +1010,59 @@ Töötlemisrakendus teostab kontrollimise etapis järgmised kontrollid:
       #. :ref:`check-registreerimistoend-correctness`
       #. :ref:`check-registreerimistoend-haale-allkiri-consistency`
 
-   #. registreerimisteenuse väljavõtte kontrollid teostatakse iga
-      registreerimispäringu kohta
+   #. registration service extract checks are performed for each
+      registration request
 
       #. :ref:`check-registreerimisparing-correctness`
       #. :ref:`check-registreerimisparing-konteiner-correctness`
       #. :ref:`check-registreerimisparing-konteiner-registreerimispäring-consistency`
 
-   #. Töötlemisrakendus loob vastavuse e-valimiskasti ja registreerimisteenuse
-      väljavõtte vahel võttes aluseks olemi
-      :ref:`entity-registreerimisparing-konteiner` registreerimisteenuse
-      väljavõttest ning olemi :ref:`entity-registreerimistoend`
-      e-valimiskastist. Ühendavaks lüliks kahe vaate vahel on
+   #. The processing application establishes a correspondence between the
+      e-ballot box and the registration service extract, taking as a basis the
+      entity :ref:`entity-registreerimisparing-konteiner` from the registration
+      service extract and the entity :ref:`entity-registreerimistoend` from the
+      e-ballot box. The connecting link between the two views is the
       :ref:`entity-registreerimisparing`.
 
-   #. e-valimiskasti ja registreerimisteenuse väljavõtte vastavuskontrollid
+   #. e-ballot box and registration service extract correspondence checks
 
       #. :ref:`check-registreerimisparing-haale-allkiri-consistency`
       #. :ref:`check-registreerimisparing-registreerimistoend-consistency`
 
-Töötlemisrakendus teostab korduvhäälte eemaldamise etapis järgmised kontrollid:
+The processing application performs the following checks in the repeated vote
+removal stage:
 
-   #. Töötlemisrakendus tuvastab iga valija häälte hulgast ajaliselt viimase.
+   #. The processing application identifies the temporally last vote among
+      each voter's votes.
 
-   #. Töötlemisrakendus viib läbi krüpteeritud sedeli korrektsuse kontrollid.
+   #. The processing application performs the encrypted ballot correctness
+      checks.
 
       #. :ref:`check-krypteeritud-sedel-correctness`
       #. :ref:`check-krypteeritud-sedel-public-key-consistency`
 
 
-Töötlemisrakenduse töö järgmistes etappides täiendavaid kontrolle ei teostata.
-Tühistamis-/ennistamisetapis eemaldatakse/taastatakse isikukoodile vastavaid
-hääli korduvhäältest puhastatud e-valimiskastist. Anonüümimisetapis
-eemaldatakse e-häältelt kvalifitseerivad elemendid ning saadud loend
-krüpteeritud sedelitest suunatakse miksimisrakendusse.
+No additional checks are performed in the subsequent stages of the processing
+application. In the revocation/restoration stage, votes corresponding to
+personal identification codes are removed/restored from/to the e-ballot box
+purged of repeated votes. In the anonymization stage, qualifying elements are
+removed from the e-votes, and the resulting list of encrypted ballots is
+forwarded to the mixing application.
 
-Kontrollid miksimisrakenduses
+Checks in the Mixing Application
 -----------------------------
 
-Miksimisrakendusele tehakse kättesaadavaks järgmised olemid:
+The following entities are made available to the mixing application:
 
    #. :ref:`entity-krypteeritud-sedel`
 
    #. :ref:`entity-ringkonnatunnus`
 
-Miksimisrakendus loob järgmised olemid:
+The mixing application creates the following entities:
 
    #. :ref:`entity-miksitud-krypteeritud-sedel`
 
-Miksimisrakendus ei puutu vahetult kokku järgmiste olemitega:
+The mixing application does not directly interact with the following entities:
 
    #. :ref:`entity-tahteavaldus`
 
@@ -1049,25 +1093,25 @@ Miksimisrakendus ei puutu vahetult kokku järgmiste olemitega:
    #. :ref:`entity-ringkonna-valikutenimekiri`
 
 
-Miksimisrakendus viib läbi järgmised tegevused ja kontrollid:
+The mixing application performs the following activities and checks:
 
    #. :ref:`check-ringkonnatunnus-correctness`
    #. :ref:`check-krypteeritud-sedel-correctness`
    #. :ref:`check-krypteeritud-sedel-public-key-consistency`
 
-   #. Miksimisrakendus grupeerib sisendiks antud krüpteeritud sedelid
-      ringkonnatunnuste kaupa ning järjestab krüpteeritud sedelid ringkonnas
-      ringi.
+   #. The mixing application groups the input encrypted ballots by district
+      identifiers and shuffles the encrypted ballots within each district.
 
-   #. Miksimisrakendus arvutab iga ümberjärjestatud krüpteeritud sedeli kohta
-      uue miksitud krüpteeritud sedeli.
+   #. The mixing application computes a new mixed encrypted ballot for each
+      reshuffled encrypted ballot.
 
-   #. Miksimisrakendus koostab nullteadmustõestused sedelite korrektse miksimise kohta.
+   #. The mixing application composes zero-knowledge proofs for the correct
+      mixing of the ballots.
 
-Kontrollid võtmerakenduses
+Checks in the Key Application
 --------------------------
 
-Võtmerakendusele tehakse kättesaadavaks järgmised olemid:
+The following entities are made available to the key application:
 
    #. :ref:`entity-miksitud-krypteeritud-sedel`
 
@@ -1075,11 +1119,11 @@ Võtmerakendusele tehakse kättesaadavaks järgmised olemid:
 
    #. :ref:`entity-ringkonna-valikutenimekiri`
 
-Võtmerakendus tuvastab järgmised olemid:
+The key application identifies the following entities:
 
    #. :ref:`entity-tahteavaldus`
 
-Võtmerakendus ei puutu vahetult kokku järgmiste olemitega:
+The key application does not directly interact with the following entities:
 
    #. :ref:`entity-juhuslikkus`
 
@@ -1108,11 +1152,11 @@ Võtmerakendus ei puutu vahetult kokku järgmiste olemitega:
    #. :ref:`entity-nimekirjatunnus`
 
 
-Võtmerakendus viib läbi järgmised tegevused ja kontrollid:
+The key application performs the following activities and checks:
 
    #. :ref:`check-miksitud-krypteeritud-sedel-correctness`
    #. :ref:`check-miksitud-krypteeritud-sedel-public-key-consistency`
-   #. Häälte dekrüpteerimine
+   #. Decryption of votes
    #. :ref:`check-ringkonnatunnus-correctness`
    #. :ref:`check-tahteavaldus-correctness`
    #. :ref:`check-tahteavaldus-ringkonnatunnus-valikutenimekiri-consistency`

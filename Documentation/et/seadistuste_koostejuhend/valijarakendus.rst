@@ -1,8 +1,8 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
 .. _valijarakendus:
 
-Valijarakenduse seadistamine
-============================
+Voter Application Configuration
+================================
 
-Valijarakenduse seadistamist ning pakendamist käsitleb eraldi dokument.
+The configuration and packaging of the voter application is covered in a separate document.

@@ -1,15 +1,15 @@
-..  IVXV seadistuste koostamise juhend
+..  IVXV protocols
 
 ========================================================
-IVXV protokollid
+IVXV Protocols
 ========================================================
 
 .. raw:: html
 
    <p style="background-color: #f99; padding: 20px;">
      <strong>NB!</strong>
-     See on HTML-versioon dokumendist.
-     Tellijale antakse üle PDF-versioon.
+     This is an HTML version of the document.
+     A PDF version will be delivered to the client.
    </p>
 
 .. toctree::

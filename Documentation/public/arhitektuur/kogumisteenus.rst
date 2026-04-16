@@ -1,725 +1,755 @@
 ..  IVXV arhitektuur
 
-Kogumisteenus
+Collector Service
 =============
 
-Üldkirjelduse [ÜK2016]_ põhjal on Kogumisteenus:
+According to the General Description [ÜK2016]_, the Collector Service is:
 
 .. epigraph::
 
-   Süsteemi keskne komponent, mida käitab Koguja. Teenus abistab Hääletajat
-   e-hääle koostamisel ning registreerib selle enne salvestamist e-valimiskasti.
-   Kogumisteenus kasutab väliseid teenuseid (tuvastamine, allkirjastamine,
-   registreerimine). Kogumisteenusel on peale Koguja enda teisigi haldureid
-   (Korraldaja, Klienditugi), kelle jaoks on Kogumisteenusel eraldi
-   haldusliidesed.
+   The central component of the system, operated by the Collector. The service
+   assists the Voter in composing an e-vote and registers it before storing it
+   in the e-ballot box. The Collector Service uses external services
+   (authentication, signing, registration). In addition to the Collector
+   itself, the Collector Service has other administrators (Organizer, Client
+   Support), for whom the Collector Service has separate management interfaces.
 
-Kogumisteenus töötab sidusrežiimis ning vähemalt valija- ja kontrollrakenduse
-suunalised liidesed on avatud internetile. Seega töötleb Kogumisteenus
-potentsiaalselt ebausaldusväärsest allikast pärit päringuid. Tulenevalt
-tarkvarale seatavast turvatasemest, kõrgkäideldavuse, skaleeritavuse, kihilise
-evitatavuse ning laiendatavuse nõuetest on kogumisteenus omakorda liigendatud
-ühte konkreetset teenust osutavateks mikroteenusteks, mida on võimalik
-paindlikult evitada.
+The Collector Service operates in online mode and at least the interfaces
+towards the voter application and the verification application are open to
+the internet. Therefore, the Collector Service processes requests from a
+potentially untrusted source. Due to the security level required of the
+software, and the requirements for high availability, scalability, layered
+deployment, and extensibility, the collector service is further divided into
+microservices providing one specific service each, which can be flexibly
+deployed.
 
-Kõik kogumisteenuse komponendid programmeeritakse keeles `Go
-<https://golang.org>`_. Keelel Go on:
+All collector service components are programmed in `Go
+<https://golang.org>`_. Go has:
 
-- staatiline tüüpimine, mis võimaldab tüübivigade avastamist enne programmi
-  käivitamist;
+- static typing, which enables the detection of type errors before running
+  the program;
 
-- automaatne mäluhaldus, mis välistab rakenduse vigasest mäluhaldusest
-  tulenevad turvaaugud;
+- automatic memory management, which eliminates security vulnerabilities
+  arising from faulty memory management in the application;
 
-- kompilaator avatud lähtekoodiga;
+- an open source compiler;
 
-- ribastamine/rööprapse, mis võimaldab kasutada paralleelsust mitmetuumalistes
-  süsteemides.
+- concurrency/parallelism, which allows the use of parallelism in
+  multi-core systems.
 
-Kogumisteenuse andmeedastuseks kasutatakse üldjuhul JSON-vormingut, välja
-arvatud olukordades, kus välised asjaolud tingivad mõne muu andmevormingu
-kasutamist (näiteks BDOC-vorming põhineb XML'il).
+The collector service generally uses JSON format for data transfer, except
+in situations where external circumstances necessitate the use of another
+data format (for example, the BDOC format is based on XML).
 
-Kogumisteenus toetab Riigikogu valimisi, kohaliku omavalitsuse volikogu
-valimisi, Euroopa parlamendi valimisi ning rahvahääletusi.
+The Collector Service supports Riigikogu (Parliament) elections, local
+government council elections, European Parliament elections, and referendums.
 
-Kogumisteenuse komponendid arvestavad virtualiseerimistehnoloogiate
-kasutamisega ning kogumisteenust on võimalik evitada nii ühel virtuaalriistvara
-instantsil, kui ka mikroteenuste kaupa erinevatel instantsidel. Kogumisteenuse
-komponendid on evitatavad Ubuntu 22.04 LTS (Jammy Jellyfish)
-operatsioonisüsteemil 64-bitisel arhitektuuril.
+The collector service components take virtualization technologies into
+account, and the collector service can be deployed both on a single virtual
+hardware instance and on different instances per microservice. The collector
+service components are deployable on the Ubuntu 22.04 LTS (Jammy Jellyfish)
+operating system on a 64-bit architecture.
 
-Andmesäilitus on teostatud kasutades võti-väärtus andmebaasi (etcd).
-Testotstarbel on teostatud ka andmesäilitus failisüsteemi ning mällu, kuid neid
-ei ole soovituslik kasutada tootekeskkonnas. Lisaks on kogumisteenusel olemas
-liides uute talletusprotokollide lisamiseks. Lõplik otsus kasutatava lahenduse
-kohta tehakse kogumisteenuse haldurite poolt teenust seadistades.
+Data storage is implemented using a key-value database (etcd). For testing
+purposes, data storage to the file system and to memory has also been
+implemented, but these are not recommended for use in a production
+environment. Additionally, the collector service has an interface for adding
+new storage protocols. The final decision on the solution to use is made by
+the collector service administrators when configuring the service.
 
-Mikroteenused
+Microservices
 -------------
 
 .. figure:: model/img/collector_microservices.png
 
-   Kogumisteenuse jaotus mikroteenusteks
+   Collector service breakdown into microservices
 
-Kogumisteenus on jaotatud põhiteenusteks ja abiteenusteks. Põhiteenused -
-vahendusteenus, nimekirjateenus, hääletamisteenus, kontrollteenus ning
-talletamisteenus - on arhitektuuri tehnilise lihtsuse mõttes piiritletud ühe
-valimisega, kuid ühel riistvaral, ühe operatsioonisüsteemi kontekstis võivad
-käia mitme valimise mikroteenused. Täiendavalt võib kogumisteenuse juures
-kasutada abiteenuseid - tuvastusteenust hääletaja isiku tuvastamiseks ning
-allkirjateenust valijarakenduse poolt hääle allkirjastamise hõlbustamiseks.
+The Collector Service is divided into core services and auxiliary services.
+The core services - proxy service, choices service, voting service,
+verification service, and storage service - are bounded to a single election
+for the sake of architectural simplicity, but microservices of multiple
+elections may run on the same hardware, within the same operating system
+context. Additionally, auxiliary services may be used with the collector
+service - an authentication service for voter identity verification and a
+signing service to facilitate vote signing by the voter application.
 
-Teenuseid on võimalik evitada nii eraldatult kui koos erinevates
-konfiguratsioonides, mis teeb võimalikuks kihilise arhitektuuri. Lähtudes
-funktsioonist on otstarbekas hoida Vahendus- ning Talletamisteenused teistest
-eraldi.
+Services can be deployed both separately and together in various
+configurations, which makes a layered architecture possible. Based on
+function, it is advisable to keep the Proxy and Storage Services separate
+from the others.
 
-Teenused kasutavad transpordiprotokollina TLS'i, ühendused on
-vähemalt serveripoolselt autenditud. Rakenduskihi protokoll on JSON-RPC.
+The services use TLS as the transport protocol, connections are at
+least server-side authenticated. The application layer protocol is JSON-RPC.
 
-Kõik teenused tekitavad tegevuslogi, mida säilitatakse nii lokaalselt kui
-logitakse syslog protokolli vahendusel kesksesse logikogujasse.
+All services generate activity logs, which are stored both locally and
+logged to a central log collector via the syslog protocol.
 
-Vahendusteenuse funktsioon ja tehniline liides
+Proxy Service Function and Technical Interface
 ``````````````````````````````````````````````
 
-Vahendusteenuse põhifunktsioon on ühe sisenemispunkti (port 443) pakkumine
-Valijarakendusele ja Kontrollrakendusele. Vahendusteenus on dispetšerteenus
-teiste komponentide vahel, mis võimaldab sisemiselt evitada kogumisteenust
-mikroteenustena, ent omada süsteemil ainult ühte sisenemispunkti. Lisaks suudab
-see dubleeritud evituse puhul täita koormusjaoturi ülesannet.
+The main function of the proxy service is to provide a single entry point
+(port 443) for the Voter Application and the Verification Application. The
+proxy service is a dispatcher service between other components, which allows
+the collector service to be internally deployed as microservices while having
+only a single entry point for the system. Additionally, in a replicated
+deployment, it can perform the role of a load balancer.
 
-Vahendusteenus ei termineeri TLS-ühendust vaid kasutab sihtpunkti tuvastamiseks
-TLS'i *Server Name Indication* (SNI) laiendust. Kliendid panevad TLS
-``ClientHello`` sõnumisse SNI-laiendi, kus avatekstis määravad, millise
-teenusega soovivad suhelda: vahendusteenus näeb seda, võtab ühendust vastavat
-teenust pakkuva isendiga ja hakkab kliendi ning teenuse vahelisi sõnumeid
-vahendama. Vahendusteenus EI termineeri TLS'i ning ei näe sõnumite sisu.
-Vahendusteenusel on andmed kõigi teiste teenuste asukohtadest (aadress:port)
-ning teenus vahendab sõnumivahetust kõigi osapoolte vahel.
+The proxy service does not terminate the TLS connection but uses the TLS
+*Server Name Indication* (SNI) extension to identify the destination.
+Clients include the SNI extension in the TLS ``ClientHello`` message, where
+they specify in plaintext which service they wish to communicate with: the
+proxy service sees this, contacts an instance providing the corresponding
+service, and begins relaying messages between the client and the service.
+The proxy service DOES NOT terminate TLS and does not see the content of
+messages. The proxy service has data about the locations (address:port) of
+all other services and the service relays message exchange between all
+parties.
 
-Vahendusteenus on olekuvaba komponent, mida on võimalik horisontaalselt
-skaleerida.
+The proxy service is a stateless component that can be horizontally
+scaled.
 
-Vahendusteenuse teostus
-'''''''''''''''''''''''
-
-Vahendusteenuse teostus kasutab vabavaralist HAProxy serverit, mis on
-üldlevinud tarkvaraline koormusjaotur ja proksi. Kuna Vahendusteenus on
-esimene puutepunkt avalikust internetist tulevate ühenduste jaoks, siis on
-mõistlik kasutada tarkvara, mille töökindlus on juba tõestatud.
-
-Kuigi HAProxyt kasutatakse tihti HTTP-režiimis, kus see analüüsib liiklust,
-siis vahendusteenuse rollis on see TCP-režiimis ning ei näe vahendatava
-krüpteeritud TLS-kanali sisse.
-
-IVXV seadistusest genereeritakse HAProxy seadistusfail, mis sisaldab teiste
-teenuste asukohti, ning ühenduste vahendamise ülesanne jääb viimase kanda.
-Lisaks on võimalik HAProxyt ka seadistada ühenduste sagedusi piirama
-lähteaadressi või mõne muu nimetaja põhjal. See aga jääb süsteemihalduri
-ülesandeks.
-
-Kuigi HAProxy on võimeline ise teostama koormusjaoturi ülesannet, on seda
-võimalik evitada ka teiste, potentsiaalselt riistvaraliste koormusjaoturite
-taha, kus see jääb täitma ainult SNI põhjal vahendamise ülesannet.
-
-HAProxy lähtekood on avalik ja sobiva litsentsiga ning pakendatud
-kogumisteenuse alusplatvormi ametlikus hoidlas (vt. :ref:`tehnoloogiad`).
-
-Nimekirjateenuse funktsioon ja tehniline liides
-```````````````````````````````````````````````
-
-Nimekirjateenuse põhifunktsioon on valikute nimekirjade vahendamine
-Valijarakendusele. Nimekirjateenusesse jõuab informatsioon tuvastatud valija
-kohta ning Nimekirjateenus väljastab valija ringkonnale vastava valikute
-nimekirja Talletamisteenusest Valijarakendusse.
-
-Nimekirjateenus on olekuvaba komponent, mida on võimalik horisontaalselt
-skaleerida.
-
-Kontrollteenuse funktsioon ja tehniline liides
-``````````````````````````````````````````````
-
-Kontrollteenuse põhifunktsioon on kontrollpäringute töötlemine ning
-kontrollitava hääle väljastamine Talletamisteenusest Kontrollrakendusse.
-
-Kontrollteenus on olekuvaba komponent, mida on võimalik horisontaalselt
-skaleerida.
-
-Hääletamisteenuse funktsioon ja tehniline liides
-````````````````````````````````````````````````
-
-Hääletamisteenuse põhifunktsioon on hääletamispäringute töötlemine.
-Hääletamisteenus verifitseerib sissetuleva hääle, registreerib selle
-Registreerimisteenuses ning talletab Talletamisteenusesse.
-
-Hääletamisteenus on olekuvaba komponent, mida on võimalik horisontaalselt
-skaleerida.
-
-Talletamisteenuse funktsioon ja tehniline liides
-`````````````````````````````````````````````````
-
-Talletamisteenuse põhifunktsioon on valikute ja valijanimekirjade ning
-häälte pikaajaline talletamine.
-
-Talletamisteenuse horisontaalseks skaleerimiseks kasutatakse
-hajustalletamist võimaldavat säilitustehnoloogiat.
-
-Talletamisteenuse teostus
-'''''''''''''''''''''''''
-
-Talletamisteenus ei ole teadlik IVXV protokollist ega talletatavate andmete
-spetsiifikast, vaid on üldkasutatav võti-väärtus andmebaas binaarandmete
-säilitamiseks. Kogu teadmus talletatavate andmete struktuurist ja võtmete
-hierarhiast on teistes, Talletamisteenust kasutatavates teenustes, mis
-käituvad nii-öelda "tarkade" klientidena.
-
-Selline lähenemine lubab ilma suurema vaevata kasutada Talletamisteenusena
-ükskõik millist üldlevinud võti-väärtus andmebaasi: ainsateks ülesanneteks on
-IVXV seadistuse teisendamine andmebaasi jaoks sobilikku vormingusse ning
-teenuse käivitamine. Andmebaasi tarkvara peab võimaldama vaid võtme järgi
-talletamist ja lugemist, võtmete prefiksi järgi loetlemist ning atomaarset
-võrdle-ja-vaheta (*compare-and-swap*) operatsiooni.
-
-Talletamisteenus on kogumisteenuse töökiiruse oluliseks määrajaks, mistõttu
-mõjutab seda teenust pakkuv riistvara kogu süsteemi jõudlust ning see tuleks
-vastavalt kasutatavale andmebaasile dimensioneerida.
-
-Hetkel ainus tooteks mõeldud Talletamisteenuse teostus kasutab hajusat
-võti-väärtus andmebaasi etcd. Selle puhul tuleks järgida etcd autorite
-`riistvara soovitusi
-<https://coreos.com/etcd/docs/latest/op-guide/hardware.html>`_.
-
-Tuvastusteenuse funktsioon ja tehniline liides
-``````````````````````````````````````````````
-
-Tuvastusteenuse põhifunktsioon on valija identiteedi tuvastamine.
-Tuvastusteenus on vajalik näiteks Mobiil-ID autentimise korral.
-
-Web-eID abiteenuse teostus
-''''''''''''''''''''''''''
-
-IVXV koosseisu kuulub Web-eID abiteenus, mis realiseerib Tuvastusteenuse
-ID-kaardi kasutamiseks Web-eID raamistikus.
-
-Eduka Web-eID isikutuvastuse korral väljastab abiteenus Valijarakendusele
-pileti, mille abil on võimalik teistele teenustele valija identiteeti
-kinnitada. Iga piletiga saab hääletada ainult ühe korra.
-
-Web-eID ei paku allkirjateenust, hääle allkirjastamine toimub Valija seadmes
-lokaalselt analoogselt klassikalisele ID-kaardiga
-autentimisele/allkirjastamisele.
-
-Web-eID abiteenus on olekuvaba komponent. Tänu sellele on võimalik Web-eID
-abiteenust horisontaalselt skaleerida.
-
-
-Allkirjateenuse funktsioon ja tehniline liides
-``````````````````````````````````````````````
-
-Allkirjateenuse funktsioon on Valijarakenduse toetamine hääle
-allkirjastamisel. Allkirjateenus on vajalik näiteks Mobiil-ID allkirjastamise
-korral.
-
-Mobiil-ID abiteenuse teostus
-''''''''''''''''''''''''''''
-
-IVXV koosseisu kuulub Mobiil-ID abiteenus, mis käitub Mobiil-ID jaoks nii
-Tuvastusteenusena kui ka Allkirjateenusena. Valijarakendus esitab IVXV
-päringud Mobiil-ID abiteenusele, mis teisendab need Mobiil-ID päringuteks ning
-edastab Mobiil-ID teenusepakkujale.
-
-Eduka Mobiil-ID isikutuvastuse korral väljastab abiteenus Valijarakendusele
-pileti, mille abil on võimalik teistele teenustele valija identiteeti
-kinnitada. Iga piletiga saab hääletada ainult ühe korra.
-
-Allkirjastamise korral saadab Valijarakendus Mobiil-ID abiteenusele vaid
-allkirjastatava hääle räsi ning kasutab vastuseks saadud signatuuri samamoodi
-kui ID-kaardiga loodud signatuuri.
-
-Mobiil-ID abiteenus sisaldab küll olekut pooleliolevate tuvastusseansside
-kohta, aga muus osas on tegu olekuvaba komponendiga. Tänu sellele on võimalik
-Mobiil-ID abiteenust horisontaalselt skaleerida.
-
-Smart-ID abiteenuse teostus
+Proxy Service Implementation
 '''''''''''''''''''''''''''
 
-IVXV koosseisu kuulub Smart-ID abiteenus, mis käitub Smart-ID jaoks nii
-Tuvastusteenusena kui ka Allkirjateenusena. Valijarakendus esitab IVXV
-päringud Smart-ID abiteenusele, mis teisendab need Smart-ID päringuteks ning
-edastab Smart-ID teenusepakkujale.
+The proxy service implementation uses the open-source HAProxy server, which
+is a widely used software load balancer and proxy. Since the proxy service is
+the first point of contact for connections coming from the public internet,
+it is reasonable to use software whose reliability has already been proven.
 
-Eduka Smart-ID isikutuvastuse korral väljastab abiteenus Valijarakendusele
-pileti, mille abil on võimalik teistele teenustele valija identiteeti
-kinnitada. Iga piletiga saab hääletada ainult ühe korra.
+Although HAProxy is often used in HTTP mode where it analyzes traffic, in
+the proxy service role it operates in TCP mode and does not see inside the
+encrypted TLS channel being proxied.
 
-Allkirjastamise korral saadab Valijarakendus Smart-ID abiteenusele vaid
-allkirjastatava hääle räsi ning kasutab vastuseks saadud signatuuri samamoodi
-kui ID-kaardiga loodud signatuuri.
+An HAProxy configuration file is generated from the IVXV configuration,
+which contains the locations of other services, and the task of relaying
+connections is handled by the latter. Additionally, HAProxy can be configured
+to limit connection rates based on source address or some other identifier.
+However, this remains the task of the system administrator.
 
-Smart-ID abiteenus sisaldab küll olekut pooleliolevate tuvastusseansside
-kohta, aga muus osas on tegu olekuvaba komponendiga. Tänu sellele on võimalik
-Smart-ID abiteenust horisontaalselt skaleerida.
+Although HAProxy is capable of performing the load balancer role itself, it
+can also be deployed behind other, potentially hardware-based load balancers,
+where it will only perform the task of proxying based on SNI.
+
+HAProxy source code is public and under a suitable license, and is packaged
+in the official repository of the collector service base platform (see
+:ref:`tehnoloogiad`).
+
+Choices Service Function and Technical Interface
+```````````````````````````````````````````````
+
+The main function of the choices service is to relay choices lists to the
+Voter Application. Information about the authenticated voter reaches the
+Choices Service, and the Choices Service delivers the choices list
+corresponding to the voter's district from the Storage Service to the Voter
+Application.
+
+The Choices Service is a stateless component that can be horizontally
+scaled.
+
+Verification Service Function and Technical Interface
+``````````````````````````````````````````````````
+
+The main function of the verification service is to process verification
+requests and deliver the verifiable vote from the Storage Service to the
+Verification Application.
+
+The Verification Service is a stateless component that can be horizontally
+scaled.
+
+Voting Service Function and Technical Interface
+````````````````````````````````````````````
+
+The main function of the voting service is to process voting requests. The
+Voting Service verifies the incoming vote, registers it with the
+Registration Service, and stores it in the Storage Service.
+
+The Voting Service is a stateless component that can be horizontally
+scaled.
+
+Storage Service Function and Technical Interface
+`````````````````````````````````````````````
+
+The main function of the storage service is the long-term storage of choices
+and voter lists, as well as votes.
+
+For horizontal scaling of the storage service, a storage technology that
+supports distributed storage is used.
+
+Storage Service Implementation
+'''''''''''''''''''''''''''''
+
+The Storage Service is not aware of the IVXV protocol or the specifics of
+the stored data, but is a general-purpose key-value database for storing
+binary data. All knowledge about the structure of stored data and the key
+hierarchy is in the other services that use the Storage Service, which
+behave as so-called "smart" clients.
+
+This approach allows any widely used key-value database to be used as the
+Storage Service without much effort: the only tasks are converting the IVXV
+configuration to a format suitable for the database and starting the
+service. The database software must only support storing and reading by key,
+listing by key prefix, and an atomic compare-and-swap operation.
+
+The Storage Service is a significant determinant of the collector service's
+operating speed, which is why the hardware providing this service affects the
+performance of the entire system and should be dimensioned according to the
+database being used.
+
+Currently, the only production-grade Storage Service implementation uses the
+distributed key-value database etcd. In this case, the etcd authors'
+`hardware recommendations
+<https://coreos.com/etcd/docs/latest/op-guide/hardware.html>`_ should be
+followed.
+
+Authentication Service Function and Technical Interface
+``````````````````````````````````````````````````
+
+The main function of the authentication service is voter identity
+verification. The authentication service is needed, for example, in the case
+of Mobile-ID authentication.
+
+Web eID Auxiliary Service Implementation
+''''''''''''''''''''''''''''''
+
+The IVXV includes a Web eID auxiliary service that implements the
+Authentication Service for using ID cards within the Web eID framework.
+
+Upon successful Web eID identity verification, the auxiliary service issues
+a ticket to the Voter Application, which can be used to confirm the voter's
+identity to other services. Each ticket can only be used to vote once.
+
+Web eID does not provide a signing service; vote signing takes place locally
+on the Voter's device, analogous to classic ID card
+authentication/signing.
+
+The Web eID auxiliary service is a stateless component. Thanks to this, the
+Web eID auxiliary service can be horizontally scaled.
 
 
-Hääletamisfaktide järjekorrateenus
-``````````````````````````````````
+Signing Service Function and Technical Interface
+``````````````````````````````````````````````
 
-Hääletamisfaktide järjekorrateenuse põhifunktsiooniks on hääletamisfaktide
-edastamine Valimiste Infosüsteemile X-tee abiteenuse vahendusel.
+The function of the signing service is to support the Voter Application in
+vote signing. The signing service is needed, for example, in the case of
+Mobile-ID signing.
 
-Kogumisteenuse mikroteenuste evitamine
+Mobile-ID Auxiliary Service Implementation
+''''''''''''''''''''''''''''''''''''''''
+
+The IVXV includes a Mobile-ID auxiliary service that acts as both the
+Authentication Service and the Signing Service for Mobile-ID. The Voter
+Application sends IVXV requests to the Mobile-ID auxiliary service, which
+converts them to Mobile-ID requests and forwards them to the Mobile-ID
+service provider.
+
+Upon successful Mobile-ID identity verification, the auxiliary service
+issues a ticket to the Voter Application, which can be used to confirm the
+voter's identity to other services. Each ticket can only be used to vote
+once.
+
+For signing, the Voter Application sends only the hash of the vote to be
+signed to the Mobile-ID auxiliary service and uses the signature received in
+response in the same way as a signature created with an ID card.
+
+The Mobile-ID auxiliary service does contain state about ongoing
+authentication sessions, but is otherwise a stateless component. Thanks to
+this, the Mobile-ID auxiliary service can be horizontally scaled.
+
+Smart-ID Auxiliary Service Implementation
+'''''''''''''''''''''''''''''''''''''''
+
+The IVXV includes a Smart-ID auxiliary service that acts as both the
+Authentication Service and the Signing Service for Smart-ID. The Voter
+Application sends IVXV requests to the Smart-ID auxiliary service, which
+converts them to Smart-ID requests and forwards them to the Smart-ID
+service provider.
+
+Upon successful Smart-ID identity verification, the auxiliary service
+issues a ticket to the Voter Application, which can be used to confirm the
+voter's identity to other services. Each ticket can only be used to vote
+once.
+
+For signing, the Voter Application sends only the hash of the vote to be
+signed to the Smart-ID auxiliary service and uses the signature received in
+response in the same way as a signature created with an ID card.
+
+The Smart-ID auxiliary service does contain state about ongoing
+authentication sessions, but is otherwise a stateless component. Thanks to
+this, the Smart-ID auxiliary service can be horizontally scaled.
+
+
+Voting Facts Queue Service
+``````````````````````````
+
+The main function of the voting facts queue service is to forward voting
+facts to the Election Information System via the X-Road auxiliary service.
+
+Collector Service Microservice Deployment
 ``````````````````````````````````````
 
-Kogumisteenuse mikroteenused sõltuvad välistest pakkidest minimaalselt.
-Vajalikud sõltuvused on:
+The collector service microservices have minimal dependencies on external
+packages. The required dependencies are:
 
-#. SSH-server haldustegevuste läbiviimiseks (seda kasutab mikroteenuste
-   haldamiseks haldusteenus).
+#. SSH server for performing administrative tasks (used by the management
+   service for managing microservices).
 
-#. rsyslog logide kogumiseks logikogumisteenustesse.
+#. rsyslog for collecting logs to log collection services.
 
-Kogumisteenuse mikroteenused pakendatakse deb-vormingus, neid on võimalik
-evitada ka docker'i-laadsete konteineritena.
+The collector service microservices are packaged in deb format and can also
+be deployed as Docker-like containers.
 
-Välised teenused ja laiendatavus
+External Services and Extensibility
 --------------------------------
 
 .. figure:: model/img/collector_extension.png
 
-   Kogumisteenuse laiendusmoodulid ja välised teenused
+   Collector service extension modules and external services
 
-Kogumisteenuse mikroteenused kasutavad laiendusmooduleid teostamaks erinevaid
-mehhanisme valija tuvastamiseks, digiallkirjade verifitseerimiseks ja
-täiendamiseks, sealhulgas hääle registreerimiseks. Laiendusmoodulid võivad
-teostuse võimaldamiseks kasutada väliseid teenuseid. Mikroteenuste
-laiendatavuse huvides on defineeritud Go API, mille alusel saab teostada
-ka täiendavaid mooduleid. Hetkel on teostatud järgmised moodulid:
+The collector service microservices use extension modules to implement
+different mechanisms for voter identification, digital signature verification
+and qualification, including vote registration. Extension modules may use
+external services to enable their implementation. For the extensibility of
+microservices, a Go API is defined, based on which additional modules can be
+implemented. Currently, the following modules are implemented:
 
-- Autentimine TLS-sertifikaadiga (ID-kaart);
+- Authentication with TLS certificate (ID card);
 
-- Autentimine Tuvastusteenuse piletiga (Mobiil-ID, Smart-ID, Web-eID);
+- Authentication with Authentication Service ticket (Mobile-ID, Smart-ID, Web eID);
 
-- BDOC verifitseerimine;
+- BDOC verification;
 
-- Kehtivuskinnitusteenus OCSP;
+- Validity confirmation service OCSP;
 
-- Ajatempliteenus RFC 3161;
+- Timestamping service RFC 3161;
 
-- Registreerimisteenus OCSP;
+- Registration service OCSP;
 
-- Registreerimisteenus RFC 3161.
+- Registration service RFC 3161.
 
-IVXV krüptograafilises protokollis on kesksel kohal Registreerimisteenus, mis
-osaleb samuti häälte pikaajalisel talletamisel.
+The Registration Service plays a central role in the IVXV cryptographic
+protocol, also participating in long-term vote storage.
 
-Registreerimisteenuse funktsioon
-````````````````````````````````
+Registration Service Function
+````````````````````````````
 
-Registreerimisteenuse põhifunktsioon on võtta Hääletamisteenuselt vastu
-allkirjastatud registreerimispäringuid, kinnitada need omapoolse allkirjastatud
-vastusega ning säilitada hilisemaks auditeerimiseks vähemalt hääletamisperioodi
-lõpuni.
+The main function of the Registration Service is to accept signed
+registration requests from the Voting Service, confirm them with its own
+signed response, and retain them for later auditing at least until the end
+of the voting period.
 
-Auditeerimisel tekkivate võimalike erisuste lahendamiseks on oluline, et
+For resolving potential discrepancies arising during auditing, it is
+important that
 
-- Registreerimisteenus on võimeline tõestama, et igale tema poolt väljastatud
-  kinnitusele eelnes Talletamisteenuse poolne registreerimispäring;
+- the Registration Service is able to prove that every confirmation it
+  issued was preceded by a registration request from the Storage Service;
 
-- Talletamisteenus on võimeline tõestama, et iga tema poolt talletatud hääle
-  kohta on olemas Registreerimisteenuse kinnitus.
+- the Storage Service is able to prove that for every vote it stored, there
+  is a Registration Service confirmation.
 
-Piisav protokoll sellise tõendamistaseme saavutamiseks on, kus mõlemal
-osapoolel on olemas võtmepaar allkirjastamiseks, päringud ja vastused on
-allkirjastatud ning kumbki pool peab registrit teise poole teadete üle. Selline
-protokoll on realiseeritav näiteks OCSP-põhise Registreerimisteenuse korral.
-Samas võib esineda juhtumeid, kus näiteks registreerimispäringute
-allkirjastamine ei ole standardsete vahenditega võimalik (RFC 3161 põhine
-registreerimine). Sellisel juhul tuleb registreerimisteenusele vajalik
-tõendusmaterjal anda muude organisatsioonilis-tehniliste vahenditega.
+A sufficient protocol for achieving this level of proof is one where both
+parties have a key pair for signing, requests and responses are signed, and
+each party maintains a registry of the other party's messages. Such a
+protocol is implementable, for example, with an OCSP-based Registration
+Service. However, there may be cases where, for example, signing
+registration requests is not possible with standard means (RFC 3161-based
+registration). In such cases, the necessary evidence for the registration
+service must be provided through other organizational-technical means.
 
-Registreerimisteenusel on praegu kaks erinevat teostust:
+The Registration Service currently has two different implementations:
 
-#. OCSP-liides eeldab Eestis rakendatava OCSP-põhise ajamärgendamisteenuse
-   kasutamist, kus allkirjastatud OCSP-päringu nonsiks on Hääletamisteenuse
-   poolt pandud hääle räsi. Päring on allkirjastatud standardsete OCSP
-   vahenditega;
+#. The OCSP interface assumes the use of an OCSP-based timestamping service
+   deployed in Estonia, where the nonce of the signed OCSP request is the
+   hash of the vote placed by the Voting Service. The request is signed
+   using standard OCSP means;
 
-#. RFC 3161 liides, mille korral ebastandardse lahendusena pannakse
-   ajatemplipäringu nonsiks Hääletamisteenuse poolt allkirjastatud hääle räsi.
+#. The RFC 3161 interface, where as a non-standard solution, the nonce of
+   the timestamp request is the hash of the vote signed by the Voting
+   Service.
 
 
-Kogumisteenuse laiendusmoodulite lisamine
-`````````````````````````````````````````
+Adding Collector Service Extension Modules
+`````````````````````````````````````
 
-Kogumisteenuse API defineerib kuute tüüpi laiendusmooduleid:
+The collector service API defines six types of extension modules:
 
-#. isikutuvastus (Go pakk ``ivxv.ee/auth``, näiteks ``tls``);
+#. identity verification (Go package ``ivxv.ee/auth``, e.g., ``tls``);
 
-#. tuvastatud isiku sertifikaadist valija identifikaatori tuletamine (Go pakk
-   ``ivxv.ee/identity``, näiteks ``serialnumber``);
+#. deriving the voter identifier from the authenticated person's certificate
+   (Go package ``ivxv.ee/identity``, e.g., ``serialnumber``);
 
-#. valija identifikaatorist vanuse tuletamine (Go pakk ``ivxv.ee/age``, näiteks
+#. deriving age from the voter identifier (Go package ``ivxv.ee/age``, e.g.,
    ``estpic``);
 
-#. allkirjastatud konteineri verifitseerimine (Go pakk ``ivxv.ee/container``,
-   näiteks ``bdoc``);
+#. signed container verification (Go package ``ivxv.ee/container``,
+   e.g., ``bdoc``);
 
-#. allkirja kvalifitseerimine (Go pakk ``ivxv.ee/q11n``, näiteks ``tspreg``);
+#. signature qualification (Go package ``ivxv.ee/q11n``, e.g., ``tspreg``);
 
-#. andmetalletusprotokoll (Go pakk ``ivxv.ee/storage``, näiteks ``etcd``).
+#. data storage protocol (Go package ``ivxv.ee/storage``, e.g., ``etcd``).
 
-Uue mooduli lisamiseks tuleb moodulpakki lisada mooduli identifikaator ning
-mooduli teostusega alampakk. Alampaki alglaadimisel tuleb mooduli
-registreerimiseks kutsuda välja moodulpaki ``Register`` funktsioon.
+To add a new module, a module identifier and a subpackage with the module
+implementation must be added to the module package. During the initialization
+of the subpackage, the ``Register`` function of the module package must be
+called to register the module.
 
-Uue mooduli kasutamiseks tuleb selle identifikaator lisada seadistusse vastava
-moodulitüübi seadistuse juurde koos alammooduli seadistusega. Laiendusmoodulile
-antakse ette tema identifikaatoriga viidatud seadistusblokk, mida see
-mooduli-siseselt edasi töötleb.
+To use a new module, its identifier must be added to the configuration under
+the corresponding module type's settings along with the submodule settings.
+The extension module receives the configuration block referenced by its
+identifier, which it processes internally.
 
-Moodulpakid ja nende moodulitelt nõutavad liidesed on täpsemalt kirjeldatud
-vastavates lähtekoodifailides. Samuti on iga mooduli kohta olemas vähemalt üks
-teostus, mida saab kasutada eeskujuna.
+Module packages and the interfaces required from their modules are described
+in more detail in the corresponding source code files. Also, at least one
+implementation exists for each module, which can be used as a reference.
 
 
-Monitooring
+Monitoring
 -----------
 
 .. figure:: model/img/monitoring.png
 
-   Monitooringulahendus
+   Monitoring solution
 
-Logimine
+Logging
 ````````
 
-Iga mikroteenuse poolt genereeritav logi defineeritakse süstemaatiliselt,
-lähtudes protokollikirjeldusest ning teenuse osutamise olekudiagrammist.
-Logitakse minimaalselt:
+The log generated by each microservice is defined systematically, based on
+the protocol description and the service delivery state diagram.
+At minimum, the following are logged:
 
-* iga päringu kättesaamise fakt ning töötlemise algus;
+* the fact of receiving each request and the start of processing;
 
-* töötlemise üleandmine välisele komponendile;
+* handover of processing to an external component;
 
-* töötlemisjärje naasmine komponenti;
+* return of the processing sequence to the component;
 
-* päringu töötlemise lõpp ning tulemus;
+* the end of request processing and the result;
 
-* täiendavalt oluliste etappide läbimine protsessi olekumudelis.
+* additionally, the passing of significant stages in the process state model.
 
-Logimisel järgitakse järgmisi põhimõtteid:
+The following principles are followed for logging:
 
-* Logimiseks kasutatakse rsyslog teenust, mis registreerib logiteate
-  kirjutamise hetke millisekundi täpsusega;
+* The rsyslog service is used for logging, which records the moment of
+  writing the log entry with millisecond precision;
 
-* Iga seansi alustamisel genereerib süsteem unikaalse identifikaatori, mida
-  klientrakendus kasutab oma päringutel kesksüsteemi poole pöördumiseks;
+* At the start of each session, the system generates a unique identifier,
+  which the client application uses when making requests to the central
+  system;
 
-* Kõik ühe seansi alla kuuluvad logikirjed sisaldavad sama
-  seansiidentifikaatorit;
+* All log entries belonging to one session contain the same session
+  identifier;
 
-* Logikirje on unikaalselt identifitseeritav;
+* A log entry is uniquely identifiable;
 
-* Iga logitava teate juures on võimalik unikaalse tunnuse abil üksüheselt
-  tuvastada teate tekkimise koht monitooritavas süsteemis;
+* For each logged message, it is possible to uniquely identify the point of
+  origin of the message in the monitored system using a unique identifier;
 
-* Logikirje on JSON vormingus, automaatse monitooringu jaoks on masinloetavus
-  primaarne ning inimloetavus sekundaarne;
+* The log entry is in JSON format; for automated monitoring, machine
+  readability is primary and human readability is secondary;
 
-* Logisse minev info saneeritakse (urlencode) ja sellele rakendatakse pikkuse
-  piirangut (piirang terve logiteate ja samuti parameetri kaupa);
+* Information going into the log is sanitized (urlencode) and a length limit
+  is applied (a limit per entire log entry and also per parameter);
 
-* Süsteemiperimeetrist väljastpoolt pärinevat infot logitakse ainult
-  saneerituna ja ainult etteantud pikkuses.
+* Information originating from outside the system perimeter is logged only
+  in sanitized form and only up to a specified length.
 
-Kuna logimine toimub rsyslog vahendusel, on võimalik Guardtime mooduli
-kasutamine logide tervikluse tagamiseks.
-
-
-Üldstatistika
-`````````````
-
-Järgmise statistika jälgimiseks kasutatakse staatilist veebiliidest:
-
-* edukalt kogutud hääled/hääletajate hulk;
-
-* hääletajate jagunemine sugude, vanusegruppide, operatsioonisüsteemide ning
-  autentimisvahendite kaupa;
-
-* edukalt kontrollitud häälte/hääletajate hulk;
-
-* korduvhääletamiste statistika;
-
-* hääletajate jagunemine riigiti IP-aadressi põhjal.
+Since logging is done via rsyslog, it is possible to use the Guardtime module
+to ensure log integrity.
 
 
-Detailstatistika
+General Statistics
+`````````````````
+
+The following statistics are monitored using a static web interface:
+
+* successfully collected votes/number of voters;
+
+* distribution of voters by gender, age group, operating system, and
+  authentication method;
+
+* successfully verified votes/number of voters;
+
+* repeat voting statistics;
+
+* distribution of voters by country based on IP address.
+
+
+Detailed Statistics
 ````````````````
 
-Detailstatistika agregeeritakse logide põhjal kasutades SCCEIV
-logianalüsaatorit, mis  analüüsib rakenduste tegevuslogi eeldefineeritud
-profiili suhtes ning võimaldab seansi-/veatüübipõhist analüüsi.
+Detailed statistics are aggregated from logs using the SCCEIV log analyzer,
+which analyzes the application activity log against a predefined profile and
+enables session/error-type-based analysis.
 
-Detailstatistika on kättesaadav üle HTTPS-liidese.
+Detailed statistics are available via an HTTPS interface.
 
 
 .. _kogumisteenuse-haldus:
 
-Haldus
+Management
 ------
 
-Kogumisteenuse haldamine toimub digitaalallkirjastatud seadistuspakkide abil.
+The management of the collector service is done using digitally signed
+configuration packages.
 
-Kogumisteenus pakub seadistuspakkide laadimiseks kahte liidest:
+The Collector Service provides two interfaces for loading configuration
+packages:
 
-* Käsurealiides – rakendus verifitseerib allkirja, valideerib korralduste
-  vormingut, kooskõlalisust ja sobivust kogumisteenuse seisundi suhtes.
-  Korralduse rakendamine toimub eraldi utiliidi abil.
+* Command line interface – the application verifies the signature, validates
+  the format, consistency, and suitability of the commands with respect to
+  the collector service state. The command is applied using a separate
+  utility.
 
-* Veebiliides – veebiliides vahendab seadistuspaki käsurealiidesele ja tagastab
-  kasutajale info laadimise tulemuse kohta. Eduka laadimise korral toimub
-  automaatselt ja samadel põhimõtetel ka seadistuspaki rakendamine.
+* Web interface – the web interface forwards the configuration package to
+  the command line interface and returns information about the loading
+  result to the user. Upon successful loading, the configuration package
+  is also automatically applied using the same principles.
 
-Veebiliidese funktsioonideks on:
+The functions of the web interface are:
 
-* Kogumisteenuse mikroteenuste seisundi jälgimine;
+* Monitoring the status of collector service microservices;
 
-* Valimiste nimekirjade haldus;
+* Managing election lists;
 
-* Statistika kuvamine e-hääletamise kulgemise kohta;
+* Displaying statistics about the progress of e-voting;
 
-* Haldusteenuse kasutajate haldus;
+* Managing management service users;
 
-* Kogumisteenuse halduse logi kuvamine.
+* Displaying the collector service management log.
 
-Kõik rakendusele antud korraldused säilitatakse - ka need mida ei rakendatud.
-Vigaseid (mittevalideeruvaid) korraldusi ei säilitata.
+All commands given to the application are retained - including those that were
+not applied. Faulty (non-validating) commands are not retained.
 
-Kogumisteenuse haldusteenus sooritab järgmisi tegevusi automaatselt:
+The collector service management service performs the following activities
+automatically:
 
-#. Valijate nimekirjade muudatuste laadimine Valimiste Infosüsteemist;
+#. Loading voter list changes from the Election Information System;
 
-#. Hääletamise statistika kogumine hääletusteenusest ja eksportimine Valimiste
-   Infosüsteemi;
+#. Collecting voting statistics from the voting service and exporting them
+   to the Election Information System;
 
-#. Talletatud häälte, logide ning seadistuste varundamine varundusteenusesse.
+#. Backing up stored votes, logs, and configurations to the backup service.
 
 
-Haldusteenuse komponendid
-`````````````````````````
+Management Service Components
+`````````````````````````````
 
 .. figure:: model/img/ms-management-service-components.png
 
-   Kogumisteenuse haldusteenuse komponendid
+   Collector service management service components
 
-#. **Halduse veebiserver** on süsteemse kasutaja ``www-data``
-   õigustes töötav Apache server, mille ülesanded on:
+#. **Management web server** is an Apache server running under the system
+   user ``www-data``, whose tasks are:
 
-   #. Kasutajatelt tulevate HTTPS-päringute esmane teenindamine:
+   #. Primary handling of HTTPS requests from users:
 
-      #. Haldusteenuse usaldusväärsuse tõestamine (TLS-sertifikaat);
+      #. Proving the trustworthiness of the management service (TLS certificate);
 
-      #. Kasutajate autentimine;
+      #. Authenticating users;
 
-   #. Valmisgenereeritud veebilehtede ja andmefailide serveerimine
-      andmehoidlast.
+   #. Serving pre-generated web pages and data files from the data store.
 
-   #. Üldiste taustaandmete päringu vastuse varustamine sisseloginud kasutaja
-      andmetega (WSGI).
+   #. Supplementing general background data query responses with logged-in
+      user data (WSGI).
 
-   #. Üleslaaditavate korralduste esmane valideerimine ja vahendamine
-      haldusdeemonile ning haldusdeemoni sellekohaste vastuste vahendamine
-      kliendile (WSGI).
+   #. Initial validation of uploaded commands and forwarding to the
+      management daemon, and relaying the management daemon's responses to
+      the client (WSGI).
 
-#. **Haldusdeemon** on kasutajakonto ``ivxv-admin`` õigustes töötav ja
-   kohalikul (``localhost``) liidesel kuulav veebiserver mille ülesanded on:
+#. **Management daemon** is a web server running under the user account
+   ``ivxv-admin`` and listening on the local (``localhost``) interface,
+   whose tasks are:
 
-   #. Üleslaaditavate korralduste valideerimine;
+   #. Validating uploaded commands;
 
-   #. Üleslaaditavate korralduste vahetu rakendamine (kasutajate haldus);
+   #. Directly applying uploaded commands (user management);
 
-   #. Üleslaaditavate korralduste salvestamine hilisemaks rakendamiseks
-      (seadistuse ja valimisnimekirjade rakendamiseks teenusele);
+   #. Saving uploaded commands for later application (for applying
+      configuration and election lists to the service);
 
-   #. E-valimiskasti allalaadimise vahendamine.
+   #. Facilitating e-ballot box download.
 
-#. **Agentdeemon** on kasutajakonto ``ivxv-admin``
-   õigustes töötav deemon, mille ülesanded on:
+#. **Agent daemon** is a daemon running under the user account
+   ``ivxv-admin``, whose tasks are:
 
-   #. Andmete kogumine ja registreerimine:
+   #. Data collection and registration:
 
-      #. Teadaolevate mikroteenuste seisund;
+      #. Status of known microservices;
 
-      #. Tegevusmonitooringu statistika allalaadimine;
+      #. Downloading activity monitoring statistics;
 
-#. **Andmehoidla** on failisüsteemis asuv kataloog, kuhu haldusteenuse
-   komponendid hoiavad kogutud ja genereeritud andmeid (vaata üksikasjalist
-   kirjeldust ``IVXV kogumisteenuse haldusjuhendi`` lisadest);
+#. **Data store** is a directory in the file system where management service
+   components store collected and generated data (see the detailed
+   description in the appendices of the ``IVXV Collector Service Administration Guide``);
 
-Välised komponendid, millega haldusteenus kokku puutub:
+External components that the management service interacts with:
 
-#. **Kogumisteenuse alamteenused** - paigaldamine, seadistamine ja seisundi
-   andmete kogumine toimub agentdeemoni kaudu (SSH-ühendus teenuse masinasse);
+#. **Collector service sub-services** - installation, configuration, and
+   status data collection is done via the agent daemon (SSH connection to
+   the service machine);
 
-#. **Seireserver** - üldstatistika andmete allalaadimine haldusteenuses
-   kuvamiseks;
+#. **Monitoring server** - downloading general statistics data for display
+   in the management service;
 
 .. figure:: model/img/ms-upload-command.png
 
-   Korralduste laadimine haldusteenusesse
+   Loading commands into the management service
 
 
-Kogumisteenuse seisundid
+Collector Service States
 ------------------------
 
-Kogumisteenuse seisund kajastab teenuse kõigi alamteenuste seisundit,
-kasutuselolevate väliste teenuste seisundit ja eelneva põhjal tuletatud
-üldseisundit. Kogumisteenuse üldseisundi tuvastamisega tegeleb haldusteenus.
+The collector service state reflects the status of all sub-services of the
+service, the status of the external services in use, and the overall status
+derived from the above. The management service is responsible for determining
+the overall status of the collector service.
 
-Üldseisundi olekud on:
+The overall status states are:
 
-#. **Paigaldamata** - alates haldusteenuse paigaldamisest kuni kõigi
-   alamteenuste paigaldamiseni;
+#. **Not installed** - from the installation of the management service until
+   all sub-services are installed;
 
-#. **Paigaldatud** - kõik alamteenused on paigaldatud, neile on rakendatud
-   tehnilised seadistused ja teenuse toimimiseks vajalikud krüptovõtmed.
-   Valimiste seadistust pole rakendatud (kuid see võib olla laaditud
-   haldusteenusesse);
+#. **Installed** - all sub-services are installed, technical configurations
+   and cryptographic keys necessary for the service to function have been
+   applied to them. The election configuration has not been applied (but it
+   may have been loaded into the management service);
 
-#. **Seadistatud** - kogumisteenus on seadistatud ja töökorras, sellega on
-   võimalik häälte kogumist läbi viia ja e-valimiskasti väljastada.
+#. **Configured** - the collector service is configured and operational,
+   it is possible to conduct vote collection and export the e-ballot box.
 
-#. **Osaline tõrge** - kogumisteenus on seadistatud ja osaliselt töökorras,
-   mõned alamteenused pole töökorras, kuid see ei takista kogumisteenuse
-   toimimist.
+#. **Partial failure** - the collector service is configured and partially
+   operational, some sub-services are not operational, but this does not
+   prevent the collector service from functioning.
 
-#. **Tõrge** - kogumisteenuse oluline sõlm pole töökorras, teenuse nõuetekohane
-   osutamine pole võimalik.
+#. **Failure** - a critical node of the collector service is not operational,
+   proper service delivery is not possible.
 
 .. figure:: model/img/ms-collector-status.png
    :scale: 50%
 
-   Kogumisteenuse olekudiagramm. Olekud vastavalt värvusele: kollane -
-   seadistamisel, punane - viga, roheline - töökorras.
+   Collector service state diagram. States by color: yellow -
+   configuring, red - error, green - operational.
 
 
-Kogumisteenuse alamteenuste seisundid
-`````````````````````````````````````
+Collector Service Sub-Service States
+`````````````````````````````````
 
 .. figure:: model/img/ms-service-status.png
    :scale: 50%
 
-   Haldusteenuse poolt registreeritud alamteenuse olekudiagramm. Olekud
-   vastavalt värvusele: kollane - seadistamisel, punane - viga, roheline -
-   töökorras.
+   Sub-service state diagram as registered by the management service. States
+   by color: yellow - configuring, red - error, green - operational.
 
 
-Kogumisteenuse seisundi muutused
+Collector Service State Changes
 ````````````````````````````````
 
-Kogumisteenuse seisund on jälgitav alates haldusteenuse edukast
-paigaldamisest, algne seisund on **Paigaldamata**.
+The collector service state is observable from the successful installation of
+the management service; the initial state is **Not installed**.
 
 
-Paigaldamata
+Not Installed
 ''''''''''''
 
-Toimub usaldusjuure ja tehnilise seadistuse rakendamine kogumisteenusele:
+The trust anchor and technical configuration are being applied to the
+collector service:
 
-#. Seadistuste laadimine kogumisteenusesse;
+#. Loading configurations into the collector service;
 
-#. Tehnilises seadistuses kirjeldatud alamteenuste paigaldus;
+#. Installing sub-services described in the technical configuration;
 
-#. Usaldusjuure ja tehniliste seadistuste rakendamine alamteenustele;
+#. Applying the trust anchor and technical configurations to sub-services;
 
-Seadistuste eduka rakendamise tulemusena saab süsteemi uueks seisundiks
-**Paigaldatud**.
+Upon successful application of configurations, the system's new state
+becomes **Installed**.
 
 
-Paigaldatud
+Installed
 '''''''''''
 
-Kogumisteenuse seadistused on rakendatud kõigile alamteenustele, valimiste
-seadistused pole rakendatud. Toimub valimiste seadistuse laadimine
-haldusteenusesse ja rakendamine alamteenustele.
+The collector service configurations have been applied to all sub-services;
+election configurations have not been applied. The election configuration is
+being loaded into the management service and applied to sub-services.
 
-Valimiste seadistuse eduka rakendamise korral saab süsteemi uueks seisundiks
-**Seadistatud**.
+Upon successful application of the election configuration, the system's new
+state becomes **Configured**.
 
 
-Seadistatud
+Configured
 '''''''''''
 
-Kõik kogumisteenuse alamteenused on seadistatud ja töökorras. Haldusteenusel on
-kõikidest alamteenustest värsked seisundiraportid. Süsteemiga on võimalik
-hääletust läbi viia ja e-valimiskasti väljastada.
+All collector service sub-services are configured and operational. The
+management service has fresh status reports from all sub-services. It is
+possible to conduct voting and export the e-ballot box.
 
-Kui süsteemis tuvastatakse tõrge, saab süsteemi uueks **Osaline tõrge**.
+If a failure is detected in the system, the system's new state becomes
+**Partial failure**.
 
-**Seadistatud** olekust ei pöörduta enam kunagi tagasi olekutesse
-**paigaldamata** või **paigaldatud**, kuigi uute alamteenuste lisamisel (kuni
-need on olekus **paigaldamata/paigaldatud**) oleks vastavad tingimused
-täidetud.
-
-
-Osaline tõrge
-'''''''''''''
-
-Süsteem on seadistatud ja osaliselt töökorras, mõned süsteemi dubleeritud osad
-pole töökorras, kuid see ei takista süsteemil toimimast.
-
-Rikke süvenemisel piirini, kus süsteem pole võimeline teenust osutama, saab
-süsteemi uueks olekuks **Tõrge**. Kõigi rikete kõrvaldamise järel saab
-süsteemi uueks olekuks **Seadistatud**.
+From the **Configured** state, the system never returns to the **Not
+installed** or **Installed** states, even though when adding new
+sub-services (while they are in the **not installed/installed** state), the
+corresponding conditions would be met.
 
 
-Tõrge
+Partial Failure
+'''''''''''
+
+The system is configured and partially operational; some redundant parts of
+the system are not operational, but this does not prevent the system from
+functioning.
+
+If the failure worsens to the point where the system is unable to provide
+the service, the system's new state becomes **Failure**. After all failures
+are resolved, the system's new state becomes **Configured**.
+
+
+Failure
 '''''
 
-Seadistatud süsteemil on tuvastatud rike, mis takistab teenuse osutamist.
+A failure has been detected in a configured system that prevents service
+delivery.
 
-Rikete kõrvaldamisel olukorrani, kus süsteemiga on võimalik teenust osutada,
-saab süsteemi uueks olekuks **Osaline tõrge**.
+When failures are resolved to the situation where the system can provide
+the service, the system's new state becomes **Partial failure**.
 
 
-Eemaldatud
+Removed
 ''''''''''
 
-Teenus on konfiguratsioonist eemaldatud.
+The service has been removed from the configuration.
 
 
-Valijate nimekirjade olekud haldusteenuses
+Voter List States in the Management Service
 ------------------------------------------
 
-Valijate nimekirja olek võib olla:
+The state of a voter list can be:
 
-#. **Rakendamise ootel** - nimekiri on laaditud haldusteenusesse;
+#. **Pending application** - the list has been loaded into the management service;
 
-#. **Rakendatud** - nimekiri on rakendatud kogumisteenusele;
+#. **Applied** - the list has been applied to the collector service;
 
-#. **Vigane** - nimekiri on märgitud vigaseks, haldusteenus uusi valijate
-   nimekirjade muudatusi ei laadi;
+#. **Faulty** - the list has been marked as faulty, the management service
+   will not load new voter list changes;
 
-#. **Vahele jäetud** - vigane nimekiri on märgitud vahelejätmiseks.
+#. **Skipped** - the faulty list has been marked for skipping.
 
 .. figure:: model/img/ms-voter-list-status.png
 
-   Valijate nimekirja olekudiagramm
+   Voter list state diagram
 
-Siirdeprotsessid:
+Transition processes:
 
-#. Nimekirja laadimine haldusteenusesse:
+#. Loading the list into the management service:
 
-   Algnimekirja laadib kogumisteenuse operaator, nimekirja olekuks saab
-   **Rakendamise ootel**;
+   The initial list is loaded by the collector service operator; the list
+   state becomes **Pending application**;
 
-   Muudatusnimekirja laadib haldusteenus. Vastavalt valideerimise tulemusele
-   saab nimekirja olekuks kas **Rakendamise ootel** või **Vigane**;
+   The change list is loaded by the management service. Depending on the
+   validation result, the list state becomes either **Pending application**
+   or **Faulty**;
 
-#. **Rakendamine kogumisteenusele**: viib läbi haldusteenus **rakendamise
-   ootel** olekus nimekirjaga. Õnnestumisel määratakse nimekirja olekuks
-   **Rakendatud**, vea korral **Vigane**;
+#. **Applying to the collector service**: carried out by the management
+   service with a list in **pending application** state. On success, the
+   list state is set to **Applied**; on error, to **Faulty**;
 
-#. **Vahelejätmine**: operaator määrab olekuga **Vigane** nimekirjale oleku
-   **Vahele jäetud**.
+#. **Skipping**: the operator assigns the state **Skipped** to a list with
+   the state **Faulty**.

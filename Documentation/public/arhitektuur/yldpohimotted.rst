@@ -1,72 +1,75 @@
 ..  IVXV arhitektuur
 
-Sissejuhatus
+Introduction
 ============
 
-Elektroonilise hääletamise infosüsteem IVXV on loodud lähtuvalt e-hääletamise
-raamistikust [ÜK2016]_ ja riigihanke 171780 tehnilisest kirjeldusest [TK2016]_.
-Käesolevas dokumendis kirjeldatakse IVXV arhitektuurset lahendust. Elektroonilise
-hääletamise infosüsteem koosneb vallasrežiimirakendustest ning
-sidusrežiimikomponentidest. Täiendavalt sõltub infosüsteem välistest
-infosüsteemidest ning mõjutab vahetult elektrooniliseks hääletamiseks ja hääle
-kontrollimiseks kasutatavaid komponente.
+The electronic voting information system IVXV has been created based on the
+e-voting framework [ÜK2016]_ and the technical description of public
+procurement 171780 [TK2016]_.
+This document describes the architectural solution of IVXV. The electronic
+voting information system consists of offline mode applications and
+online mode components. Additionally, the information system depends on external
+information systems and directly affects the components used for electronic
+voting and vote verification.
 
-Arhitektuuridokument kirjeldab IVXV komponente, nende omavahelisi liideseid ja
-liideseid väliste süsteemidega ning komponentide poolt realiseeritavaid protokolle.
+The architecture document describes IVXV components, their mutual interfaces and
+interfaces with external systems, as well as the protocols implemented by the
+components.
 
-IVXV kontseptsioon
+IVXV Concept
 ------------------
 
-Üldine, kuid terviklik ülevaade elektroonilise hääletamise raamistiku ("IVXV")
-tehnilisest ja organisatsioonilisest poolest ning selle rakendamisest Eesti
-riiklikel valimistel on antud e-hääletamise raamistiku üldkirjelduses
-[ÜK2016]_.
+A general but comprehensive overview of the technical and organizational
+aspects of the electronic voting framework ("IVXV") and its application in
+Estonian national elections is provided in the general description of the
+e-voting framework [ÜK2016]_.
 
-IVXV infosüsteemina teostab "ümbrikuskeemil" põhinevat e-hääletamise
-protokolli. IVXV toimib hääletamiseelsel etapil, hääletamisetapil,
-töötlusetapil ning lugemisetapil ja pakub vahendeid elektroonilise hääletamise
-protsessis osalemiseks Korraldajale, Lugejale, Hääletajale, Kogujale,
-Töötlejale, Miksijale, Audiitorile, Klienditoele, Valijate nimekirja koostajale
-ja täiendajale.
+IVXV as an information system implements an e-voting protocol based on the
+"envelope scheme". IVXV operates during the pre-voting phase, the voting
+phase, the processing phase, and the counting phase, and provides means for
+participation in the electronic voting process for the Organizer, the
+Counter, the Voter, the Collector, the Processor, the Mixer, the Auditor,
+the Client Support, and the compiler and supplementor of the voter lists.
 
-Infosüsteemi komponendid on Kogumisteenus, Töötlemisrakendus, Võtmerakendus
-ning Auditirakendus. Infosüsteemiga on tihedalt seotud Valijarakendus,
-Kontrollrakendus ning Miksimisrakendus.
+The components of the information system are the Collector Service, the
+Processing Application, the Key Application, and the Audit Application. Closely
+related to the information system are the Voter Application, the Verification
+Application, and the Mixing Application.
 
-Infosüsteem kasutab oma töös väliseid teenuseid - Tuvastusteenus,
-Allkirjastamisteenus, Registreerimisteenus, Valimiste Infosüsteem ning X-tee.
+The information system uses external services in its operation - the
+Authentication Service, the Signing Service, the Registration Service,
+the Election Information System, and X-Road.
 
-IVXV krüptograafiline protokoll
+IVXV Cryptographic Protocol
 -------------------------------
 
-Elektroonilise hääletamise turvalisuse, verifitseeritavuse ning hääletamise
-salajasuse, hääletamise korrektsuse ja hääletaja sõltumatuse saavutamiseks on
-rangelt kirjeldatud elektroonilise hääletamise krüptograafiline protokoll
-[HMVW16]_. Protokoll annab vajaliku ja piisava ülevaate IVXV ülesehitusest ning
-selle turvaaspektidest. IVXV komponendid realiseerivad krüptograafilise
-protokolli alamosi.
+To achieve the security, verifiability, ballot secrecy, voting correctness,
+and voter independence of electronic voting, the cryptographic protocol for
+electronic voting is strictly defined [HMVW16]_. The protocol provides the
+necessary and sufficient overview of IVXV's structure and its security aspects.
+IVXV components implement sub-parts of the cryptographic protocol.
 
-Notatsioon
+Notation
 ----------
 
-Arhitektuurse lahenduse visandi illustreerimiseks kasutatakse dokumendis
-UML-skeeme, kus eristame värvide ja märgenditega ``<<>>`` kodeeritult olemite –
-tegijad, liidesed, komponendid – järgmisi aspekte:
+To illustrate the architectural solution sketch, the document uses UML diagrams,
+where we distinguish the following aspects of entities – actors, interfaces,
+components – encoded with colors and labels ``<<>>``:
 
-* Märgend ``<<IVXV>>`` (Kollane) – infosüsteemi liides või komponent
-  defineeritakse/realiseeritakse konkreetse pakkumuse raames tehtavate tööde
-  käigus
+* Label ``<<IVXV>>`` (Yellow) – the interface or component of the information
+  system is defined/implemented during the work carried out within the scope
+  of the specific procurement
 
-* Märgend ``<<Väline>>`` (Punane) – infosüsteem sõltub mingi funktsionaalsuse
-  realiseerimisel kolmanda osapoole komponendist või olemasolevast liidesest,
-  mille ümberdefineerimine eeldab ka kolmandate osapoolte tööd.
+* Label ``<<External>>`` (Red) – the information system depends on a third-party
+  component or an existing interface for the implementation of some
+  functionality, the redefinition of which also requires work by third parties.
 
-* Märgend ``<<VVK>>`` (Pruun) – sarnane eelmisele, kuid liidese/komponendi
-  omanikuks on VVK.
+* Label ``<<NEC>>`` (Brown) – similar to the previous, but the owner of the
+  interface/component is the NEC (National Electoral Committee).
 
-* Märgend ``<<Määratlemata>>`` (Must) – infosüsteemi jaoks oluline liides on
-  määratlemata.
+* Label ``<<Undefined>>`` (Black) – an important interface for the information
+  system is undefined.
 
 .. figure:: model/img/example.png
 
-   Näiteskeem
+   Example diagram

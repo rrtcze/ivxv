@@ -1,68 +1,72 @@
-..  IVXV protokollid
+..  IVXV protocols
 
 ====================================================
-Elektroonilise hääle kvalifitseerimine talletamiseks
+Qualifying an Electronic Vote for Storage
 ====================================================
 
-Kvalifitseeritud hääl
+Qualified Vote
 =====================
 
-Valijarakenduse töö tulemusena saadetakse kogumisteenusesse talletamiseks
-topeltümbrik, mis sisaldab endas valija tahteavaldust krüpteeritud kujul, valija
-allkirja krüpteeritud tahteavaldusel kooskõlastatud allkirja- ja
-konteinervormingus ning valija allkirjastamissertifikaati X509-vormingus.
+As a result of the voter application's work, a double envelope is sent to the
+collection service for storage, which contains the voter's expression of will
+in encrypted form, the voter's signature on the encrypted expression of will
+in an agreed signature and container format, and the voter's signing
+certificate in X509 format.
 
-Hääle edukaks talletamiseks näeb IVXV protokoll ette hääle registreerimise
-välise registreerimisteenuse osutaja juures ning registreerimistõendi
-valijarakendusele kättesaadavaks tegemise. Valimise korraldaja võib hääle
-kvalifitseerimiseks näha ette täiendavaid samme lisaks registreerimisele --
-näiteks kehtivuskinnituse hankimist hääle allkirjastanud sertifikaadi kohta.
+For successful vote storage, the IVXV protocol provides for registering the
+vote with an external registration service provider and making the
+registration proof available to the voter application. The election organizer
+may prescribe additional steps for qualifying the vote beyond registration --
+for example, obtaining a validity confirmation for the certificate that signed
+the vote.
 
-Kõik kogumisteenuse poolt hangitavad kvalifitseerivad elemendid, mis määravad
-hääle staatuse hilisemates töötlusetappides, tuleb esitada valijarakendusele ning
-nõudmise korral ka kontrollrakendusele tagamaks, et valija saab oma hääle
-korrektse menetlemise võimalikkusest õigeaegselt teada.
+All qualifying elements obtained by the collection service that determine the
+vote's status in subsequent processing stages must be presented to the voter
+application and, upon request, also to the verification application, to ensure
+that the voter can learn in a timely manner about the possibility of correct
+processing of their vote.
 
-OCSP kehtivuskinnitus
+OCSP Validity Confirmation
 ---------------------
 
-OCSP (*Online Certificate Status Protocol*) on standartne protokoll
-X509-sertifikaatide kehtivusinfo pärimiseks. Kogumisteenus võib seda protokolli
-kasutada hääle allkirjastanud sertifikaadi kehtivuse teadasaamiseks. OCSP
-vastus ütleb, et sertifikaat kehtis päringu tegemise ajahetkel, kuid ei seosta
-OCSP vastust konkreetse allkirjaga.
+OCSP (*Online Certificate Status Protocol*) is a standard protocol for
+querying the validity information of X509 certificates. The collection service
+may use this protocol to determine the validity of the certificate that signed
+the vote. The OCSP response states that the certificate was valid at the time
+of the query, but does not associate the OCSP response with a specific
+signature.
 
-RFC3161 ajatempel
+RFC3161 Timestamp
 -----------------
 
-RFC3161 ajatempli protokolliga saadakse usaldusteenuse pakkujalt kinnitus, et
-mingi andmekogum eksisteeris enne teatud ajahetke. BDOC-TS kontekstis
-ajatembeldatakse allkirja element ``SignatureValue`` kanoniseeritud kujul.
-Klassikaline OCSP vastus koos RFC 3161 vormingus ajatempliga kvalifitseerivad
-BDOC-TS allkirja.
+Using the RFC3161 timestamp protocol, a confirmation is obtained from a trust
+service provider that a certain set of data existed before a certain point in
+time. In the BDOC-TS context, the ``SignatureValue`` element of the signature
+is timestamped in its canonicalized form. A classical OCSP response together
+with an RFC 3161 format timestamp qualifies a BDOC-TS signature.
 
-Talletamine
+Storage
 ====================================================
 
-Elektroonilise hääle talletamine kogumisteenuses tähendab:
+Storing an electronic vote in the collection service means:
 
-#. hääle vastuvõtmist valijarakenduselt ning hääletaja allkirja
-   verifitseerimist;
+#. receiving the vote from the voter application and verifying the voter's
+   signature;
 
-#. hääle võimalikku kvalifitseerimist -- näiteks sertifikaadi kehtivuse
-   tõendamist hääle allkirjastamisele lähedasel ajahetkel;
+#. possible qualification of the vote -- for example, proving the validity of
+   the certificate at a time close to the signing of the vote;
 
-#. hääle registreerimist sõltumatus registreerimisteenuses;
+#. registering the vote in an independent registration service;
 
-#. häält kvalifitseerivate elementide vahendamist valijarakendusele.
+#. mediating the vote-qualifying elements to the voter application.
 
-Erinevad kombinatsioonid allkirjavormingust ning hääli kvalifitseerivatest
-teenustest võivad tekitada erinevaid IVXV-profiile. Konkreetse dokumendi raames
-on IVXV profiil:
+Different combinations of signature formats and vote-qualifying services may
+create different IVXV profiles. Within this specific document, the IVXV
+profile is:
 
-#. Allkirjastatud hääle vorming on BDOC-TS;
+#. The signed vote format is BDOC-TS;
 
-#. Kehtivuskinnitusprotokolliks on standartne OCSP;
+#. The validity confirmation protocol is standard OCSP;
 
-#. BDOC-TS kvalifitseerimiseks kasutatav RFC3161 ajatempel on kasutusel ka
-   registreerimistõendina.
+#. The RFC3161 timestamp used for BDOC-TS qualification is also used as the
+   registration proof.

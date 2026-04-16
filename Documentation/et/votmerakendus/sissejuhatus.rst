@@ -1,8 +1,8 @@
-..  IVXV tehniline dokumentatsioon
+..  IVXV technical documentation
 
-Sissejuhatus
+Introduction
 ============
 
-Võtmerakendus on Korraldaja põhitööriist, millega genereeritakse iga hääletamise jaoks häälte salastamise ja häälte avamise võti. Võtmerakenduse abil toimub ka häälte lugemine ja tulemuse väljastamine.
+The key application is the Organizer's main tool for generating the vote encryption and vote decryption key for each election. The key application is also used for vote counting and result output.
 
-Dokumendis spetsifitseeritakse võtmerakenduse tehnilised detailid.
+This document specifies the technical details of the key application.

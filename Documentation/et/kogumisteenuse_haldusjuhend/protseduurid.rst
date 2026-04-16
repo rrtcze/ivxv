@@ -1,13 +1,13 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
-Protseduurid
-============
+Procedures
+==========
 
 
 .. _recovery-stateless:
 
-Juhend: olekuvaba mikroteenuse isendi taastamine krahhist
----------------------------------------------------------
+Procedure: Recovering a Stateless Microservice Instance from a Crash
+--------------------------------------------------------------------
 
 .. include:: recovery/recovery_stateless.inc
 
@@ -15,8 +15,8 @@ Juhend: olekuvaba mikroteenuse isendi taastamine krahhist
 
 .. _recovery-logcollection:
 
-Juhend: logikogumisteenuse isendi taastamine krahhist
------------------------------------------------------
+Procedure: Recovering a Log Collection Service Instance from a Crash
+--------------------------------------------------------------------
 
 .. include:: recovery/recovery_logcollection.inc
 
@@ -24,8 +24,8 @@ Juhend: logikogumisteenuse isendi taastamine krahhist
 
 .. _recovery-backupservice:
 
-Juhend: varundusteenuse isendi taastamine krahhist
---------------------------------------------------
+Procedure: Recovering a Backup Service Instance from a Crash
+------------------------------------------------------------
 
 .. include:: recovery/recovery_backupservice.inc
 
@@ -33,8 +33,8 @@ Juhend: varundusteenuse isendi taastamine krahhist
 
 .. _recovery-storageservice:
 
-Juhend: talletusteenuse isendi taastamine krahhist
---------------------------------------------------
+Procedure: Recovering a Storage Service Instance from a Crash
+-------------------------------------------------------------
 
 .. include:: recovery/recovery_storageservice.inc
 
@@ -42,7 +42,7 @@ Juhend: talletusteenuse isendi taastamine krahhist
 
 .. _recovery-fullstorage:
 
-Juhend: talletusteenuse taastamine täielikust krahhist
-------------------------------------------------------
+Procedure: Recovering the Storage Service from a Complete Crash
+---------------------------------------------------------------
 
 .. include:: recovery/recovery_fullstorage.inc

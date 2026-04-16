@@ -1,105 +1,106 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
-Krahhitaaste
-============
+Crash Recovery
+==============
 
-Kogumisteenus on projekteeritud nii, et teenuse või selle osade krahhimise
-tagajärjel ei tekiks andmekadu või oleks see minimaalne.
-
-
-Eeldused edukaks krahhitaasteks
--------------------------------
-
-Kõrgkäideldav seadistus
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Peamine eeldus edukaks krahhitaasteks on kogumisteenuse paigaldamine
-kõrgkäideldava seadistusega, mis määrab vähemalt kolme talletusteenuse isendi
-kasutamise. Lisaks on krahhiolukorra kiiremaks lahendamiseks kasulik eraldada
-mikroteenustele ühe lisaisendite komplekti paigalduseks vajalik taristu.
+The collector service is designed so that a crash of the service or its
+components does not result in data loss, or the loss is minimal.
 
 
-Logikoguja kasutamine
+Prerequisites for Successful Crash Recovery
+-------------------------------------------
+
+High-Availability Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The main prerequisite for successful crash recovery is deploying the collector
+service with a high-availability configuration that specifies the use of at
+least three storage service instances. Additionally, it is useful to allocate
+infrastructure for installing an additional set of microservice instances for
+faster crash resolution.
+
+
+Using a Log Collector
 ^^^^^^^^^^^^^^^^^^^^^
 
-Kogumisteenuse seadistus peab kirjeldama logikogumisteenuse, et mikroteenuste
-poolt toodetavad logisid oleks võimalik lihtsal moel kokku koguda. Soovitav on
-kasutada mitut logikogujat erinevas füüsilises lokatsioonis, et minimeerida
-logikirjete kaotsimineku võimalust.
+The collector service configuration must describe the log collection service,
+so that logs produced by microservices can be collected in a simple manner. It
+is recommended to use multiple log collectors in different physical locations
+to minimize the possibility of losing log entries.
 
 
-Varundusteenuse kasutamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using a Backup Service
+^^^^^^^^^^^^^^^^^^^^^^
 
-Kogumisteenuse seadistus peab kirjeldama varundusteenuse ning automaatse
-varundamise ajad piisava sagedusega. Samuti on soovitav teha varukoopiad ka
-varundusteenusest.
+The collector service configuration must describe the backup service and
+automatic backup times with sufficient frequency. It is also recommended to
+make backup copies of the backup service itself.
 
-Automaatne varundamine tagab e-valimiskasti koopia säilimise :ref:`talletusteenuse
-täieliku krahhi <talletusteenuste-täielik-krahh>` korral.
-
-.. note::
-
-   Varundusteenus on soovitav paigaldada teistest kogumisteenuse isenditest
-   füüsiliselt eraldi, et võimalikud eriolukorrad (näiteks tulekahju) ei
-   mõjutaks korraga nii varundusteenust kui teisi teenuseid.
-
-Varundusteenus on projekteeritud kogumisteenuse andmetest automaatsete
-varukoopiate loomiseks ühte kohta ning nende kättesaadavaks tegemiseks
-operatsioonidele, mis varukoopiaid kasutavad (näiteks häälte kokkulugemine).
+Automatic backup ensures the preservation of e-ballot box copies in case of a
+:ref:`complete storage service crash <talletusteenuste-täielik-krahh>`.
 
 .. note::
 
-   Kogumisteenuse osutaja peaks kaaluma võimalust teha varundusteenusest
-   täiendavaid varukoopiaid, et tagada varundatud andmete säilimine ka
-   varundusteenuse krahhi korral.
+   The backup service should be installed physically separate from other
+   collector service instances, so that possible emergencies (such as fire)
+   do not affect both the backup service and other services simultaneously.
 
-Valmisolek krahhiks
-^^^^^^^^^^^^^^^^^^^
+The backup service is designed for creating automatic backups of collector
+service data in one location and making them available for operations that use
+backup copies (such as vote counting).
 
-Kogumisteenuse krahh mõjutab kõiki e-hääletamise komponente, erilist
-tähelepanu tuleb pöörata valijarakenduste ja kontrollrakenduste
-nimelahendusele ning TLS ühenduste usaldamiseks vajalikele
-sertifikaatidele.
+.. note::
 
-Hääletamise edukaks läbiviimiseks tuleb tagada, et nimeserverid
-sisaldaks kogu hääletusperioodi vältel ajakohast infot
-hääletamissüsteemi sisendpunktide kohta - siis suudavad
-valijarakendused ja kontrollrakendused vastavalt muutuvatele oludele
-nimesid korrektselt lahendada.
+   The collector service provider should consider the possibility of making
+   additional backup copies of the backup service to ensure the preservation
+   of backed up data even in case of a backup service crash.
 
-#. Krahhimise tuvastamisel tuleb esimeste tegevuste hulgas eemaldada
-   nimelahendusest krahhinud teenus, et rakendused enam selle poole
-   pöörduda ei saaks.
-#. Kui teenused pärast krahhi uuesti töökorda saadakse, tuleb
-   viimase sammuna nimelahenduses panna uute teenuste aadressid
-   lahenduma vastavalt rakendustes defineeritule.
+Preparedness for a Crash
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Kui kogumisteenusesse lisatakse uusi mikroteenuseid (eeldatavalt
-pärast krahhimist), siis on tarvis tagada lisatud teenuste
-usaldusväärsus rakendustes.
+A collector service crash affects all e-voting components; particular attention
+must be paid to name resolution of voter applications and verification
+applications, as well as the certificates required for trusting TLS
+connections.
 
-Teenuse plaanimisel tuleb luua serdid/võtmed ka võimalike
-asendusteenuste jaoks (choices, mid, voting). Need võtmed tuleb
-pakendada valijarakendusse, et pärast krahhi poleks tarvis hakata uut
-rakendust levitama. Kui sertifikaadid luuakse ühe CA alt, siis piisab
-valijarakendusse vastava CA sertifikaadi pakendamisest.
-Kontrollrakenduste jaoks tuleb seadistustes alati näidata konkreetsed
-teenussertifikaadid, kuid kontrollrakenduste seadistuste muutmine ei
-eelda kontrollrakenduste uuesti levitamist.
+For successful voting, it must be ensured that name servers contain
+up-to-date information about the voting system entry points throughout the
+entire voting period — then voter applications and verification applications
+can resolve names correctly according to changing conditions.
 
-Teenuste taastamine krahhist
-----------------------------
+#. When a crash is detected, one of the first actions should be to remove
+   the crashed service from name resolution, so that applications can no
+   longer connect to it.
+#. When services are restored after a crash, as the last step, the addresses
+   of the new services should be made resolvable in name resolution according
+   to the definitions in the applications.
+
+If new microservices are added to the collector service (presumably after a
+crash), the trustworthiness of the added services must be ensured in the
+applications.
+
+When planning the service, certificates/keys should also be created for
+possible replacement services (choices, mid, voting). These keys should be
+packaged into the voter application, so that after a crash there is no need
+to distribute a new application. If certificates are created under a single
+CA, it is sufficient to package the corresponding CA certificate into the
+voter application. For verification applications, specific service
+certificates must always be specified in the settings, but changing
+verification application settings does not require redistributing the
+verification applications.
+
+Recovering Services from a Crash
+---------------------------------
 
 
-Mikroteenuse isendi krahh ilma andmekaota
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Microservice Instance Crash Without Data Loss
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Mikroteenuse isendi krahh ilma andmekaota võib esineda teenuste puhul, mis ei
-tegele andmete säilitamisega (nimekirjateenus, hääletusteenus, kontrolliteenus
-või mobiil-id tugiteenus). Sellises olukorras piisab teenuse isendi
-taastamiseks kas teenuse taaskäivitamisest (kui see on võimalik) või teenuse
-isendi asendamisest uuega.
+A microservice instance crash without data loss can occur with services that
+do not handle data storage (choices service, voting service, verification
+service, or Mobile-ID support service). In such a situation, it is sufficient
+to either restart the service instance (if possible) or replace the service
+instance with a new one.
 
 .. seealso::
 
@@ -109,25 +110,25 @@ isendi asendamisest uuega.
 
    * :ref:`recovery-stateless`
 
-Logikogumisteenuse isendi krahh
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Log Collection Service Instance Crash
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Logikogumisteenuse krahh võib esineda nii logiandmete riknemisega kui ka ilma.
+A log collection service crash can occur with or without log data corruption.
 
-Ilma logiandmete riknemiseta krahh tähendab olukorda, kus rsyslog teenus seisab
-ja ei võta seetõtte teenustelt logikirjeid vastu ning salvestatud logifailid ei
-ole rikutud. Sellises olukorras piisab teenuse isendi töökorda seadmiseks selle
-taaskäivitamisest.
+A crash without log data corruption means a situation where the rsyslog service
+is stopped and therefore does not accept log entries from services, and the
+saved log files are not corrupted. In such a situation, it is sufficient to
+restart the service instance.
 
-Logikogumisteenuse krahh koos logiandmete riknemisega nõuab teenuse isendi
-asendamist uuega.
+A log collection service crash with log data corruption requires replacing the
+service instance with a new one.
 
-Kui logiandmete riknemisega kaasneb alati logiandmete kadu, siis ilma
-riknemiseta krahhi puhul tuleb samuti selle võimalusega arvestada. Logisid
-edastatakse üle RELP-protokolli, mis on küllalt töökindel, kuid vaatamata
-sellele võib logiedastus katkeda olukorras, kus logi genereeriva teenuse hostil
-on rsyslogi isendit taaskäivitatud ajal, mil logikoguja rsyslog isend ei
-töötanud.
+While log data corruption always involves log data loss, a crash without
+corruption should also be considered for this possibility. Logs are forwarded
+over the RELP protocol, which is quite reliable, but despite this, log
+forwarding may be interrupted in a situation where the rsyslog instance on the
+host of the log-generating service has been restarted while the log collector
+rsyslog instance was not running.
 
 .. seealso::
 
@@ -140,48 +141,49 @@ töötanud.
 
    * :ref:`recovery-logcollection`
 
-Varundusteenuse isendi krahh
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Backup Service Instance Crash
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Varundusteenuse isendi krahh tähendab varundusteenusesse varundatud andmete
-riknemist. Teenuse taastamiseks tuleb varundusteenus uuesti paigaldada ja
-varundatud andmed taastada. Andmete taastamine varundusserverisse võib toimuda
-ka pärast häälte kogumise lõppemist, kuid enne häälte kokkulugemist.
+A backup service instance crash means corruption of data backed up to the
+backup service. To recover the service, the backup service must be reinstalled
+and the backed up data restored. Data restoration to the backup server can also
+occur after the end of vote collection, but before vote counting.
 
 .. note::
 
-   Varundusprotseduuride käivitamist juhitakse haldusteenusest ja seetõttu pole
-   varundusteenust võimalik käivitada ega seisma jätta.
+   Backup procedures are controlled from the management service and therefore
+   the backup service cannot be started or stopped.
 
 .. seealso::
 
    * :ref:`recovery-backupservice`
 
-Talletusteenuse isendi krahh
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Storage Service Instance Crash
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Talletusteenuse ühe isendi krahhimisel piisab isendi asendamisest uuega.
+When a single storage service instance crashes, it is sufficient to replace
+the instance with a new one.
 
-Talletusteenuseid saab lisada ja eemaldada ainult siis, kui klastris on
-vähemalt kvoorumi jagu töökorras talletusteenuse isendeid. Kvoorumi suurus on
-N/2+1 ümardatud alla, kus N on seadistatud isendite arv (näiteks kolme
-seadistatud isendi korral on kvoorumi suurus kaks).
+Storage services can only be added and removed when there are at least a
+quorum of operational storage service instances in the cluster. The quorum size
+is N/2+1 rounded down, where N is the configured number of instances (for
+example, with three configured instances, the quorum size is two).
 
-Kui talletusteenuse isendeid jääb alles vähem kui kvoorumi jagu, siis tuleb
-teha kõigile isenditele uus paigaldus (vt.
+If fewer than a quorum of storage service instances remain, a new installation
+must be performed on all instances (see
 :ref:`talletusteenuste-täielik-krahh`).
 
-Talletusteenuse kvoorumist tingitud piirangud:
+Quorum-related limitations of the storage service:
 
-#. Talletusteenuse isendite arvu ei ole kunagi võimalik vähendada ühele;
+#. The number of storage service instances can never be reduced to one;
 
-#. Talletusteenuste isendite eemaldamisel peab arvestama kvoorumi säilimisega.
+#. When removing storage service instances, the quorum must be maintained.
 
-   Näide: kui on seadistatud 6 talletusteenuse isendit (kvoorum=4), siis sealt
-   ei saa korraga eemaldada kolme isendit (jääks järgi kolm isendit,
-   kvoorum=2), kuna seadistatud isendite hulk oleks siis väiksem kui algne
-   kvoorum. Kõigepealt tuleb eemaldada üks (jääb järgi 5 isendit, kvoorum=3)
-   isend ja alles pärast seda saab eemaldada ülejäänud kaks.
+   Example: if 6 storage service instances are configured (quorum=4), then
+   three instances cannot be removed at once (3 would remain, quorum=2),
+   because the set of configured instances would then be smaller than the
+   original quorum. First, one must be removed (5 instances remain, quorum=3)
+   and only then can the remaining two be removed.
 
 .. seealso::
 
@@ -193,27 +195,27 @@ Talletusteenuse kvoorumist tingitud piirangud:
 
 .. _talletusteenuste-täielik-krahh:
 
-Talletusteenuste täielik krahh ehk kogumisteenuse täielik asendamine
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Complete Storage Service Crash, i.e., Complete Collector Service Replacement
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Talletusteenuste täielikul asendamisel tuleb koostada uus tehniline seadistus,
-mis vastab järgmistele tingimustele:
+When completely replacing the storage services, a new technical configuration
+must be prepared that meets the following conditions:
 
-* ei sisalda ühtegi vana talletusteenust;
+* does not contain any old storage services;
 
-* kõik uued talletusteenused on loetletud parameetri ``storage.conf.bootstrap``
-  nimekirjas.
+* all new storage services are listed in the ``storage.conf.bootstrap``
+  parameter list.
 
 .. important::
 
-   Talletusteenuste täielikul asendamisel tuleb arvestada järgnevada:
+   When completely replacing storage services, the following must be considered:
 
-   * enne asendamist kogutud hääled säilivad varundusserveritesse tehtud
-     varukoopiates;
+   * votes collected before the replacement are preserved in backup copies
+     made to backup servers;
 
-   * varukoopia loomise ja krahhi vahel kogutud hääled lähevad kaotsi;
+   * votes collected between the backup creation and the crash will be lost;
 
-   * valikute, ringkondade ja valijate nimekirjad tuleb teenustele uuesti rakendada.
+   * choices, district, and voter lists must be re-applied to the services.
 
 .. seealso::
 

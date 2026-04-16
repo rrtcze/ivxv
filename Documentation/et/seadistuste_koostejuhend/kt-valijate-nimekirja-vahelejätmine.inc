@@ -1,39 +1,39 @@
-..  IVXV seadistuste koostamise juhend
+..  IVXV configuration preparation guide
 
 .. _kt-voter-list-skip:
 
-Valijate nimekirja vahelejätmine
---------------------------------
+Voter list skipping
+-------------------
 
-Valijate nimekirja vahelejätmine tähendab haldusteenuses registreerinud
-vigase valijate nimekirja asendamist tühja nimekirjaga.
+Voter list skipping means replacing a faulty voter list registered in the
+management service with an empty list.
 
-Protseduur on vajalik olukorras, kus haldusteenus on Valimiste Infosüsteemist
-alla laadinud ja haldusteenuses registreerinud valijate muudatusnimekirja, mida
-pole võimalik kogumisteenusele rakendada (nimekiri on vigane või pole kooskõlas
-teiste kogumisteenuste seadistustega).
+The procedure is necessary in a situation where the management service has
+downloaded and registered in the management service a voter changeset list from
+the Election Information System that cannot be applied to the collector service
+(the list is faulty or not compatible with other collector service settings).
 
-Valijate nimekirja vahelejätmine korralduse koostab valimiste korraldaja.
+The voter list skipping order is prepared by the election organizer.
 
-Seadistusfaili nimi peab alati lõppema stringiga :file:`.skip.yaml`.
+The configuration file name must always end with the string :file:`.skip.yaml`.
 
 :election:
 
-        Kohustuslik väli.
-        Valimise unikaalne identifikaator.
+        Required field.
+        Unique election identifier.
 
 :skip_voter_list:
 
-        Kohustuslik väli.
-        Vahele jäetava valijate muudatusnimekirja versioon.
+        Required field.
+        Version of the voter changeset list to be skipped.
 
 :changeset:
 
-        Kohustuslik väli.
-        Vahele jäetava valijate muudatusnimekirja järjekorranumber.
+        Required field.
+        Sequence number of the voter changeset list to be skipped.
 
-Näide
-*****
+Example
+*******
 
 :file:`example.voters.skip.yaml`:
 

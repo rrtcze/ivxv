@@ -1,82 +1,82 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Haldussündmuste logi jälgimine
-==============================
+Management event log monitoring
+================================
 
-Kogumisteenuse sündmuste logi sirvimise leht avaneb menüüvalikust
+The collector service event log browsing page opens from the menu option
 ``Logiraamat``.
 
-Logis on järgmised väljad:
+The log has the following fields:
 
-#. ``Aeg`` - sündmuse registreerimise aeg;
+#. ``Aeg`` - event registration time;
 
-#. ``Teenus`` - teenuse identifikaator;
+#. ``Teenus`` - service identifier;
 
-#. ``Tase`` - logisündmuse tase (``INFO`` või ``ERROR``);
+#. ``Tase`` - log event level (``INFO`` or ``ERROR``);
 
-#. ``Sündmus`` - sündmuse liigi identifikaator;
+#. ``Sündmus`` - event type identifier;
 
-#. ``Kirjeldus`` - sündmuse tekstiline kirjeldus.
+#. ``Kirjeldus`` - textual description of the event.
 
-Logi on võimalik filtreerida ja välja väärtuse järgi sortida.
+The log can be filtered and sorted by field value.
 
-Logisündmused
--------------
+Log events
+-----------
 
-Kogumisteenuse olekud:
+Collector service states:
 
 :COLLECTOR_INIT:
-   Kogumisteenuse lähtestamine (käsuga :command:`ivxv-collector-init`);
+   Collector service initialization (with command :command:`ivxv-collector-init`);
 
 :COLLECTOR_RESET:
-   Kogumisteenuse seadistuste lähtestamine (usaldusjuure laadimine);
+   Collector service configuration reset (loading trust root);
 
 :COLLECTOR_STATE_CHANGE:
-   Kogumisteenuse olekumuutus;
+   Collector service state change;
 
-Korralduste laadimine:
+Command loading:
 
 :CMD_LOAD:
-   Korraldusfaili haldusteenusesse laadimine;
+   Loading a command file into the management service;
 
 :CMD_LOADED:
-   Edukalt laaditud korraldusfaili registreerimine haldusteenuses;
+   Registration of a successfully loaded command file in the management service;
 
 :CMD_REMOVED:
-   Korraldusfaili eemaldamine haldusteenusest;
+   Removal of a command file from the management service;
 
 :VOTER_LIST_DOWNLOADED:
-   Valijate muudatusnimekirja allalaadimine;
+   Downloading a voter changelist;
 
 :VOTER_LIST_DOWNLOAD_FAILED:
-   Valijate muudatusnimekirja nurjunud allalaadimine;
+   Failed download of a voter changelist;
 
 :VOTER_LIST_NOT_FOUND:
-   Valijate järgmist muudatusnimekirja ei leitud Valimiste Infosüsteemis;
+   The next voter changelist was not found in the Election Information System;
 
-Kasutajaõiguste muutused:
+User permission changes:
 
 :PERMISSION_SET:
-   Kasutajale õiguse määramine;
+   Assigning a permission to a user;
 
 :PERMISSION_RESET:
-   Kasutaja õiguste lähtestamine;
+   Resetting user permissions;
 
-Hääletusperioodi registreerimine:
+Voting period registration:
 
 :SET_ELECTION_TIME:
-   Hääletusperioodi algus- ja lõpuaegade registreerimine;
+   Registration of voting period start and end times;
 
-Mikroteenuste haldus:
+Microservice management:
 
 :SERVICE_REGISTER:
-   Teenuse registreerimine haldusteenuses;
+   Registering a service in the management service;
 
 :SERVICE_CONFIG_APPLY:
-   Seadistuse rakendamine teenusele;
+   Applying configuration to a service;
 
 :SERVICE_STATE_CHANGE:
-   Teenuse olekumuutus;
+   Service state change;
 
 :SECRET_INSTALL:
-   Saladuse laadimine teenusele.
+   Loading a secret to a service.

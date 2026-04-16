@@ -1,23 +1,23 @@
 
 ================================================================================
-IVXV juhend audiitorile
+IVXV Guide for the Auditor
 ================================================================================
 
-Rakenduste kompileerimine
+Compiling Applications
 ================================================================================
 
 
-EELDUSED
+PREREQUISITES
 --------------------------------------------------------------------------------
 
-Kõik tegevused viime läbi tavakasutaja -- näidetes `ubuntu` -- õigustes,
-kasutades vajadusel käsklust `sudo`.
+All activities are performed under regular user -- in the examples `ubuntu` --
+privileges, using the `sudo` command when necessary.
 
-Üldjuhul viime kõik tegevused läbi kasutaja kodukaustas::
+Generally, all activities are performed in the user's home directory::
 
   cd $HOME
 
-Paigaldame tarkvara, mis on vajalik audiitori tööriistade ehitamiseks::
+Install the software required for building the auditor tools::
 
   sudo apt-get install --no-install-recommends -y autoconf automake build-essential libgmp-dev libtool git openjdk-11-jdk-headless python unzip zip wget make
 
@@ -25,7 +25,7 @@ Paigaldame tarkvara, mis on vajalik audiitori tööriistade ehitamiseks::
 INTCHECK
 --------------------------------------------------------------------------------
 
-Verificatum miksneti tervikluskontroll toimub rakendusega `intcheck`::
+Verificatum mixnet integrity check is performed with the `intcheck` application::
 
   wget https://github.com/vvk-ehk/intcheck/archive/master.zip
   unzip master.zip
@@ -33,16 +33,16 @@ Verificatum miksneti tervikluskontroll toimub rakendusega `intcheck`::
   mv intcheck-master intcheck
   chmod +x intcheck/src/intcheck.py
 
-Veendume et rakendus on paigaldatud korrektselt::
+Verify that the application is installed correctly::
 
   ./intcheck/src/intcheck.py -h
 
 
-JAVA RAKENDUSED
+JAVA APPLICATIONS
 --------------------------------------------------------------------------------
 
-Andmeauditi läbiviimiseks läheb vaja rakendust `auditor`, mille lähtekood on
-avalikustatud IVXV repositooriumis::
+To perform the data audit, the `auditor` application is needed, whose source
+code is published in the IVXV repository::
 
   wget https://github.com/vvk-ehk/ivxv/archive/master.zip
   unzip master.zip
@@ -50,7 +50,7 @@ avalikustatud IVXV repositooriumis::
   mv ivxv-master ivxv
 
 
-Paigaldame Java sõltuvuspaketid::
+Install Java dependency packages::
 
   cd $HOME/ivxv/common/external
   wget -O gradle-8.11.zip https://services.gradle.org/distributions/gradle-8.11-bin.zip
@@ -59,22 +59,22 @@ Paigaldame Java sõltuvuspaketid::
   cd $HOME/ivxv/common/java
   make sync
 
-Veendume, et ettevalmistused on tehtud korrektselt::
+Verify that the preparations are done correctly::
 
   cd $HOME/ivxv
   make clean-java
 
-Ehitame Java rakendused::
+Build the Java applications::
 
   make java
 
-RVT'le tarnitavad rakendused::
+Applications to be delivered to the NEC::
 
   $HOME/ivxv/auditor/build/distributions/auditor-1.10.3.zip
   $HOME/ivxv/key/build/distributions/key-1.10.3.zip
   $HOME/ivxv/processor/build/distributions/processor-1.10.3.zip
 
-Käivitatavad failid::
+Executable files::
 
   $HOME/ivxv/auditor/build/install/auditor/bin/auditor
   $HOME/ivxv/key/build/install/key/bin/key
@@ -84,7 +84,7 @@ Käivitatavad failid::
 VERIFICATUM
 --------------------------------------------------------------------------------
 
-Verificatum miksneti adapter on vajalik miksimistõendi kontrolliks::
+The Verificatum mixnet adapter is required for verifying the mixing proof::
 
   cd $HOME
   wget https://github.com/vvk-ehk/ivxv-mixnet-adapter/archive/master.zip
@@ -92,14 +92,14 @@ Verificatum miksneti adapter on vajalik miksimistõendi kontrolliks::
   rm master.zip
   mv ivxv-mixnet-adapter-master ivxv-verificatum
 
-Verificatum tarkvara allalaadmine::
+Download the Verificatum software::
 
   git clone https://github.com/verificatum/verificatum-gmpmee gmpmee
   git clone https://github.com/verificatum/vmgj
   git clone https://github.com/verificatum/vcr
   git clone https://github.com/verificatum/vmn
 
-Tarkvara täpse versiooni hankimine ning tervikluse kontroll::
+Obtaining the exact version of the software and integrity check::
 
   cd gmpmee
   git checkout 4aafc31
@@ -125,123 +125,124 @@ Tarkvara täpse versiooni hankimine ning tervikluse kontroll::
   cd ..
   ./intcheck/src/intcheck.py verify vmn ivxv-verificatum/doc/vmn.dirsha256sum
 
-Verificatumi adapteri ehitamine::
+Building the Verificatum adapter::
 
   cd $HOME/ivxv-verificatum
   make zipext
 
-Juhuarvugeneraatori initsialiseerimine Verificatumi jaoks::
+Initializing the random number generator for Verificatum::
 
   cd $HOME
   ./vcr/bin/vog -rndinit RandomDevice /dev/urandom
 
 
-Auditeerimine
+Auditing
 ================================================================================
 
-Siit edasi eeldame, et lugeja on tuttav dokumendiga "IVXV seadistuste
-koostamise juhend" järgmises ulatuses:
+From here on, we assume that the reader is familiar with the document "IVXV
+Configuration Preparation Guide" to the following extent:
 
-* Ptk. 2, IVXV seadistused valimise korraldamise protsessis
-* Ptk. 3, IVXV rakendused
-* Ptk. 6, Auditirakendus
-* Ptk. 10, E-häälte miksimine
+* Ch. 2, IVXV configurations in the election organization process
+* Ch. 3, IVXV applications
+* Ch. 6, Auditor application
+* Ch. 10, Mixing of e-votes
 
-Olgu samuti paigaldatud pakk `audit-examples.tar`, millel on järgmine
-struktuur::
+Let the package `audit-examples.tar` also be installed, which has the following
+structure::
 
    audit-conv
-   |-- auditor.yaml -- konfinäide
+   |-- auditor.yaml -- configuration example
    |-- inputs
-   |   |-- <RVT poolt tarnitavad sisendid>
+   |   |-- <Inputs provided by the NEC>
    |-- process
-   |   |-- <Töökataloog koos seadistustega>
+   |   |-- <Working directory with configurations>
    |
    audit-mix
-   |-- auditor.yaml -- konfinäide
+   |-- auditor.yaml -- configuration example
    |-- inputs
-   |   |-- <RVT poolt tarnitavad sisendid>
+   |   |-- <Inputs provided by the NEC>
    |-- process
-   |   |-- <Töökataloog koos seadistustega>
+   |   |-- <Working directory with configurations>
    |
    audit-mixver
    |-- inputs
-   |   |-- <RVT poolt tarnitavad sisendid>
+   |   |-- <Inputs provided by the NEC>
    |
    audit-pdec
-   |-- auditor.yaml -- konfinäide
+   |-- auditor.yaml -- configuration example
    |-- inputs
-   |   |-- <RVT poolt tarnitavad sisendid>
+   |   |-- <Inputs provided by the NEC>
    |-- process
-   |   |-- <Töökataloog koos seadistustega>
+   |   |-- <Working directory with configurations>
    |
    audit-vertally
    |-- inputs
-   |   |-- <RVT poolt tarnitavad sisendid>
+   |   |-- <Inputs provided by the NEC>
    |
    processor
-   |-- <Töötlemisrakenduse sisendid ja väljundid>
+   |-- <Processor application inputs and outputs>
 
-Tegutsemine on üldjuhul järgmine:
+The general procedure is as follows:
 
-* Tutvuge konfinäitega
-* Veenduge, et on olemas vajalik RVT sisend
-* Tehke kausta `process` konfinäitest lähtuv failistruktuur
-* Käivitage kaustas `process` rakendus ja tööriist (eelvalmendatud seadistused on seal
-  juba ees)
+* Review the configuration example
+* Verify that the required NEC inputs are available
+* Create the file structure in the `process` directory based on the configuration example
+* Run the application and tool in the `process` directory (pre-prepared configurations are
+  already in place)
 
-Täpsemad juhised järgnevad.
+Detailed instructions follow.
 
-Genereeritud avalike võtmete kooskõlalisuse kontroll
+Consistency Check of Generated Public Keys
 --------------------------------------------------------------------------------
 
-Võtmete genereerimise ajal tekib kaks võtit - tulemusfaili signeerimisvõti ja
-häälte salastamise võti.
+During key generation, two keys are created — the result file signing key and
+the vote encryption key.
 
-Tulemusfaili signeerimisvõti on kodeeritud X509 sertifikaadina failis
-`RK2051-sign.pem`. Häälte salastamise võti on antud kolmes kodeeringus:
+The result file signing key is encoded as an X509 certificate in the file
+`RK2051-sign.pem`. The vote encryption key is provided in three encodings:
 
-* X509 sertifikaadina failis `RK2051-enc.pem`
-* DER-kodeeritud avaliku võtmena failis `RK2051-pub.der`
-* PEM-kodeeritud avaliku võtmena failis `RK2051-pub.pem`
+* As an X509 certificate in the file `RK2051-enc.pem`
+* As a DER-encoded public key in the file `RK2051-pub.der`
+* As a PEM-encoded public key in the file `RK2051-pub.pem`
 
-On võimalik kontrollida, et sertifikaat, mis sisaldab tulemusfaili
-signeerimisvõtit, on korrektselt isesigneeritud. Seda saab teha järgnevalt::
+It is possible to verify that the certificate containing the result file
+signing key is correctly self-signed. This can be done as follows::
 
     openssl verify -CAfile RK2051-sign.pem -check_ss_sig RK2051-sign.pem
 
-Korrektse sertifikaadi korral on väljund::
+For a correct certificate, the output is::
 
     RK2051-sign.pem: OK
 
-On võimalik kontrollida, et sertifikaat, mis sisaldab häälte salastamise võtit,
-on korrektselt signeeritud tulemusfaili signeerimisvõtmega. Seda saab
-teha järgnevalt::
+It is possible to verify that the certificate containing the vote encryption
+key is correctly signed with the result file signing key. This can be done as
+follows::
 
     openssl verify -CAfile RK2051-sign.pem -check_ss_sig RK2051-enc.pem
 
-Korrektselt allkirjastatud sertifikaadi korral on väljund::
+For a correctly signed certificate, the output is::
 
     RK2051-enc.pem: OK
 
-.. note:: Teadaoleva OpenSSL vea tõttu ei suuda OpenSSL versioonist `1.1.1b`
-   vanemad versioonid sertifikaadi usaldusahelat kontrollida. Eelneva kontrolli
-   õnnestumise jaoks on eelduseks vähemalt OpenSSL versioon `1.1.1b`.
+.. note:: Due to a known OpenSSL bug, OpenSSL versions older than `1.1.1b`
+   cannot verify the certificate trust chain. For the above check to succeed,
+   at least OpenSSL version `1.1.1b` is required.
 
-Lisaks on võimalik kontrollida, et häälte salastamise võtme eri kodeeringud
-vastavad üksteisele. Me kontrollime, et X509 sertifikaadis olev võti vastab
-DER-kodeeritud võtmele ning lisaks, et PEM-kodeeritud võti vastab DER-kodeeritud
-võtmele. Transitiivsuse tõttu on seega kõik kolm kodeeringut kooskõlalised.
+Additionally, it is possible to verify that the different encodings of the vote
+encryption key correspond to each other. We verify that the key in the X509
+certificate matches the DER-encoded key and additionally that the PEM-encoded
+key matches the DER-encoded key. Due to transitivity, all three encodings are
+therefore consistent.
 
-Esiteks tuleb eraldada häälte salastamise võti vastavast sertifikaadist. Kuna
-OpenSSL ei toeta kasutatavad ElGamali krüptoskeemi, siis tuleb avaliku võtme
-eksportimiseks kasutada OpenSSL `asn1parse` tööriista.
+First, the vote encryption key must be extracted from the corresponding
+certificate. Since OpenSSL does not support the ElGamal encryption scheme
+used, the OpenSSL `asn1parse` tool must be used to export the public key.
 
-Kõigepealt tuleb leida avaliku võtme nihe sertifikaadis::
+First, find the offset of the public key in the certificate::
 
     openssl asn1parse -in RK2051-enc.pem
 
-Avalik võti on vastavas `SubjectPublicKeyInfo` väljal::
+The public key is in the corresponding `SubjectPublicKeyInfo` field::
 
     156:d=2  hl=4 l= 816 cons: SEQUENCE
     160:d=3  hl=4 l= 415 cons: SEQUENCE
@@ -264,95 +265,96 @@ Avalik võti on vastavas `SubjectPublicKeyInfo` väljal::
     571:d=5  hl=2 l=   6 prim: GENERALSTRING
     579:d=3  hl=4 l= 393 prim: BIT STRING
 
-Näeme, et `SubjectPublicKeyInfo` välja  nihe on 156 baiti. Eraldame avaliku
-võtme ja kontrollime vastavust väljastatud avaliku võtmega::
+We see that the offset of the `SubjectPublicKeyInfo` field is 156 bytes.
+Extract the public key and verify correspondence with the issued public key::
 
     openssl asn1parse -in RK2051-enc.pem -strparse 156 -noout -out extracted.der
     diff -s extracted.der RK2051-pub.der
 
-Samaväärsete võtmete korral on väljundiks::
+For equivalent keys, the output is::
 
     Files extracted.der and RK2051-pub.der are identical
 
-Teiseks kontrollime DER-kodeeritud võtme vastavust PEM-kodeeritud võtmele.
-Selleks teisendame PEM-kodeeritud võtme DER-kodeeringusse ja võrdleme::
+Second, we verify the correspondence of the DER-encoded key with the
+PEM-encoded key. To do this, we convert the PEM-encoded key to DER encoding
+and compare::
 
     openssl asn1parse -in RK2051-pub.pem -noout -out converted.der
     diff -s converted.der RK2051-pub.der
 
-Samaväärsete võtme korral on väljundiks::
+For equivalent keys, the output is::
 
     Files converted.der and RK2051-pub.der are identical
 
-Hääletamistulemuse allkirja verifitseerimine
+Verification of the Voting Result Signature
 --------------------------------------------------------------------------------
 
-Nii tavalise dekrüpteerimise kui tõestatava dekrüpteerimise käigus tekib kaks
-faili:
+During both regular decryption and provable decryption, two files are
+produced:
 
-* Tulemusfail `RK2051.1.tally`
-* Signatuurifail `RK2051.1.tally.signature`
+* Result file `RK2051.1.tally`
+* Signature file `RK2051.1.tally.signature`
 
-Koos häälte salastamise võtmega genereeritakse tulemusfaili signeerimisvõti ja
-vastav sertifikaat (`RK2051-sign.pem`). Dekrüpteeritud tulemusele antakse selle
-võtmega signatuur, mida tuleb kontrollida.
+Together with the vote encryption key, the result file signing key and the
+corresponding certificate (`RK2051-sign.pem`) are generated. The decrypted
+result is signed with this key, and the signature must be verified.
 
-Eraldame signeerimisvõtme sertifikaadist avaliku võtme::
+Extract the public key from the signing key certificate::
 
   openssl x509 -in RK2051-sign.pem -noout -pubkey > sign.pub
 
-Kasutame avalikku võtit tulemusfaili allkirja kontrollimiseks::
+Use the public key to verify the result file signature::
 
   openssl dgst -sha256 -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:32 -sigopt rsa_mgf1_md:sha256 -verify sign.pub -signature RK2051.1.tally.signature RK2051.1.tally
 
-NB! Tavalise dekrüpteerimise ja tõestatava dekrüpteerimise käigus tekkivad
-tulemusfailid peavad olema identsed. Kontrollimiseks UNIXi tööriist `diff`::
+NB! The result files produced during regular decryption and provable decryption
+must be identical. To verify, use the UNIX tool `diff`::
 
   diff decout/RK2051.1.tally pdecout/RK2051.1.tally
 
-Näitefailid on pakis::
+Sample files are in the package::
 
   cd $HOME/audit-examples/audit-vertally
 
 
-IVXV <-> Verificatum teisenduste korrektsuse kontroll
+IVXV <-> Verificatum Conversion Correctness Check
 --------------------------------------------------------------------------------
 
-Teisenduste korrektsuse kontroll toimub tööriistaga `convert`. NB! Kaust
-`process` tuleb `auditor.yaml` põhjal sisenditest ettevalmistada::
+The conversion correctness check is performed with the `convert` tool. NB! The
+`process` directory must be prepared from inputs based on `auditor.yaml`::
 
   cd $HOME/audit-examples/audit-conv/process
   $HOME/ivxv/auditor/build/install/auditor/bin/auditor convert -c conf.bdoc -p auditor.yaml.bdoc
 
-Miksimistõendi kontroll tööriistaga `auditor`
+Mixing Proof Verification with the `auditor` Tool
 --------------------------------------------------------------------------------
 
-Miksimistõendi kontroll toimub tööriistaga `mixer`. NB! Kaust `process` tuleb
-`auditor.yaml` põhjal sisenditest ettevalmistada::
+The mixing proof verification is performed with the `mixer` tool. NB! The
+`process` directory must be prepared from inputs based on `auditor.yaml`::
 
   cd $HOME/audit-examples/audit-mix/process
   $HOME/ivxv/auditor/build/install/auditor/bin/auditor mixer -c conf.bdoc -p auditor.yaml.bdoc
 
-Lugemistõendi kontroll
+Decryption Proof Verification
 --------------------------------------------------------------------------------
 
-Lugemistõendi kontroll toimub tööriistaga `decrypt`. NB! Kaust `process` tuleb
-`auditor.yaml` põhjal sisenditest ettevalmistada::
+The decryption proof verification is performed with the `decrypt` tool. NB! The
+`process` directory must be prepared from inputs based on `auditor.yaml`::
 
   cd $HOME/audit-examples/audit-pdec/process
   $HOME/ivxv/auditor/build/install/auditor/bin/auditor decrypt -c conf.bdoc -p auditor.yaml.bdoc
 
-Miksimistõendi kontroll Verificatumi originaaltööriistaga
+Mixing Proof Verification with the Original Verificatum Tool
 --------------------------------------------------------------------------------
 
-Miksimistõendi kontroll Verificatumi abil::
+Mixing proof verification using Verificatum::
 
   cd $HOME/audit-examples/audit-mixver
   $HOME/ivxv-verificatum/release/mixer/bin/mix.py verify --proof-zipfile shuffle_proof.zip
 
-Töötlemise audit
+Processing Audit
 --------------------------------------------------------------------------------
 
-Täiendavalt on lisatud pakki kõik töötlemisrakenduse sisendid ja väljundid
-lihtsustamaks töötlemisprotsessi auditit. Täiendavad auditeerimistööriistad,
-nt. `integrity` on kirjeldatud dokumendis "IVXV seadistuste koostamise juhend".
+Additionally, all processor application inputs and outputs are included in the
+package to simplify the processing audit. Additional auditing tools, e.g.,
+`integrity`, are described in the document "IVXV Configuration Preparation Guide".

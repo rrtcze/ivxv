@@ -1,7 +1,7 @@
 ..  IVXV dokumentatsiooni üldsisukord
 
-Annotatsioon
-------------
+Abstract
+--------
 
-IVXV dokumentatsiooni üldsisukord,
-infosüsteemi dokumentide sisukorradokument.
+IVXV documentation overview,
+table of contents document for the information system documents.

@@ -1,138 +1,135 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
-Ülevaade
+Overview
 ========
 
-Kogumisteenuse ülevaade
------------------------
+Collector Service Overview
+--------------------------
 
-IVXV kogumisteenus on elektroonilise
-hääletuse käigus hääletajate teenindamiseks ja häälte kogumiseks mõeldud
-tarkvara.
+IVXV collector service is software designed for serving voters and collecting
+votes during electronic voting.
 
-Kogumisteenus koosneb mikroteenustest ja nende haldamiseks mõeldud
-haldusteenusest. Haldusteenuse kasutamine on käsureapõhine. Osade funktsioonide
-kasutamist on laiendatud veebipõhise liidesega, mida on kirjeldatud dokumendis
-``IVXV kogumisteenuse haldusliidese
-kasutusjuhend``.
+The collector service consists of microservices and a management service for
+administering them. The management service is command-line based. Some
+functions have been extended with a web-based interface, which is described in
+the document ``IVXV Collector Service Management Interface
+User Guide``.
 
 .. attention::
 
-   Kogumisteenus paigaldatakse ja seadistatakse eraldi iga hääletuse
-   läbiviimiseks. Ühe kogumisteenusega on korraga võimalik teenindada ainult
-   ühte hääletust.
+   The collector service is installed and configured separately for each
+   election. A single collector service can serve only one election at a time.
 
 
-Lisamaterjalid
---------------
-
-Käesolevas dokumendis kasutatakse mõisteid ja definitsioone, mis on kirjeldatud
-dokumendis ``IVXV-ÜK-0.95 Elektroonilise hääletamise üldraamistik ja selle
-kasutamine Eesti riiklikel valimistel``:
-
-* E-hääletamise etapid;
-
-* Süsteemi osapooled ja komponendid.
-
-
-Kogumisteenuse kasutajate rollid
---------------------------------
-
-Kogumisteenuses on kasutusel järgnevad rollid:
-
-#. **Kogumisteenuse haldur** tegeleb kogumisteenuse tehnilise haldamisega;
-
-#. **Valimiste haldur** tegeleb valimiste seadistuste kehtestamisega;
-
-#. **Vaataja** pääseb ligi haldusteenuse kaudu väljastatavatele seisundi- ja
-   statistikaandmetele;
-
-Rollide täpsem kirjeldus asub dokumendis ``Elektroonilise hääletamise
-infosüsteemi IVXV seadistuste koostamise juhend``.
-
-
-Süsteemi komponendid
+Additional Materials
 --------------------
 
-Kogumisteenus
-^^^^^^^^^^^^^
+This document uses concepts and definitions described in the document
+``IVXV-ÜK-0.95 General Framework for Electronic Voting and Its
+Use in Estonian National Elections``:
 
-**Haldusteenus** on kogumisteenuse haldamise teenus. Haldusteenuse kaudu
-juhitakse ja jälgitakse kogumisteenust alates paigaldusest kuni mahavõtmiseni.
-Vaata lähemalt lõigus :ref:`haldusteenus`.
+* Stages of e-voting;
 
-**Logikoguja** on kogumisteenuse sisemine logiserver, mis kogub ja säilitab
-kõigi kogumisteenuste alamteenuste logisid. Logikogujasse kogutud logid antakse
-valimiste lõppedes üle korraldajale.
+* System parties and components.
 
-**Sisemine varundus** on kogumisteenuse varundusteenus, mis varundab kõigi
-alamteenuste andmeid ja teeb need lihtsa liidese (failisüsteemi kataloog) kaudu
-kättesaadavaks välisele varundusteenusele.
 
-**Alamteenused** on kogumisteenuse eri lõikude eest vastutavad teenused.
+Collector Service User Roles
+-----------------------------
+
+The following roles are used in the collector service:
+
+#. **Collector service administrator** handles the technical management of the collector service;
+
+#. **Election administrator** handles establishing election settings;
+
+#. **Viewer** has access to status and statistical data provided through the management service;
+
+A more detailed description of roles is available in the document ``IVXV
+Electronic Voting Information System Configuration Guide``.
+
+
+System Components
+-----------------
+
+Collector Service
+^^^^^^^^^^^^^^^^^
+
+**Management service** is the service for managing the collector service. Through the management service,
+the collector service is managed and monitored from installation to shutdown.
+See more in section :ref:`haldusteenus`.
+
+**Log collector** is the collector service's internal log server that collects and stores
+logs from all collector service sub-services. Logs collected by the log collector are
+handed over to the organizer at the end of the elections.
+
+**Internal backup** is the collector service's backup service that backs up data from all
+sub-services and makes them available through a simple interface (file system directory)
+to the external backup service.
+
+**Sub-services** are services responsible for different aspects of the collector service.
 
 
 .. _tugiteenused:
 
-Tugiteenused
-^^^^^^^^^^^^
+Support Services
+^^^^^^^^^^^^^^^^
 
-**Logiseire** on kogumisteenuse logide analüüsiks ja jälgimiseks mõeldud
-seireprogramm.
+**Log monitoring** is a monitoring program designed for analyzing and monitoring
+collector service logs.
 
-**Tehniline seire** on kogumisteenuse tehnilise toimimise jälgimiseks mõeldud
-seireprogramm.
+**Technical monitoring** is a monitoring program designed for monitoring the
+technical operation of the collector service.
 
-**Väline varundus** on kogumisteenuse sisemisest varunduse poolt varundatud
-andmete säilitamiseks mõeldud väline varundusteenus.
+**External backup** is an external backup service designed for storing data
+backed up by the collector service's internal backup.
 
 
 .. _välisteenused:
 
-Välised teenused
-^^^^^^^^^^^^^^^^
+External Services
+^^^^^^^^^^^^^^^^^
 
-Välised teenused on läbiviidavatele valimistele kehtestatud nõuetest sõltuvad
-teenused, millega kogumisteenus on võimeline liidestuma. Väliste teenuste hulka
-kuuluvad Registreerimisteenus, Ajatempliteenus, Mobiil-ID
-teenus, Smart-ID teenus, OCSP teenus vms.
+External services are services that depend on the requirements established for
+the elections being conducted, with which the collector service is capable of
+integrating. External services include the Registration Service, Time-Stamping
+Service, Mobile-ID Service, Smart-ID Service, OCSP Service, etc.
 
 
-Ülevaade toimingutest
----------------------
+Overview of Operations
+----------------------
 
-* Hääletamiseelsel etapil:
+* Pre-voting stage:
 
-   * Kirjeldatakse kogumisteenuse poolt kasutatavad :ref:`välised teenused
-     <välisteenused>`;
+   * :ref:`External services <välisteenused>` used by the collector service are
+     documented;
 
-   * Valmistatakse ette kogumisteenuse :ref:`tugiteenused <tugiteenused>`;
+   * Collector service :ref:`support services <tugiteenused>` are prepared;
 
-   * Koostatakse kogumisteenuse seadistused (usaldusjuur, tehnilised
-     seadistused ja valimiste seadistused);
+   * Collector service settings are prepared (trust root, technical
+     settings, and election settings);
 
-   * Genereeritakse teenuse toimimiseks vajalikud krüptovõtmed ja
-     sertifikaadid;
+   * Cryptographic keys and certificates required for service operation are
+     generated;
 
-   * Valmistatakse ette kogumisteenuse käitamiseks vajalik taristu;
+   * Infrastructure required for running the collector service is prepared;
 
-   * Paigaldatakse haldusteenus;
+   * The management service is installed;
 
-   * Rakendatakse seadistused haldusteenusele, mille põhjal haldusteenus
-     paigaldab ja seadistab kogumisteenuse alamteenused.
+   * Settings are applied to the management service, based on which the management
+     service installs and configures the collector service sub-services.
 
-* Hääletamisetapil
+* Voting stage
 
-   * Jälgitakse teenuse toimimist;
+   * Service operation is monitored;
 
-   * Luuakse e-valimiskastist varukoopiaid.
+   * Backups of the e-ballot box are created.
 
-* Töötlusetapil
+* Processing stage
 
-   * Eksporditakse kogumisteenusesse kogutud andmed:
+   * Data collected in the collector service is exported:
 
-      #. konsolideeritud e-valimiskast kogutud häältega.
+      #. consolidated e-ballot box with collected votes.
 
-* Lugemisetapil
+* Counting stage
 
-   * Lugemisetapil kogumisteenust ei kasutata;
+   * The collector service is not used during the counting stage;

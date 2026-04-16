@@ -1,56 +1,58 @@
-..  IVXV protokollid
+..  IVXV protocols
 
 ========================
-Hääletamistulemuse audit
+Voting Result Audit
 ========================
 
-Miksimistõendi kontroll
+Mixing Proof Verification
 =======================
 
-Miksimistõendi kontrollimiseks kasutatakse algoritmi nagu on defineeritud
-`Verificatumi verifitseerija implementeerimise manuaalis
-<https://www.verificatum.org/files/vmnv-3.0.3.pdf>`_.
+For verifying the mixing proof, the algorithm as defined in the
+`Verificatum verifier implementation manual
+<https://www.verificatum.org/files/vmnv-3.0.3.pdf>`_ is used.
 
-Märgime, et miksimistõendi koostamisel lisatakse krüptogrammile andmed valimiste,
-ringkonna, jaoskonna ja küsimuse identifikaatori kohta.  Lisamiseks kodeeritakse
-vastav väli rühma elemendina, kasutades pimendamiseks juhuslikkust 0. Näitena,
-kui esialgu on krüptogramm :math:`c_0 = (c_{00}, c_{01})`, kasutades avalikku
-võtit :math:`pk = (g, y)`, siis Verificatumi sisendina kasutatakse laia
-krüptogrammi :math:`C = (c_{id}, c_d, c_s, c_q, c_0)`, kus:
+Note that when composing the mixing proof, data about the election, district,
+polling division, and question identifiers is added to the cryptogram. For
+addition, the corresponding field is encoded as a group element, using
+randomness 0 for blinding. As an example, if the initial cryptogram is
+:math:`c_0 = (c_{00}, c_{01})`, using the public key :math:`pk = (g, y)`, then
+as input to Verificatum, the wide cryptogram
+:math:`C = (c_{id}, c_d, c_s, c_q, c_0)` is used, where:
 
-* valimiste identifikaatori pseudokrüptogramm on antud kujul :math:`c_{id} = (1,
-  encode(id))`, kus funktsioon :math:`encode` kodeerib sõne vastava rühma
-  elemendina ja `id` on valimiste identifikaatori sõne.
-* ringkonna identifikaatori pseudokrüptogramm on antud kujul :math:`c_d = (1,
-  encode(d))`, kus `d` on ringkonna identifikaatori sõne.
-* jaoskonna identifikaatori pseudokrüptogramm on antud kujul :math:`c_s = (1,
-  encode(s))`, kus `s` on jaoskonna identifikaatori sõne.
-* küsimuse identifikaatori pseudokrüptogramm on antud kujul :math:`c_q = (1,
-  encode(q))`, kus `q` on küsimuse identifikaatori sõne.
+* the election identifier pseudo-cryptogram is given as :math:`c_{id} = (1,
+  encode(id))`, where the function :math:`encode` encodes the string as an
+  element of the corresponding group and `id` is the election identifier string.
+* the district identifier pseudo-cryptogram is given as :math:`c_d = (1,
+  encode(d))`, where `d` is the district identifier string.
+* the polling division identifier pseudo-cryptogram is given as :math:`c_s = (1,
+  encode(s))`, where `s` is the polling division identifier string.
+* the question identifier pseudo-cryptogram is given as :math:`c_q = (1,
+  encode(q))`, where `q` is the question identifier string.
 
-Sellisel juhul defineeritakse laia krüptogrammile vastava avaliku võtmena
+In this case, the public key corresponding to the wide cryptogram is defined as
 :math:`((g,1), (g,1), (g,1), (g,1), (g,y))`.
 
-Korrektse dekrüpteerimise tõendi kontroll
+Correct Decryption Proof Verification
 =========================================
 
-Olgu antud krüptogramm :math:`c = (c_0, c_1)`, mis dekrüpteeritakse väärtuseks
-:math:`d` antud avaliku võtmega :math:`pk` üle parameetrite :math:`(p,g)` ja
-dekrüpteerimistõendiga :math:`(a,b,s)`.
+Let a cryptogram :math:`c = (c_0, c_1)` be given, which is decrypted to the
+value :math:`d` with the given public key :math:`pk` over the parameters
+:math:`(p,g)` and with the decryption proof :math:`(a,b,s)`.
 
-Korrektse dekrüpteerimise kontrollimise jaoks on tarvis arvutada
-mitte-interaktiivne kontrollija väljakutse. Selle jaoks kodeeritakse
-:math:`"DECRYPTION" || pk || c || d || a || b` DER-kodeeringus. Baidijada
-kasutatakse deterministliku juhuarvugeneraatori initsialiseerimiseks ja selle
-väljundist loetakse rühma järgu pikkune täisarv :math:`k`.
+To verify the correct decryption, a non-interactive verifier challenge must be
+computed. For this, :math:`"DECRYPTION" || pk || c || d || a || b` is encoded
+in DER encoding. The byte sequence is used to initialize a deterministic
+random number generator and from its output an integer of group order length
+:math:`k` is read.
 
-Dekrüpteerimistõendi kontrolliks tuleb veenduda, et :math:`c_0^s
-= a * (c_1/d)^k` ja :math:`g^s = b * y^k`.
+To verify the decryption proof, it must be verified that :math:`c_0^s
+= a * (c_1/d)^k` and :math:`g^s = b * y^k`.
 
-Korrektse teisendamise kontroll
+Correct Conversion Verification
 ===============================
 
-Kontrollimaks, et teisendus IVXV e-valimiskasti ja Verificatumi krüptogrammide vahel on
-tehtud korrektselt, tuleb korrata teisendust sõltumatult. Pärast sõltumatut
-teisendust tuleb võrrelda saadud väljundeid. Kuna teisendamine on deterministlik
-protseduur, siis garanteerib kordamine tegevuse õigsuse.
+To verify that the conversion between the IVXV e-ballot box and Verificatum
+cryptograms has been done correctly, the conversion must be independently
+repeated. After the independent conversion, the outputs obtained must be
+compared. Since the conversion is a deterministic procedure, repetition
+guarantees the correctness of the operation.

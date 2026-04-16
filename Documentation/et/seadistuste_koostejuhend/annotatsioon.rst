@@ -1,7 +1,7 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
-Annotatsioon
-------------
+Abstract
+--------
 
-Käesolev dokument sisaldab elektroonilise hääletamise infosüsteemi IVXV
-rakenduste ja kogumisteenuse seadistuste ülevaadet ja koostamise juhendit.
+This document contains an overview and preparation guide for the configuration
+of the IVXV electronic voting information system applications and collector service.

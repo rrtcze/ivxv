@@ -1,69 +1,68 @@
-..  IVXV kogumisteenuse haldusliidese kasutusjuhend
+..  IVXV collector service management interface user guide
 
-Teenuste haldus
-===============
+Service management
+===================
 
-Teenuste haldamise leht avaneb menüüvalikust ``Teenused``.
-
-
-Teenuste kokkuvõte
-------------------
-
-Teenuste kokkuvõttes kuvatakse kõikide registreeritud teenuste ülevaadet
-seisundi kaupa. Iga seisundi järel kuvatakse selles seisundis olevate teenuste
-arvu:
-
-#. Paigaldamata – teenus pole paigaldatud;
-
-#. Paigaldatud – teenus on paigaldatud ja sellele on rakendatud usaldusjuure
-   seadistus, kogumisteenuse tehniline seadistus. Valimiste seadistus on
-   teenusele rakendamata;
-
-#. Seadistatud – teenusele on rakendatud kõik seadistused ja teenus on töökorras;
-
-#. Tõrge – teenuse toimimises on avastatud tõrge;
-
-#. Eemaldatud – teenuse on kogumisteenuse koosseisust eemaldatud.
+The service management page opens from the menu option ``Teenused``.
 
 
-Teenuste nimekiri
------------------
+Service summary
+----------------
 
-Teenuste nimekirjas kuvatakse kõiki haldusteenuses registreeritud teenuseid.
-Iga teenuse kohta kuvatakse:
+The service summary displays an overview of all registered services
+by status. The number of services in each status is displayed after each status:
 
-Teenuste halduse vaates kuvatakse alamteenuste nimekirja, mis on sorditud
-teenuse identifikaatori järgi:
+#. Not installed – the service is not installed;
 
-#. Teenuse identifikaator;
+#. Installed – the service is installed and the trust root configuration and
+   the collector service technical configuration have been applied to it. The
+   election configuration has not been applied to the service;
 
-#. Teenuse alamvõrk;
+#. Configured – all configurations have been applied to the service and it is operational;
 
-#. Teenuse liik;
+#. Failure – a failure has been detected in the service operation;
 
-#. Teenuse seisund;
+#. Removed – the service has been removed from the collector service composition.
 
-Kui haldusteenus on alamteenuse kohta tuvastanud seadistuste puudumise või
-veaolukorra, siis vastav teave kuvatakse teenuse all. Iga teenuse kohta
-kuvatakse korraga vaid ühte teadet.
 
-Nimekirjas teenuse kirjel klõpsates avaneb kirje all tabel täpsema infoga:
+Service list
+-------------
 
-#. Teenuse korrasoleku kontrolli poolt tuvastatud järjestikune vigade arv
-   (ainult teenustel, mis on olekus ``seadistatud`` või ``tõrge``);
+The service list displays all services registered in the management service.
+The following information is displayed for each service:
 
-#. Teenuse korrasoleku kontrolli viimase läbiviimise aeg
-   (ainult teenustel, mis on olekus ``seadistatud`` või ``tõrge``);
+In the service management view, the subservice list is displayed, sorted
+by service identifier:
 
-#. Teenusele rakendadud tehnilise seadistuse versioon;
+#. Service identifier;
 
-#. Teenusele rakendadud valimiste seadistuse versioon;
+#. Service subnet;
 
-#. Teenuse IP-aadress ja port;
+#. Service type;
 
-#. Teenuse TLS-sertifikaadi kontrollsumma (SHA256);
+#. Service status;
 
-#. Teenuse TLS-sertifikaadile vastava võtme kontrollsumma (SHA256);
+If the management service has detected missing configurations or an error condition
+for a subservice, the corresponding information is displayed below the service.
+Only one message is displayed per service at a time.
 
-#. Mobiil-ID/Smart-ID/Web eID tugiteenuste jagatud krüptimissaladuse kontrollsumma
+Clicking on a service entry in the list opens a table with more detailed information below the entry:
+
+#. Number of consecutive errors detected by the service health check
+   (only for services in ``configured`` or ``failure`` status);
+
+#. Time of the last service health check execution
+   (only for services in ``configured`` or ``failure`` status);
+
+#. Version of the technical configuration applied to the service;
+
+#. Version of the election configuration applied to the service;
+
+#. Service IP address and port;
+
+#. Service TLS certificate checksum (SHA256);
+
+#. Checksum of the key corresponding to the service TLS certificate (SHA256);
+
+#. Checksum of the shared encryption secret for Mobile-ID/Smart-ID/Web eID support services
    (SHA256);

@@ -1,7 +1,7 @@
-..  IVXV tehniline dokumentatsioon
+..  IVXV technical documentation
 
-Viited
-======
+References
+==========
 
 .. [DF89] Desmedt, Y. & Frankel, Y. Brassard, G. (Ed.). Threshold Cryptosystems.
    Advances in Cryptology - CRYPTO '89, 9th Annual International Cryptology

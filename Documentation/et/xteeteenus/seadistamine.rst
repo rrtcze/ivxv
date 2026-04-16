@@ -1,40 +1,40 @@
-..  IVXV tehniline dokumentatsioon
+..  IVXV technical documentation
 
-Seadistamine
-============
+Configuration
+=============
 
-Teenuse konfigureerimiseks kasutatakse ``xroad-service.json`` faili.
+The ``xroad-service.json`` file is used to configure the service.
 
-``server.address`` - Serveri port
+``server.address`` - Server port
 
-``server.batchmaxsize`` - Paki suurus, soovitatud suurus 1000
+``server.batchmaxsize`` - Batch size, recommended size 1000
 
-``server.openapipath`` - OpenAPI faili asukoht. Serveeritakse https://host/openapi.
+``server.openapipath`` - OpenAPI file location. Served at https://host/openapi.
 
-``server.tls`` - Serveri TLS konfiguratsioon
+``server.tls`` - Server TLS configuration
 
-``xroad.certificate`` -  X-tee turvaserveri sertifikaat
+``xroad.certificate`` - X-Road security server certificate
 
-``elections``- Valimissündmuste list
+``elections`` - List of election events
 
-``elections.name``- Valimissündmuse nimi
+``elections.name`` - Election event name
 
-``elections.address`` - IVXV serveri aadress
+``elections.address`` - IVXV server address
 
-``elections.servername`` - Järjekorrateenuse SNI
+``elections.servername`` - Queue service SNI
 
-``elections.rootca`` - IVXV CA sertifikaat
+``elections.rootca`` - IVXV CA certificate
 
-``elections.clientcert`` - Kliendi sertifikaat, kliendi CA tuleb lisada IVXV konfiguratsiooni
+``elections.clientcert`` - Client certificate, the client CA must be added to the IVXV configuration
 
-``elections.clientkey`` - Kliendi võti
+``elections.clientkey`` - Client key
 
-Käivitamine
-===========
+Starting
+========
 
-Teenus ei lähe iseseisvalt püsti, ning kui "Seadistamine" on tehtud, tuleb juurkasutajalt käivitada `systemctl start xroad-service`.
+The service does not start automatically, and once "Configuration" is complete, the root user must run `systemctl start xroad-service`.
 
-Seiskamine
-==========
+Stopping
+========
 
-Kui teenus läheb maha erinevatel põhjustel (masina taaskäivitamine, veaolukorrad, manuaalne seiskamine `systemctl stop xroad-service` abil), siis tuleb korrata "Käivitamine" protseduuri et teenust taas püsti ajada.
+If the service goes down for various reasons (machine restart, error conditions, manual stop via `systemctl stop xroad-service`), the "Starting" procedure must be repeated to bring the service back up.

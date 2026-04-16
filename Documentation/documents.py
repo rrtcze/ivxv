@@ -3,7 +3,7 @@
 IVXV documents
 """
 
-project = 'Elektroonilise hääletamise infosüsteem'
+project = 'Electronic Voting Information System'
 copyright = '2016-2025, Cybernetica AS'
 author = 'Cybernetica AS'
 
@@ -16,8 +16,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-JAJ',
-            'document_type': 'Juhend',
-            'document_title': 'IVXV audiitori juhend',
+            'document_type': 'Guide',
+            'document_title': 'IVXV auditor guide',
             'document_target_name': 'IVXV-audiitor'
          }
     },
@@ -27,8 +27,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-AR',
-            'document_type': 'Arhitektuuridokument',
-            'document_title': 'IVXV arhitektuur',
+            'document_type': 'Architecture document',
+            'document_title': 'IVXV architecture',
             'document_target_name': 'IVXV-arhitektuur'
          },
         'en':{
@@ -47,8 +47,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-PR',
-            'document_type': 'Spetsifikatsioon',
-            'document_title': 'IVXV protokollide kirjeldus',
+            'document_type': 'Specification',
+            'document_title': 'IVXV protocol description',
             'document_target_name': 'IVXV-protokollid'
          },
         'en':{
@@ -66,8 +66,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-JHT',
-            'document_type': 'Juhend',
-            'document_title': 'IVXV haldusteenuse kasutusjuhend',
+            'document_type': 'Guide',
+            'document_title': 'IVXV management service user guide',
             'document_target_name': 'IVXV-haldusteenuse-juhend'
          }
     },
@@ -77,8 +77,8 @@ META = {
             'version': '1.8.1',
             'changed': "16.12.2022",
             'document_prefix': 'IVXV-KM',
-            'document_type': 'Analüüsidokument',
-            'document_title': 'IVXV kasutusmallid',
+            'document_type': 'Analysis document',
+            'document_title': 'IVXV use cases',
             'document_target_name': 'IVXV-kasutusmallid'
          }
     },
@@ -88,8 +88,8 @@ META = {
             'version': '1.8.0',
             'changed': "01.12.2022",
             'document_prefix': 'IVXV-SVR',
-            'document_type': 'Spetsifikatsioon',
-            'document_title': 'IVXV võtmerakendus',
+            'document_type': 'Specification',
+            'document_title': 'IVXV key application',
             'document_target_name': 'IVXV-votmerakendus'
          }
     },
@@ -99,7 +99,7 @@ META = {
             'version': '1.8.0',
             'changed': "01.12.2022",
             'document_prefix': 'IVXV-API',
-            'document_type': 'API-dokument',
+            'document_type': 'API document',
             'document_title': 'IVXV API',
             'document_target_name': 'IVXV-API'
          }
@@ -110,8 +110,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-JSK',
-            'document_type': 'Juhend',
-            'document_title': 'IVXV seadistuste koostamise juhend',
+            'document_type': 'Guide',
+            'document_title': 'IVXV configuration preparation guide',
             'document_target_name': 'IVXV-seadistuste-koostejuhend'
          }
     },
@@ -120,8 +120,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-JSH',
-            'document_type': 'Juhend',
-            'document_title': 'IVXV kogumisteenuse haldusjuhend',
+            'document_type': 'Guide',
+            'document_title': 'IVXV collector service administration guide',
             'document_target_name': 'IVXV-kogumisteenuse-haldusjuhend'
          }
     },
@@ -131,7 +131,7 @@ META = {
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-YS',
             'document_type': '',
-            'document_title': 'IVXV dokumentatsiooni üldsisukord',
+            'document_title': 'IVXV documentation overview',
             'document_target_name': 'IVXV-dokumentatsiooni-uldsisukord'
          },
         'en':{
@@ -149,8 +149,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-JVR',
-            'document_type': 'Juhend',
-            'document_title': 'IVXV valijarakendus',
+            'document_type': 'Guide',
+            'document_title': 'IVXV voter application',
             'document_target_name': 'IVXV-valijarakendus'
          }
     },
@@ -159,8 +159,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-JVP',
-            'document_type': 'Juhend',
-            'document_title': 'IVXV valijarakenduse pakendamine',
+            'document_type': 'Guide',
+            'document_title': 'IVXV voter application packaging',
             'document_target_name': 'IVXV-valijarakenduse-pakendamine'
          }
     },
@@ -169,8 +169,8 @@ META = {
             'version': '1.8.0',
             'changed': "01.12.2022",
             'document_prefix': 'IVXV-T',
-            'document_type': 'Juhend',
-            'document_title': 'IVXV tarnejuhend',
+            'document_type': 'Guide',
+            'document_title': 'IVXV delivery guide',
             'document_target_name': 'IVXV-tarnejuhend'
          }
     },
@@ -179,8 +179,8 @@ META = {
             'version': '1.8.0',
             'changed': "01.12.2022",
             'document_prefix': 'IVXV-EO',
-            'document_type': 'Analüüsidokument',
-            'document_title': 'IVXV eriomadused',
+            'document_type': 'Analysis document',
+            'document_title': 'IVXV special features',
             'document_target_name': 'IVXV-eriomadused'
          }
     },
@@ -189,8 +189,8 @@ META = {
             'version': '1.8.0',
             'changed': "01.12.2022",
             'document_prefix': 'IVXV-TP',
-            'document_type': 'Testimisplaan',
-            'document_title': 'IVXV testimisplaan',
+            'document_type': 'Test plan',
+            'document_title': 'IVXV test plan',
             'document_target_name': 'IVXV-testimisplaan'
          }
     },
@@ -199,8 +199,8 @@ META = {
             'version': '1.8.0',
             'changed': "01.12.2022",
             'document_prefix': 'IVXV-SRT',
-            'document_type': 'Spetsifikatsioon',
-            'document_title': 'IVXV registreerimisteenuse kirjeldus',
+            'document_type': 'Specification',
+            'document_title': 'IVXV registration service description',
             'document_target_name': 'IVXV-registreerimisteenus'
          }
     },
@@ -209,8 +209,8 @@ META = {
             'version': '1.10',
             'changed': "25.09.2025",
             'document_prefix': 'IVXV-VIS-EHS',
-            'document_type': 'Spetsifikatsioon',
-            'document_title': 'VIS3-EHS liidesed',
+            'document_type': 'Specification',
+            'document_title': 'VIS3-EHS interfaces',
             'document_target_name': 'IVXV-liidesed'
         },
         'en': {
@@ -227,8 +227,8 @@ META = {
              'version': '1.10',
              'changed': "25.09.2025",
              'document_prefix': 'IVXV-XTEE',
-             'document_type': 'Spetsifikatsioon',
-             'document_title': 'IVXV X-tee teenuse kirjeldus',
+             'document_type': 'Specification',
+             'document_title': 'IVXV X-Road service description',
              'document_target_name': 'IVXV-xteeteenus'
          }
      },
@@ -237,7 +237,7 @@ META = {
             'version': '1.8.0',
             'changed': "01.12.2022",
             'document_prefix': 'IVXV-PYAPI',
-            'document_type': 'API-dokument',
+            'document_type': 'API document',
             'document_title': 'IVXV Python API',
             'document_target_name': 'IVXV-python-api'
          }
@@ -266,10 +266,10 @@ def print_table_header():
     print("   :widths: 47 20 13 15")
     print("   :header-rows: 1")
     print("")
-    print("   *  - Nimi")
+    print("   *  - Name")
     print("      - ID")
-    print("      - Versioon")
-    print("      - Kuupäev")
+    print("      - Version")
+    print("      - Date")
     print("")
 
 
@@ -289,22 +289,22 @@ def print_document(doc, lang='et'):
 
 if __name__ == "__main__":
 
-    print("..  IVXV dokumentatsiooni üldsisukord")
+    print("..  IVXV documentation overview")
     print("")
 
-    print("Dokumendid")
-    print("==========")
+    print("Documents")
+    print("=========")
     print("")
 
-    print("Ülddokumendid")
-    print("-------------")
+    print("General documents")
+    print("-----------------")
     print("")
 
     print_table_header()
     print_document('uldsisukord')
 
-    print("Spetsifikatsioonid")
-    print("------------------")
+    print("Specifications")
+    print("--------------")
     print("")
 
     print_table_header()
@@ -314,8 +314,8 @@ if __name__ == "__main__":
     print_document('arhitektuur')
     print_document('votmerakendus')
 
-    print("Ingliskeelsed dokumendid")
-    print("------------------------")
+    print("English language documents")
+    print("-------------------------")
     print("")
 
     print_table_header()
@@ -325,8 +325,8 @@ if __name__ == "__main__":
     print_document('liidesed', 'en')
     print_document('backendlogs', 'en')
 
-    print("Juhendid")
-    print("--------")
+    print("Guides")
+    print("------")
     print("")
 
     print_table_header()

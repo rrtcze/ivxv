@@ -1,118 +1,118 @@
-..  IVXV kasutusmallid
+..  IVXV use cases
 
-Tegijad
-=======
+Actors
+======
 
-Korraldaja
-----------
-
-*Korraldaja* on isik, kes korraldab valimisi mille raamides elektroonilise hääletamise süsteemi kasutatakse. Korraldaja määrab elektroonilise hääletamise seadistuse, sealhulgas kõik ülejäänud rollitäitjad. Korraldaja haldab Kogumisteenust sisuliselt.
-
-Korraldaja tegeleb hääletamiseelsel etapil valijate, valimisjaoskondade, ringkondade ja valikute- kandidaatide (valimistel) või vastusevariantide (rahvahääletusel) nimekirja koostamise ja/või kinnitamisega.
-
-Korraldaja loob ja/või kinnitab Valimisrakenduse ning Kontrollrakenduse seadistused.
-
-Korraladaja tegeleb hääletamisetapil valijate nimekirjade täiendamise ja/või täienduste kinnitamisega.
-
-Korraldaja tegeleb töötlusetapil e-häälte tühistamis- ja ennistamisavalduste koostamise ja/või kinnitamisega.
-
-Korraldaja võib täita ka elektroonilise hääletamise põhiprotsesside toimimisega seotud konkreetseid rolle. Näiteks hoiab Korraldaja tavajuhtumitel ka e-hääletamise süsteemi põhisaladust – häälte avamise võtit ning seega täidab ta ka häälte avaja ja summeerija ehk Lugeja rolli.
-
-Hääletaja
+Organizer
 ---------
 
-*Hääletaja* on isik, kes kasutab elektroonilise hääletamise süsteemi hääletamisetapil
+The *Organizer* is a person who organizes elections within the framework of which the electronic voting system is used. The Organizer defines the electronic voting configuration, including all other role holders. The Organizer substantively manages the Collector Service.
 
-- hääletamiseks Valijarakendusega,
-- hääle kontrollimiseks Kontrollrakendusega.
+The Organizer is involved in the pre-voting stage with compiling and/or approving the lists of voters, polling districts, constituencies, and choices – candidates (in elections) or response options (in referendums).
 
-Hääletajal on elektrooniline isikutunnistus – ID-kaart, Mobiil-ID, Smart-ID või Web eID.
+The Organizer creates and/or approves the configurations of the Voting Application and the Verification Application.
 
-Koguja
-------
+The Organizer is involved during the voting stage with supplementing and/or approving supplements to the voter lists.
 
-*Koguja* on isik, kes haldab Kogumisteenust, Valijarakendust ja Kontrollrakendust tehniliselt.
+The Organizer is involved during the processing stage with compiling and/or approving e-vote revocation and restoration applications.
 
-*Kogumisteenus* on serverisüsteem, mis tuvastab hääleõiguslikkust Tuvastusteenuse abil, väljstab kandidaatide nimekirja, aitab Valijarakendusel Allkirjastamisteenuse abil e-häält moodustada, talletab hääli e-valimiskasti ning registreerib neid Registreerimisteenuses. Kogumisteenus vastab Kontrollrakenduse poolt tehtud hääle tervikluse kontrollpäringutele.
+The Organizer may also fulfill specific roles related to the operation of the core e-voting processes. For example, in typical cases the Organizer also holds the main secret of the e-voting system – the vote decryption key – and thus also fulfills the role of the vote opener and tallier, i.e., the Counter.
 
-*Kogumisteenuse Haldur* on kas Korraldaja, Koguja või Klienditugi. Koguja on Kogumisteenuse tehniline haldur. Kogumisteenuse sisuline haldur on Korraldaja. Kogumisteenus pakub informatiivset liidest Klienditoele.
+Voter
+-----
 
-*Haldusteenus* on teenus, mida Kogumisteenuse Haldur kasutab Kogumisteenuselt informatsiooni saamiseks või Kogumisteenusele korralduste edastamiseks.
+The *Voter* is a person who uses the electronic voting system during the voting stage
 
-*Valijarakendus* on rakendus, mida Hääletaja kasutab e-hääle andmiseks käimasolevatel valimistel. Valijarakendus suhtleb Kogumisteenusega ning võimaldab Hääletajal teha valikut, seda krüpteerida ja digitaalselt allkirjastada. Valijarakendus kuvab QR-koodi, mille alusel saab Hääletaja Kontrollrakendusega kontrollida e-hääle korrektset jõudmist Kogumisteenusesse.
+- for voting with the Voting Application,
+- for vote verification with the Verification Application.
 
-Koguja valmistab kompileeritud valijarakendusest ette seadistatud valijarakenduse, mis allkirjastatakse ja levitatakse valijateni.
+The Voter has an electronic identity document – ID card, Mobile-ID, Smart-ID, or Web eID.
 
-*Kontrollrakendus* on rakendus, mis võimaldab Hääletajal arvutist erineval nutiseadme platvormil veenduda, et tema e-hääl jõudis Kogumisteenusesse ja Registreermisteenusesse ning väljendas tema tahet korrektselt.
+Collector
+---------
 
-Koguja seadistab kontrollrakenduse selliselt, et too on võimeline võrgust tegelikke seadistusi laadima ning allkirjastab kontrollrakenduse.
+The *Collector* is a person who technically manages the Collector Service, the Voting Application, and the Verification Application.
 
-Koguja on Valijarakenduse ja Kontrollrakenduse tehniline haldur, sisuline haldur on Korraldaja.
+The *Collector Service* is a server system that verifies voting eligibility using the Identification Service, issues the candidate list, helps the Voting Application create an e-vote using the Signing Service, stores votes in the e-ballot box, and registers them in the Registration Service. The Collector Service responds to vote integrity verification requests made by the Verification Application.
 
-Koguja poolt täidetavad põhiprotsessid leiavad aset hääletamisetapil, alustavad ning lõpetavad tegevused toimuvad nii hääletamiseelsel kui töötlusetapil.
+The *Collector Service Administrator* is either the Organizer, the Collector, or Client Support. The Collector is the technical administrator of the Collector Service. The substantive administrator of the Collector Service is the Organizer. The Collector Service provides an informational interface for Client Support.
 
-Koguja digiallkirjastab hääletamisperioodi lõpul Töötlejale üle antavad andmed (e-hääled ja logid).
+The *Management Service* is a service that the Collector Service Administrator uses to obtain information from the Collector Service or to relay commands to the Collector Service.
 
-Töötleja
---------
+The *Voting Application* is an application that the Voter uses to cast an e-vote in an ongoing election. The Voting Application communicates with the Collector Service and allows the Voter to make a choice, encrypt it, and digitally sign it. The Voting Application displays a QR code that allows the Voter to use the Verification Application to verify that the e-vote correctly reached the Collector Service.
 
-*Töötleja* on isik, kes kasutades Töötlemisrakendust töötleb töötlusetapil hääletamisperioodil kogutud e-hääli:
+The Collector prepares a configured voting application from the compiled voting application, which is signed and distributed to voters.
 
-- kontrollib digitaalallkirju ja Kogujalt saadud andmete täielikkust,
-- tühistab korduvad e-hääled ning paralleelhääletamise kasutamisel ka nende Hääletajate e-hääled, kes hääletasid jaoskonnas eelhääletamise ajal,
-- anonüümistab e-hääled, eemaldades nendelt isikulised digitaalallkirjad, olles eelnevalt need sorteerinud ringkondade kaupa
+The *Verification Application* is an application that allows the Voter to verify on a smart device platform separate from the computer that their e-vote reached the Collector Service and the Registration Service and correctly expressed their will.
 
-Töötleja võib e-hääli täiendavalt krüptograafiliselt anonüümistada kasutades Miksimisrakendust.
+The Collector configures the verification application so that it is capable of loading actual configurations from the network, and signs the verification application.
 
-*Töötlemisrakendus* on rakendus, mille abil kontrollitakse häälte individuaalset terviklust ja e-valimiskasti terviklust, tühistatakse hääli, väljastatakse hääletanute nimekirju ning ringkondade kaupa rühmitatud anonüümistatud hääli. Töötlemisrakenduse sisendi annavad Koguja, Registreerimisteenus ja Korraldaja. Töötlemisrakendust võib käitada ka Audiitor Töötleja töötulemuste kontrollimiseks.
+The Collector is the technical administrator of the Voting Application and the Verification Application; the substantive administrator is the Organizer.
 
-Miksija
+The core processes performed by the Collector take place during the voting stage; initiating and concluding activities occur during both the pre-voting and processing stages.
+
+The Collector digitally signs the data (e-votes and logs) to be handed over to the Processor at the end of the voting period.
+
+Processor
+---------
+
+The *Processor* is a person who, using the Processing Application, processes the e-votes collected during the voting period in the processing stage:
+
+- verifies digital signatures and the completeness of data received from the Collector,
+- revokes duplicate e-votes and, when parallel voting is used, also the e-votes of those Voters who voted at a polling station during the advance voting period,
+- anonymizes e-votes by removing personal digital signatures from them, having previously sorted them by constituency.
+
+The Processor may additionally cryptographically anonymize e-votes using the Mixing Application.
+
+The *Processing Application* is an application used to verify the individual integrity of votes and the integrity of the e-ballot box, revoke votes, issue lists of voters who voted electronically, and produce anonymized votes grouped by constituency. The inputs of the Processing Application are provided by the Collector, the Registration Service, and the Organizer. The Processing Application may also be operated by the Auditor to verify the correctness of the Processor's work results.
+
+Mixer
+-----
+
+The *Mixer* is a person who cryptographically anonymizes e-votes during the processing stage using the Mixing Application.
+
+The *Mixing Application* is an application whose input is anonymized encrypted votes grouped by constituency and which outputs cryptographically shuffled votes such that they cannot be matched to the input. The mixing is performed in such a way that decrypting and tallying both the input and output votes produces the same result. In addition to the shuffled votes, the Mixing Application outputs a mixing proof that confirms the semantic equivalence of the input and output votes.
+
+Counter
 -------
 
-*Miksija* on isik, kes töötlusetapil anonüümistab e-hääled krüptograafiliselt kasutades Miksimisrakendust.
+The *Counter* is a person who, using the Key Application:
 
-*Miksimisrakendus* on rakendus, mille sisendiks on ringkondade kaupa rühmitatud anonüümistatud krüpteeritud hääled ning mis väljastab krüptograafiliselt segatud hääled selliselt, et neid ei ole võimalik sisendiga vastavusse viia. Miksimine toimub sellisel moel, et nii sisend- kui ka väljundhäälte dekrüpteerimine ja tulemi summeerimine annab sama resultaadi. Miksimirakendus väljastab lisaks segatud häältele miksimistõendi, mis kinnitab sisend- ja väljundhäälte semantilist samaväärsust.
+- generates the vote encryption and decryption key during the pre-voting stage,
+- decrypts the encrypted votes and tallies them into e-voting results during the counting stage.
 
-Lugeja
-------
+The Counter may act individually; generally, the e-voting encryption key is protected with a threshold scheme where instead of a single complete key, multiple key shares are created, and key operations can only be performed with the participation of a certain quorum of key shares. In such cases, the Counter is assisted by Key Custodians.
 
-*Lugeja* on isik, kes kasutades Võtmerakendust
+A *Key Custodian* is a person whose task is to safeguard the key share entrusted to them and to provide it to the Counter only when there is a legal basis for doing so.
 
-- hääletamiseelsel etapil genereerib häälte salastamise ja avamise võtme,
-- lugemisetapil avab krüpteeritud hääled ning summeerib need e-hääletamise tulemusteks.
+The *Key Application* is an application used to generate the vote encryption and decryption key for each election. The Key Application is also used for counting votes and producing results.
 
-Lugeja võib toimetada ainuisikuliselt, üldjuhul kaitstakse e-hääletamise salastamise võti läviskeemiga, kus ühe tervikvõtme asemel luuakse mitu võtmeosakut ning võtmeoperatsioonid on teostatavad ainult teatud kvoorumi võtmeosakute osavõtul. Sellisel juhul assisteerivad Lugejat Võtmehaldurid.
+Auditor
+-------
 
-*Võtmehaldur* on isik, kelle ülesandeks on talle usaldatud võtmeosaku alalhoidmine ning selle andmine Lugeja käsutusse ainult siis kui selleks on seaduslik alus.
+The *Auditor* is a person who, during the auditing stage, verifies the integrity and consistency of data that was exchanged between the central parties of the system, based on the system description and data published by the Organizer. The Auditor uses the Audit Application in their work. If the Auditor also verifies the correctness of the Processor's operation, then the Auditor also uses the Processing Application.
 
-*Võtmerakendus* on rakendus, millega genereeritakse iga hääletamise jaoks häälte salastamise ja häälte avamise võti. Võtmerakenduse abil toimub ka häälte lugemine ja tulemuse väljastamine.
+The *Audit Application* is an application that allows verifying the correctness of the Counter's and Mixer's work. The correctness of the Counter's work can also be verified publicly.
 
-Audiitor
---------
-
-*Audiitor* on isik, kes auditeerimisetapil kontrollib süsteemi kirjelduse ja Korraldaja poolt avaldatud süsteemi kesksete osapoolte vahel liikunud andmete põhjal andmete terviklust ning kooskõlalisust. Audiitor kasutab oma töös Auditirakendust. Kui Audiitor kontrollib ka Töötleja toimimise korrektsust, siis kasutab Audiitor ka Töötlemisrakendust.
-
-*Auditirakendus* on rakendus mis võimaldab kontrollida Lugeja ja Miksija töö korrektsust. Lugeja töö korrektsust on võimalik kontrollida ka avalikult.
-
-Klienditugi
------------
-
-*Klienditugi* on isik, kelle poole Hääletaja hääletamisetapil probleemide korral pöördub. Klienditugi abistab Kogumisteenusest saadud info abil Hääletajat probleemide lahendamisel.
-
-Tuvastusteenus
+Client Support
 --------------
 
-*Tuvastusteenus* on teenus, mida kasutatakse vajadusel hääletaja identiteedi tuvastamiseks.
+*Client Support* is a person whom the Voter contacts in case of problems during the voting stage. Client Support assists the Voter in resolving problems using information obtained from the Collector Service.
 
-Allkirjastamisteenus
+Identification Service
+----------------------
+
+The *Identification Service* is a service used when necessary to identify the voter's identity.
+
+Signing Service
+---------------
+
+The *Signing Service* is a service used when necessary for signing the vote
+and obtaining a validity confirmation for it. The need for the
+Signing Service depends on the signing device – for Mobile-ID,
+Smart-ID, Web eID, and ID card, the architecture of these services differs.
+
+Registration Service
 --------------------
 
-*Allkirjastamisteenus* on teenus, mida kasutatakse vajadusel hääle
-allkirjastamisel ja sellele kehtivuskinnituse saamisel. Vajadus
-Allkirjastamisteenuse järele sõltub allkirja andmise vahendist - Mobiil-ID,
-Smart-ID, Web eID ja ID-kaardi korral on nende teenuste ülesehitus erinev.
-
-Registreerimisteenus
---------------------
-
-*Registreerimisteenus* on teenus, mille abil Kogumisteenus peab registreerima kõik Valijarakendustelt saadud hääled. Pärast hääletamisperioodi lõppu edastab teenuseosutaja info registreeritud häälte kohta Töötlejale.
+The *Registration Service* is a service through which the Collector Service must register all votes received from Voting Applications. After the end of the voting period, the service provider transmits information about registered votes to the Processor.

@@ -1,58 +1,59 @@
-Krahhi toimumise indikaatorid
+Crash occurrence indicators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Haldusveebiliides.
-Vali **Teenused** vasakult menüüst. Kui talletusteenused on krahhinud,
-siis tema **Seisund** on **Tõrge**.
+Management web interface.
+Select **Services** from the left menu. If the storage services have crashed,
+their **Status** is **Failure**.
 
-Halduskäsurealiides.
-Logi sisse **ivxv-admin** kasutajana ja päri teenuste statistikat::
+Management command line interface.
+Log in as the **ivxv-admin** user and query service statistics::
 
    $ sudo su - ivxv-admin
    $ ivxv-status
 
-Kui talletusteenused on krahhinud, siis tema **State** on **FAILURE**.
+If the storage services have crashed, their **State** is **FAILURE**.
 
 
-Krahhist taastumise eeldused
+Crash recovery prerequisites
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Krahhi taastumiseks piisab kui teenuste CA TLS privaatvõti ja sertifikaat on
-alles, mida saab kasutada teenuse varuvõtmete ja -sertifikaatide
-genereerimiseks. Samas, saab ka enne valimisi teenuse varuvõtmed ja
--sertifikaadid ette genereerida.
+For crash recovery it is sufficient that the services' CA TLS private key and
+certificate are preserved, which can be used to generate backup keys and
+certificates for the service. Alternatively, backup keys and certificates for
+the service can also be pre-generated before the elections.
 
-Kui kõikide teenuste CA on sama, siis tasub valija- ja kontrollrakenduste
-seadistusse panna hoopis CA TLS sertifikaadi. Juhul kui CA on teenustel erinev,
-siis peab panema kõik teenuste TLS sertifikaadid rakenduste seadistusse
-vahetult enne valimisi.
+If the CA for all services is the same, it is advisable to put the CA TLS
+certificate into the voter and verification application settings instead. If the
+CA differs between services, then all service TLS certificates must be placed
+into the application settings immediately before the elections.
 
 
-Krahhi võimalik mõju hääletamistulemusele
+Possible impact of crash on voting result
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Kui krahhib talletusteenuse klaster, siis kindlasti tegu on andmekaoga.
-Andmekao suurus sõltub varundusteenusest ehk kui tihti e-urni varundati.
+If the storage service cluster crashes, there is certainly data loss.
+The extent of data loss depends on the backup service, i.e., how often the
+e-ballot box was backed up.
 
-Lisaks, juba hääletanud valijal võivad tekkida segadus, kui teist korda
-hääletades, kuvatakse valijarakenduses "Teie pole veel hääletanud"
-tervitustekst.
+Additionally, voters who have already voted may become confused when voting
+a second time, as the voter application displays the greeting text
+"You have not yet voted".
 
 
-Krahhist taastumise sammud
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Crash recovery steps
+^^^^^^^^^^^^^^^^^^^^
 
 .. seealso::
 
-   * Tee :ref:`recovery-storageservice` juhendis oleva
-     **Teenuse andmed (võti, sertifikaat jne) on rikutud või masina krahh**
-     peatükki protseduurid läbi iga uue koguja masina jaoks.
+   * Perform the procedures from the chapter
+     **Service data (key, certificate, etc.) is corrupted or machine crash**
+     in the :ref:`recovery-storageservice` guide for each new collector machine.
 
 .. note::
 
-   Punktis 10 tuleb välja vahetada kõik vanad **id** ja **address** kirjed
-   uute vastu, lisaks tuleb muuta ka talletusteenuse **bootstrap**
-   seadistust:
+   In step 10, all old **id** and **address** entries need to be replaced
+   with new ones, and additionally the storage service **bootstrap**
+   setting needs to be changed:
 
    .. code-block:: yaml
 
@@ -61,7 +62,7 @@ Krahhist taastumise sammud
       - storage@storage2.ivxv.ee
       - storage@storage3.ivxv.ee
 
-   selliselt:
+   as follows:
 
    .. code-block:: yaml
 
@@ -70,26 +71,27 @@ Krahhist taastumise sammud
       - storage@storage5.ivxv.ee
       - storage@storage6.ivxv.ee
 
-Nüüd tuleb taastada koguja krahhieelne seisund, v.a kaotsi läinud hääled:
+Now the collector's pre-crash state needs to be restored, except for the lost votes:
 
-   #. SSH logi sisse haldusmasinasse **ivxv-admin** kasutajana::
+   #. SSH log in to the management machine as the **ivxv-admin** user::
 
          $ sudo su - ivxv-admin
 
-   #. Laadi ringkondade nimekiri::
+   #. Load the districts list::
 
          $ ivxv-config-apply --type=districts
 
-   #. Laadi valikute nimekiri::
+   #. Load the choices list::
 
          $ ivxv-config-apply --type=choices
 
-   #. Laadi nii valijate alg-, kui ka kõik vahepealsed muudatusnimekirjad::
+   #. Load both the initial voter list and all intermediate change lists::
 
          $ ivxv-config-apply --type=voters
 
 .. warning::
-   Ära unusta, et valimiste lõpus tuleb hääli alla laadida koos varundatud
-   häältega, et vähemalt mingis ulatuses tagada e-urni terviklikkus::
+   Do not forget that at the end of the elections, votes must be downloaded
+   together with the backed up votes, to ensure the integrity of the e-ballot
+   box to at least some extent::
 
       $ ivxv-export-votes --consolidate

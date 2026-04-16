@@ -1,76 +1,80 @@
-..  IVXV kogumisteenuse haldusteenuse kirjeldus
+..  IVXV collector service management service description
 
-IVXV seadistused valimise korraldamise protsessis
--------------------------------------------------
+IVXV Configuration in the Election Organization Process
+-------------------------------------------------------
 
-IVXV kasutamiseks valimise kontekstis tuleb süsteem ja sellega seotud
-rakendused seadistada nii, et on võimalik valijatelt häälte vastuvõtmine ning
-nende käitlemine vastavalt süsteemile seatud terviklus-, konfidentsiaalsus ja
-käideldavusnõuetele. Käesolev tehniline dokument annab ülevaate olulisimatest
-seadistustoimingutest ning on mõeldud täiendama elektroonilise hääletamise
-käsiraamatu poolt kirjeldatud protseduurireeglite täitmist.
+To use IVXV in the context of an election, the system and its associated
+applications must be configured so that it is possible to receive votes from
+voters and handle them in accordance with the integrity, confidentiality, and
+availability requirements set for the system. This technical document provides
+an overview of the most important configuration operations and is intended to
+supplement the compliance with procedural rules described in the electronic
+voting handbook.
 
-Seadistuste koostamiseks vajalikud andmed
-*****************************************
+Data Required for Configuration Preparation
+********************************************
 
-Valimise üldparameetrid
-  Valimise üldparameetrid määravad valimise unikaalse identifikaatori
-  kasutamiseks kõigi seotud komponentide poolt, küsimuste arvu ning
-  identifikaatorid, hääletamisperioodi alguse- ja lõpuaja ning hääle
-  kontrollimise seadistuse. Valimise üldparameetrite spetsifikatsiooni
-  käsitletakse käesolevas dokumendis.
+Election general parameters
+  The election general parameters define the unique identifier of the election
+  for use by all associated components, the number of questions and their
+  identifiers, the start and end time of the voting period, and the vote
+  verification settings. The specification of election general parameters
+  is covered in this document.
 
-Algne valijate nimekiri
-  Algne valijate nimekiri on kohandatud vormingus fail, mille vorming ning
-  seotud protokollid on defineeritud dokumendis "IVXV protokollid". Eesti
-  riiklike valimiste korral tuleb algne valijate nimekiri Rahvastikuregistrist.
+Initial voter list
+  The initial voter list is a file in a customized format, whose format and
+  associated protocols are defined in the document "IVXV Protocols". For
+  Estonian national elections, the initial voter list comes from the Population
+  Register.
 
-Valikute nimekiri
-  Valikute nimekiri on JSON vormingus fail, mille vorming ning seotud
-  protokollid on defineeritud dokumendis "IVXV protokollid". Eesti riiklike
-  valimiste korral tuleb valikute nimekiri valimiste infosüsteemist.
+Choices list
+  The choices list is a JSON format file, whose format and associated
+  protocols are defined in the document "IVXV Protocols". For Estonian national
+  elections, the choices list comes from the election information system.
 
-Ringkondade nimekiri
-  Ringkondade nimekiri on JSON vormingus fail, mille vorming ning seotud
-  protokollid on defineeritud dokumendis "IVXV protokollid". Eesti riiklike
-  valimiste korral tuleb ringkondade nimekiri valimiste infosüsteemist.
+Districts list
+  The districts list is a JSON format file, whose format and associated
+  protocols are defined in the document "IVXV Protocols". For Estonian national
+  elections, the districts list comes from the election information system.
 
-Rakenduste usaldusjuur
-  Rakenduste usaldusjuur defineerib sertifitseerimishierarhiad, mille alusel
-  IVXV rakendused verifitseerivad digitaalallkirju. Eesti riiklike valimiste
-  korral määrab usaldusjuure koosseisu Riigi Valimisteenistus. Rakenduste
-  usaldusjuure vormingut käsitletakse peatükis :numref:`ivxv-rakendused`.
+Application trust root
+  The application trust root defines the certification hierarchies based on
+  which IVXV applications verify digital signatures. For Estonian national
+  elections, the composition of the trust root is determined by the National
+  Electoral Service. The format of the application trust root is covered in
+  chapter :numref:`ivxv-rakendused`.
 
-Kogumisteenuse usaldusjuur
-  Kogumisteenuse usaldusjuur defineerib sertifitseerimishierarhiad, mille
-  alusel IVXV kogumisteenuse komponendid verifitseerivad digitaalallkirju. Eesti
-  riiklike valimiste korral määrab usaldusjuure koosseisu Riigi
-  Valimisteenistus. Kogumisteenuse usaldusjuure vormingut ning seotud protokolle
-  käsitletakse peatükis :numref:`kogumisteenus`.
+Collector service trust root
+  The collector service trust root defines the certification hierarchies based
+  on which IVXV collector service components verify digital signatures. For
+  Estonian national elections, the composition of the trust root is determined
+  by the National Electoral Service. The format and associated protocols of the
+  collector service trust root are covered in chapter :numref:`kogumisteenus`.
 
-Kogumisteenuse tehniline seadistus
-  Kogumisteenuse tehniline seadistus kirjeldab IVXV mikroteenuste seadistuse
-  ning isendite jaotumise. Eesti riiklike valimiste korral leiab kogumisteenuse
-  osutaja Riigi Valimisteenistus. Tehniline seadistus kooskõlastatakse
-  valimiste omaniku ja kogumisteenuse osutaja vahel. Tehnilist seadistust
-  käsitletakse peatükis :numref:`kt-technical`.
+Collector service technical configuration
+  The collector service technical configuration describes the IVXV
+  microservice settings and the distribution of instances. For Estonian
+  national elections, the collector service provider is found by the National
+  Electoral Service. The technical configuration is agreed upon between the
+  election owner and the collector service provider. The technical
+  configuration is covered in chapter :numref:`kt-technical`.
 
-Kogumisteenuse võtmed ja sertifikaadid
-  Kogumisteenuse mikroteenused suhtlevad omavahel TLS protokolli vahendusel.
-  Vastavad sertifikaadid tuleb eksportida Valijarakendusse ja
-  Kontrollrakendusse. Kogumisteenusega seotud võtmete loomist käsitletakse
-  peatükis :numref:`kt-krypto`.
+Collector service keys and certificates
+  The collector service microservices communicate with each other via the TLS
+  protocol. The corresponding certificates must be exported to the Voter
+  Application and the Verification Application. The creation of keys related
+  to the collector service is covered in chapter :numref:`kt-krypto`.
 
-Häälte salastamise võtme spetsifikatsioon
-  Häälte salastamise võtme jaoks kasutatav algoritm ning seotud tehnilised
-  parameetrid fikseeritakse enne häälte salastamise võtme genereerimist. Võtme
-  spetsifikatsiooni käsitletakse peatükis :numref:`key-groupgen`.
+Vote encryption key specification
+  The algorithm used for the vote encryption key and associated technical
+  parameters are fixed before generating the vote encryption key. The key
+  specification is covered in chapter :numref:`key-groupgen`.
 
-Hääletamisperioodile eelnevad tegevused
-***************************************
+Activities Before the Voting Period
+***********************************
 
-Enne hääletamisperioodi algust teostatakse lähtuvalt eelnevatest andmetest
-järgmised tegevused:
+Before the start of the voting period, the following activities are performed
+based on the preceding data:
 
 #. :numref:`app-install`
 #. :numref:`app-trust`
@@ -80,38 +84,38 @@ järgmised tegevused:
 #. :numref:`kt-trust`
 #. :numref:`kt-technical`
 #. :numref:`kt-election`
-#. Ringkondade nimekirja laadimine Kogumisteenusesse
-#. Valikute nimekirja laadimine Kogumisteenusesse
-#. Valijate nimekirja (algne) laadimine Kogumisteenusesse
+#. Loading the districts list into the Collector Service
+#. Loading the choices list into the Collector Service
+#. Loading the voter list (initial) into the Collector Service
 #. :numref:`kt-management`
 #. :numref:`valijarakendus`
 #. :numref:`kontroll`
 
-Hääletamisperioodi tegevused
-****************************
+Voting Period Activities
+************************
 
-#. Valijate nimekirjade (muudatused) laadimine Kogumisteenusesse
+#. Loading voter lists (changes) into the Collector Service
 
-Hääletamisperioodile järgnevad tegevused
-****************************************
+Activities After the Voting Period
+**********************************
 
-E-valimiskasti töötlemine
-^^^^^^^^^^^^^^^^^^^^^^^^^
+E-ballot box processing
+^^^^^^^^^^^^^^^^^^^^^^^
 
 #. :numref:`processor-check`
 #. :numref:`processor-squash`
 #. :numref:`processor-revoke`
 #. :numref:`processor-anonymize`
 
-Häälte miksimine
+Vote mixing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 #. :numref:`mix-install`
 #. :numref:`mix-mix`
 #. :numref:`mix-verify`
 
-Hääletamistulemuse väljaselgitamine ja andmeaudit
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Determining the voting result and data audit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 #. :numref:`key-decrypt`
 #. :numref:`auditor-convert`

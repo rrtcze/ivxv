@@ -1,48 +1,49 @@
-..  IVXV seadistuste koostamise juhend
+..  IVXV configuration preparation guide
 
 .. _kt-technical:
 
-Kogumisteenuse tehnilise seadistuse koostamine
-----------------------------------------------
+Preparing the collector service technical configuration
+-------------------------------------------------------
 
-Tehniline seadistus määrab kogumisteenuse tehnilised parameetrid. Sama tehnilist
-seadistust peaks olema võimalik kasutada erinevate valimiste seadistustega [#]_.
+The technical configuration defines the technical parameters of the collector
+service. The same technical configuration should be usable with different
+election configurations [#]_.
 
-.. [#] Aga mitte samaaegselt: kogumisteenus toetab ainult ühte valimist.
+.. [#] But not simultaneously: the collector service supports only one election.
 
-Tehnilise seadistuse koostab kogumisteenuse osutaja.
+The technical configuration is prepared by the collector service provider.
 
-Seadistusfaili nimi peab alati lõppema stringiga :file:`technical.yaml`.
-Failinime võimalik eesliide peab alati lõppema punktiga.
+The configuration file name must always end with the string :file:`technical.yaml`.
+The possible prefix of the file name must always end with a period.
 
 :debug:
-        Tõeväärtus, kas logidesse kirjutatakse silumisteateid.
+        Boolean value, whether debug messages are written to logs.
 
 :snidomain:
-        Kohustuslik väli.
-        Domeen, mida kasutatakse teenuste SNI väärtuse seadistamiseks.
-        Varasemalt on kasutusel olnud väärtus `ivxv.invalid` võib kasutada ka
-        reaalseid domeene, mille nimehaldus on korraldaja kontrolli all nagu nt.
-        `ivxv.ee`
+        Required field.
+        Domain used for configuring the SNI value of services.
+        Previously the value `ivxv.invalid` has been used, but real domains
+        whose name management is under the organizer's control can also be
+        used, e.g. `ivxv.ee`
 
 ----
 
 :filter:
-        Kohustuslik väli.
-        Alamblokk, mis sisaldab ühenduste filtrite seadistusi.
+        Required field.
+        Sub-block containing connection filter settings.
 
 :filter.tls:
-        Kohustuslik väli.
-        Alamblokk, mis sisaldab ühenduste TLS-filtri seadistusi.
+        Required field.
+        Sub-block containing connection TLS filter settings.
 
 :filter.tls.handshaketimeout:
-        Kohustuslik väli.
-        Maksimaalne aeg sekundites TLS-kätluse läbiviimiseks.
+        Required field.
+        Maximum time in seconds for performing the TLS handshake.
 
 :filter.tls.ciphersuites:
-        Kohustuslik väli.
-        TLS-protokolli versioonis 1.2 rakendamiseks lubatud šifrikomplektid.
-        Hetkel toetatud valikud on::
+        Required field.
+        Cipher suites allowed for TLS protocol version 1.2.
+        Currently supported options are::
 
             TLS_RSA_WITH_AES_128_CBC_SHA
             TLS_RSA_WITH_AES_256_CBC_SHA
@@ -57,263 +58,263 @@ Failinime võimalik eesliide peab alati lõppema punktiga.
             TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
             TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
 
-        Kui TLS-kätluse käigus lepitakse kokku TLS-protokolli versioonis 1.3,
-        siis šifrikomplekti seadistada ei saa ning kõik serveri poolt toetatud
-        turvalised šifrid on lubatud. Hetkel on nendeks::
+        If TLS protocol version 1.3 is negotiated during the TLS handshake,
+        the cipher suite cannot be configured and all secure ciphers supported
+        by the server are allowed. Currently these are::
 
             TLS_AES_128_GCM_SHA256
             TLS_AES_256_GCM_SHA384
             TLS_CHACHA20_POLY1305_SHA256
 
 :filter.codec:
-        Kohustuslik väli.
-        Alamblokk, mis sisaldab ühenduste koodekfiltri seadistusi.
+        Required field.
+        Sub-block containing connection codec filter settings.
 
 :filter.codec.rwtimeout:
-        Kohustuslik väli.
-        Maksimaalne aeg sekundites valijalt tervikliku päringu lugemiseks.
-        Maksimaalne aeg sekundites valijale tervikliku päringu kirjutamiseks.
+        Required field.
+        Maximum time in seconds for reading a complete request from the voter.
+        Maximum time in seconds for writing a complete response to the voter.
 
 :filter.codec.requestsize:
-        Päringu maksimaalne suurus baitides. Välja puudumise või väärtuse 0
-        korral päringu suurust ei piirata.
+        Maximum request size in bytes. If the field is missing or the value
+        is 0, the request size is not limited.
 
 :filter.codec.logrequests:
-        Tõeväärtus, kas logidesse kirjutatakse kõik sissetulnud päringud
-        algkujul. Päringu logi talletatakse tavalogist eraldi.
+        Boolean value, whether all incoming requests are written to logs
+        in original form. The request log is stored separately from the
+        regular log.
 
 ----
 
 :network:
-        Kohustuslik väli.
-        Loetelu kogumisteenuse võrgusegmentidest.
+        Required field.
+        List of collector service network segments.
 
-        Kõik kogumisteenuse võrgusegmentide parameetrid määrab kogumisteenuse osutaja.
+        All collector service network segment parameters are defined by the collector service provider.
 
 :network.*.id:
-        Kohustuslik väli.
-        Võrgusegmendi identifikaator.
+        Required field.
+        Network segment identifier.
 
 :network.*.services:
-        Kohustuslik väli.
-        Alamblokk, mis sisaldab kogumisteenuse selle võrgusegmendi
-        mikroteenuste seadistust.
+        Required field.
+        Sub-block containing the microservice configuration for this
+        network segment of the collector service.
 
-        .. todo:: Kuigi kõik selle bloki parameetrid määrab Koguja, kas
-                Korraldaja peaks vähemalt vahendusteenuste väliseid aadresse
-                kinnitama, kuna need on otspunktid, kuhu valija- ja
-                kontrollrakendus peavad ühendama hakkama?
+        .. todo:: Although all parameters in this block are defined by the
+                Collector, should the Organizer at least confirm the external
+                addresses of proxy services, since these are the endpoints
+                that the voter and verification applications must connect to?
 
 :network.*.services.proxy:
-        Loetelu, mis sisaldab vahendusteenuste isendite seadistust.
+        List containing proxy service instance configuration.
 
 :network.*.services.mid:
-        Loetelu, mis sisaldab Mobiil-ID toeteenuste isendite seadistust.
+        List containing Mobile-ID support service instance configuration.
 
 :network.*.services.smartid:
-        Loetelu, mis sisaldab Smart-ID toeteenuste isendite seadistust.
+        List containing Smart-ID support service instance configuration.
 
 :network.*.services.webeid:
-        Loetelu, mis sisaldab Web eID toeteenuste isendite seadistust.
+        List containing Web eID support service instance configuration.
 
 :network.*.services.sessionstatus:
-        Loetelu, mis sisaldab Session status toeteenuste isendite seadistust.
+        List containing Session status support service instance configuration.
 
 :network.*.services.choices:
-        Loetelu, mis sisaldab nimekirjateenuste isendite seadistust.
+        List containing choices service instance configuration.
 
 :network.*.services.voting:
-        Loetelu, mis sisaldab hääletamisteenuste isendite seadistust.
+        List containing voting service instance configuration.
 
 :network.*.services.verification:
-        Loetelu, mis sisaldab kontrollteenuste isendite seadistust.
+        List containing verification service instance configuration.
 
 :network.*.services.storage:
-        Loetelu, mis sisaldab talletusteenuste isendite seadistust.
+        List containing storage service instance configuration.
 
 :network.*.services.log:
-        Loetelu, mis sisaldab logikogumisteenuste isendite seadistust.
+        List containing log collection service instance configuration.
 
 :network.*.services.backup:
-        Varundusteenuse isendi seadistus.
+        Backup service instance configuration.
 
 :network.*.services.*.id:
-        Kohustuslik väli.
-        Mikroteenuse isendi identifikaator.
+        Required field.
+        Microservice instance identifier.
 
 :network.*.services.*.address:
-        Kohustuslik väli.
-        Mikroteenuse isendi võrguaadress ja -port.
+        Required field.
+        Microservice instance network address and port.
 
-        .. todo:: Sama parameetrit kasutatakse kirjeldamaks seda, millisel
-                aadressil teenus peab kuulama hakkama ning milliselt aadressilt
-                saavad haldusteenus ja vahendusteenus teenusele ligi. Kui
-                sisemine ja välimine aadress hakkavad erinema, siis tuleb see
-                parameeter lüüa kaheks.
+        .. todo:: The same parameter is used to describe both which address
+                the service should listen on and from which address the
+                management service and proxy service can access the service.
+                If internal and external addresses start to differ, this
+                parameter needs to be split into two.
 
 :network.*.services.*.peeraddress:
-        Mikroteenuse isenditevahelise suhtluse võrguaadress ja -port.
-        Kasutatakse ainult juhul, kui sama teenust pakkuvad isendid peavad
-        omavahel suhtlema (nt talletusteenus).
+        Microservice inter-instance communication network address and port.
+        Used only when instances providing the same service need to
+        communicate with each other (e.g. storage service).
 
-        .. todo:: Sama parameetrit kasutatakse kirjeldamaks seda, millisel
-                aadressil teenus peab kuulama hakkama ning milliselt aadressilt
-                saavad teised isendid teenusele ligi. Kui sisemine ja välimine
-                aadress hakkavad erinema, siis tuleb see parameeter lüüa
-                kaheks.
+        .. todo:: The same parameter is used to describe both which address
+                the service should listen on and from which address other
+                instances can access the service. If internal and external
+                addresses start to differ, this parameter needs to be split
+                into two.
 
 :network.*.services.*.origin:
-        Kohustuslik väli.
-        Mikroteenuse isendi täielik domeeninimi ja -port.
+        Required field.
+        Microservice instance fully qualified domain name and port.
 
 ----
 
 :status:
-        Kohustuslik väli.
-        Alamblokk, mis sisaldab loetelu staatust raporteeriva serveritest.
+        Required field.
+        Sub-block containing a list of status reporting servers.
 
 :status.name:
-        Kohustuslik väli. Hetkel toetatud ainult ``session``.
+        Required field. Currently only ``session`` is supported.
 
-        Staatust raporteeriva serveri nimi.
+        Name of the status reporting server.
 
 :status.servername:
-        Kohustuslik väli.
-        Staatust raporteeriva serveri SNI.
+        Required field.
+        SNI of the status reporting server.
 
 :status.authttl:
-        Kohustuslik väli.
-        Aeg sekundites. Vaikeväärtus 0.
+        Required field.
+        Time in seconds. Default value 0.
 
-        Maksimaalne aeg autentimiseks.
+        Maximum time for authentication.
 
 :status.choicettl:
-        Kohustuslik väli.
-        Aeg sekundites. Vaikeväärtus 0.
+        Required field.
+        Time in seconds. Default value 0.
 
-        Maksimaalne aeg valiku tegemiseks.
+        Maximum time for making a choice.
 
 :status.votettl:
-        Kohustuslik väli.
-        Aeg sekundites. Vaikeväärtus 0.
+        Required field.
+        Time in seconds. Default value 0.
 
-        Maksimaalne aeg hääle andmiseks.
+        Maximum time for casting a vote.
 
 :status.verifyttl:
-        Kohustuslik väli.
-        Aeg sekundites. Vaikeväärtus 0.
+        Required field.
+        Time in seconds. Default value 0.
 
-        Maksimaalne aeg hääle verifitseerimiseks.
+        Maximum time for vote verification.
 
 ----
 
 :logging:
-        Alamblokk, mis sisaldab loetelu mikroteenuste kauglogimise serveritest.
-        Siin blokis kirjeldatakse:
+        Sub-block containing a list of microservice remote logging servers.
+        This block describes:
 
-        * Logiseire teenus. Alati loetelus esimene. Teenusele saadetakse IVXV
-          logi alates tasemest INFO;
+        * Log monitoring service. Always the first in the list. IVXV log
+          starting from the INFO level is sent to this service;
 
-        * Vajadusel ka täiendavad välised logikogujad, kuhu saadetakse täielik
-          logi alates tasemest DEBUG.
+        * If needed, additional external log collectors, to which the
+          complete log starting from the DEBUG level is sent.
 
-        Logimine toimub üle RELP protokolli.
+        Logging is performed over the RELP protocol.
 
-        Kõik logiserverite parameetrid määrab kogumisteenuse osutaja.
+        All log server parameters are defined by the collector service provider.
 
 :logging.address:
-        Kohustuslik väli.
-        Logiserveri aadress (IP-aadress või hostinimi).
+        Required field.
+        Log server address (IP address or hostname).
 
 :logging.port:
-        Logiserveri port (täisarv, vaikimisi *20514*).
+        Log server port (integer, default *20514*).
 
 ----
 
 :storage:
-        Kohustuslik väli.
-        Alamblokk, mis sisaldab talletusprotokolli seadistust.
+        Required field.
+        Sub-block containing storage protocol configuration.
 
-        Kõik talletusprotokolli parameetrid määrab kogumisteenuse osutaja.
+        All storage protocol parameters are defined by the collector service provider.
 
 :storage.protocol:
-        Kohustuslik väli.
-        Kogumisteenuse talletusprotokoll. Hetkel toetatud ainult ``etcd``.
+        Required field.
+        Collector service storage protocol. Currently only ``etcd`` is supported.
 
 :storage.conf:
-        Kohustuslik väli.
-        Talletusprotokolli seadistus. Sisu sõltub ``storage.protocol`` parameetri
-        väärtusest.
+        Required field.
+        Storage protocol configuration. Contents depend on the value of the
+        ``storage.protocol`` parameter.
 
 :storage.conf.ca:
-        Kohustuslik väli.
-        Kasutatakse ainult juhul kui ``storage.protocol`` on ``etcd``.
+        Required field.
+        Used only when ``storage.protocol`` is ``etcd``.
 
-        Talletusteenuste TLS sertifikaatide väljastaja sertifikaat.
+        CA certificate of the storage service TLS certificates.
 
 :storage.conf.conntimeout:
-        Kohustuslik väli.
-        Kasutatakse ainult juhul kui ``storage.protocol`` on ``etcd``.
+        Required field.
+        Used only when ``storage.protocol`` is ``etcd``.
 
-        Maksimaalne aeg sekundites etcd serveriga ühenduse loomiseks.
+        Maximum time in seconds for establishing a connection with the etcd server.
 
 :storage.conf.optimeout:
-        Kohustuslik väli.
-        Kasutatakse ainult juhul kui ``storage.protocol`` on ``etcd``.
+        Required field.
+        Used only when ``storage.protocol`` is ``etcd``.
 
-        Maksimaalne aeg sekundites ühe talletusoperatsiooni teostamiseks.
+        Maximum time in seconds for performing a single storage operation.
 
 :storage.conf.size:
-        Valikuline väli.
-        Kasutatakse ainult juhul kui ``storage.protocol`` on ``etcd``.
+        Optional field.
+        Used only when ``storage.protocol`` is ``etcd``.
 
-        Andmebaasi suurus baitides.
+        Database size in bytes.
 
 :storage.conf.electiontimeout:
-        Valikuline väli.
-        Kasutatakse ainult juhul kui ``storage.protocol`` on ``etcd``.
+        Optional field.
+        Used only when ``storage.protocol`` is ``etcd``.
 
-        Aeg millisekundites, mida kasutatakse liidri kättesaadavuse
-        kontrollimiseks.
+        Time in milliseconds used for checking leader availability.
 
 :storage.conf.heartbeattimeout:
-        Valikuline väli.
-        Kasutatakse ainult juhul kui ``storage.protocol`` on ``etcd``.
+        Optional field.
+        Used only when ``storage.protocol`` is ``etcd``.
 
-        Aeg millisekundites, mida kasutatakse andmebaasi hosti
-        kättesaadavuse kontrollimiseks.
+        Time in milliseconds used for checking database host availability.
 
 :storage.conf.snapshotcount:
-        Valikuline väli.
-        Kasutatakse ainult juhul kui ``storage.protocol`` on ``etcd``.
+        Optional field.
+        Used only when ``storage.protocol`` is ``etcd``.
 
-        Andmebaasi talletamispäringute arv, mille täitumise korral
-        andmebaasi seis varundatakse.
+        Number of database storage requests after which the database state
+        is backed up.
 
 :storage.conf.bootstrap:
-        Kohustuslik väli.
-        Kasutatakse ainult juhul kui ``storage.protocol`` on ``etcd``.
+        Required field.
+        Used only when ``storage.protocol`` is ``etcd``.
 
-        Loetelu nende talletusteenuste identifikaatoritest, mis on osa algsest
-        etcd klastrist. Vajalik, et talletusteenuse isend teaks esmasel
-        käivitumisel, kas see loob uut klastrit või liitub olemasolevaga.
+        List of storage service identifiers that are part of the initial
+        etcd cluster. Necessary so that the storage service instance knows
+        at first startup whether it is creating a new cluster or joining
+        an existing one.
 
-        Esmases tehnilises seadistuses peab loetelu kattuma ``network`` blokis
-        loetletud talletusteenuste identifikaatoritega. Hiljem teenuseid
-        lisades või eemaldades ei tohi ``storage.conf.bootstrap`` väärtust
-        uuendada.
+        In the initial technical configuration, the list must match the
+        storage service identifiers listed in the ``network`` block. When
+        later adding or removing services, the ``storage.conf.bootstrap``
+        value must not be updated.
 
 :storage.ordertimeout:
-         Aeg sekundites. Vaikeväärtus 5.
+         Time in seconds. Default value 5.
 
-         Maksimaalne aeg hääle kirjutamiseks häälte järjekorra tabelisse.
+         Maximum time for writing a vote to the vote ordering table.
 
 ----
 
 :backup:
-        Varunduse parameetrid.
+        Backup parameters.
 
-        Loetelu varundamise kellaaegadest vormingus HH:MM.
+        List of backup times in the format HH:MM.
 
 :file:`example.technical.yaml`:
 

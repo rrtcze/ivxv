@@ -1,67 +1,69 @@
-..  IVXV kogumisteenuse haldusjuhend
+..  IVXV collector service administration guide
 
 .. _haldusteenus:
 
-Haldusteenus
-============
+Management Service
+==================
 
-Haldusteenus on kogumisteenuse haldamiseks mõeldud lahendus. Haldusteenus
-paigaldatakse eraldiseisvasse masinasse ja selle kaudu toimub kogumisteenuse
-juhtimine paigaldusest kuni seiskamiseni.
+The management service is a solution designed for managing the collector service. The
+management service is installed on a separate machine, and through it, the collector
+service is managed from installation to shutdown.
 
-Haldusteenuse funktsioonid on:
+The management service functions are:
 
-#. Kogumisteenuse alamteenuste haldamine:
+#. Managing collector service sub-services:
 
-   #. Seadistuste ja valimisnimekirjade laadimine;
+   #. Loading settings and election lists;
 
-   #. Alamteenuste paigaldus selleks ettevalmistatud masinatesse;
+   #. Installing sub-services on prepared machines;
 
-   #. Alamteenustele seadistuste ja nimekirjade rakendamine;
+   #. Applying settings and lists to sub-services;
 
-   #. Valijate nimekirjade uuenduste hankimine Valimiste Infosüsteemist;
+   #. Downloading voter list updates from the Election Information System;
 
-#. E-valimiskasti koostamine töötlemiseks;
+#. Composing the e-ballot box for processing;
 
-#. Valimiste üldstatistika jälgimine;
+#. Monitoring general election statistics;
 
-#. Valijate statistika allalaadimine;
+#. Downloading voter statistics;
 
-#. E-valimiskasti ja logide korrapärane varundamine;
+#. Regular backup of the e-ballot box and logs;
 
-#. Kogumisteenuse seisundi seire;
+#. Monitoring the state of the collector service;
 
-Haldusteenus suhtleb hallatavate teenustega üle `SSH
-<https://en.wikipedia.org/wiki/Secure_Shell>`_-kanali. Suhtluse algatab alati
-haldusteenus. Usaldus teenusmasinate vastu luuakse süsteemihalduri abiga pärast
-teenuseid majutavate masinate paigaldamist.
+The management service communicates with managed services over an `SSH
+<https://en.wikipedia.org/wiki/Secure_Shell>`_ channel. Communication is always
+initiated by the management service. Trust towards service machines is
+established with the help of the system administrator after installing the
+machines hosting the services.
 
-Teenust majutava masina paigaldamise järel loob haldur haldusteenusele
-ligipääsu teenusmasina juurkontole, et haldusteenusel oleks võimalik teenuse
-tarkvara paigaldada.  Pärast viimase teenuse paigaldamist teenuseid majutavasse
-masinasse eemaldab haldusteenus ligipääsu juurkontole.
+After installing the machine hosting a service, the administrator creates
+access for the management service to the root account of the service machine,
+so that the management service can install the service software. After
+installing the last service on a machine hosting services, the management
+service removes access to the root account.
 
 
-Haldusteenuse koosseis
-----------------------
+Management Service Composition
+------------------------------
 
-Haldusteenuse kasutajaliides koosneb kahest osast:
+The management service user interface consists of two parts:
 
-#. Haldamise põhifunktsionaalsus on teostatud :ref:`käsureautiliitide
-   <utiliidid>` abil;
+#. The main management functionality is implemented using :ref:`command-line
+   utilities <utiliidid>`;
 
-#. Graafiline kasutajaliides on veebipõhine liides, mille funktsionaalsuse
-   tagavad käsureautiliidid.
+#. The graphical user interface is a web-based interface whose functionality
+   is provided by command-line utilities.
 
    .. seealso::
 
-      Graafilise kasutajaliidese kasutusjuhend asub dokumendis
-      ``IVXV kogumisteenuse haldusliidese kasutusjuhend``.
+      The graphical user interface user guide is available in the document
+      ``IVXV Collector Service Management Interface User Guide``.
 
-Lisaks töötavad deemonprotsessid:
+Additionally, the following daemon processes run:
 
-#. Veebiserver graafilise kasutajaliidese jaoks;
+#. A web server for the graphical user interface;
 
-#. Haldusdeemon veebiserveri poolt vahendatud päringute käivitamiseks;
+#. A management daemon for executing requests relayed by the web server;
 
-#. Agentdeemon teenuste seisundi jälgimiseks.
+#. An agent daemon for monitoring service states.

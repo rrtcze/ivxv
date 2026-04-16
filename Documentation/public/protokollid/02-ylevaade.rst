@@ -1,134 +1,136 @@
-..  IVXV protokollid
+..  IVXV protocols
 
 ================================================================================
-Ülevaade
+Overview
 ================================================================================
 
-Elektroonilise hääletamise protokollistik (edaspidi protokollistik) defineerib
-elektroonilise hääletamise süsteemi komponentide vahelise sõnumivahetuse,
-kasutatavad andmestruktuurid, algoritmid ning liidesed väliste süsteemidega.
-Sõnumivahetus esitatakse UML suhtlusskeemidena, mis üheselt defineerivad
-sõnumite järgnevuse. Andmestruktuuride kirjeldused on varustatud BNF, ASN.1
-või JSON-schema notatsioonis spetsifikatsioonidega. Algoritmid esitatakse
-pseudokoodina.
+The electronic voting protocol suite (hereinafter protocol suite) defines the
+message exchange between the components of the electronic voting system, the
+data structures used, algorithms, and interfaces with external systems.
+Message exchange is presented as UML interaction diagrams that unambiguously
+define the sequence of messages. Data structure descriptions are accompanied
+by specifications in BNF, ASN.1, or JSON-schema notation. Algorithms are
+presented as pseudocode.
 
-NB! Kõigis protokollistiku andmestruktuuride väljades tuleb rangelt kinni pidada
-lubatud märkidest ning väljade minimaalsetest ja maksimaalsetest pikkustest.
-Täiendavate tühikute, tabulaatorite jms. kasutamine on keelatud ning
-spetsifikatsiooni realiseerivad rakendused peavad vorminguga mitte-vastavate
-andmete töötlemisest keelduma.
+NB! In all data structure fields of the protocol suite, the permitted
+characters and the minimum and maximum field lengths must be strictly adhered
+to. The use of additional spaces, tabs, etc. is prohibited, and applications
+implementing the specification must refuse to process data that does not
+conform to the format.
 
-Protokollistik defineerib elektroonilise hääletamise protokolli ning selle
-protokolli realiseerimiseks vajalikud tugistruktuurid.
+The protocol suite defines the electronic voting protocol and the supporting
+structures necessary for implementing this protocol.
 
-Elektroonilise hääletamise protokoll
+Electronic Voting Protocol
 ====================================
 
-Elektroonilise hääletamise protokoll spetsifitseerib:
+The electronic voting protocol specifies:
 
-#. elektroonilise hääle vormingu, mis võimaldab üheselt määratleda valija tahte
-   konkreetsel valimisel;
+#. the format of the electronic vote, which enables unambiguous determination
+   of the voter's intent in a specific election;
 
-#. elektroonilise hääle krüpteerimise hääle salajasuse tagamiseks;
+#. the encryption of the electronic vote to ensure vote secrecy;
 
-#. elektroonilise hääle digitaalse allkirjastamise tervikluse ja valija
-   identifitseerimise tagamiseks;
+#. the digital signing of the electronic vote to ensure integrity and voter
+   identification;
 
-#. elektroonilise hääle kvalifitseerimise kogumisteenuse poolt, hääle
-   vastuvõtmise tähistamiseks;
+#. the qualification of the electronic vote by the collection service, to
+   mark the acceptance of the vote;
 
-Protokoll eeldab, et valimise korraldaja defineerib valimise ning genereerib
-häälte salastamise võtmepaari, mille avalik komponent tehakse valijarakendusele
-kättesaadavaks.
+The protocol assumes that the election organizer defines the election and
+generates a key pair for vote encryption, the public component of which is
+made available to the voter application.
 
-Protokolli vahendusel liigub valija tahe kogumisteenuses talletatavasse e-valimiskasti
-ning võetakse tulemuse kujunemisel arvesse järgmist sündmusterida pidi:
+Through the protocol, the voter's intent moves into the e-ballot box stored
+in the collection service and is taken into account in forming the result
+through the following sequence of events:
 
-#. Valija kasutab valijarakendust oma tahteavalduse elektrooniliseks
-   vormistamiseks:
+#. The voter uses the voter application to electronically formalize their
+   expression of will:
 
-   #. tahteavaldus vormistatakse elektroonilise häälena;
+   #. the expression of will is formalized as an electronic vote;
 
-   #. vormistatud hääl krüpteeritakse;
+   #. the formalized vote is encrypted;
 
-   #. krüpteeritud hääl signeeritakse valija arvutis.
+   #. the encrypted vote is signed on the voter's computer.
 
-#. Kogumisteenus talletab elektroonilise hääle, moodustades selle käigus
-   häälele kvalifitseeritud digitaalallkirja:
+#. The collection service stores the electronic vote, forming a qualified
+   digital signature on the vote in the process:
 
-   #. elektrooniline hääl registreeritakse välises registreerimisteenuses;
+   #. the electronic vote is registered in an external registration service;
 
-   #. elektroonilisele häälele võetakse digitaalne ajatempel;
+   #. a digital timestamp is obtained for the electronic vote;
 
-   #. elektroonilisele häälele võetakse valija sertifikaadi
-      kehtivuskinnitus;
+   #. a validity confirmation is obtained for the voter's certificate;
 
-   #. elektroonilist häält kvalifitseerivad elemendid tagastatakse mh. ka
-      valijarakendusele kontrollimiseks ning valija informeerimiseks
-      kvalifitseerimise tulemustest;
+   #. elements qualifying the electronic vote are also returned to the voter
+      application for verification and to inform the voter of the
+      qualification results;
 
-   #. valijale võimaldatakse kvalifitseeritud elektroonilise hääle
-      kontrollimine kontrollrakenduse abil.
+   #. the voter is enabled to verify the qualified electronic vote using the
+      verification application.
 
 .. note::
 
-   Elektroonilise hääle digitaalne allkirjastamine erineb tavapärasest
-   dokumentide digitaalallkirjastamisest, kus kõik allkirja kvalifitseerimiseks
-   vajalikud toimingud algatatakse vahetult allkirjastaja seadmes.
-   Elektroonilise hääle kvalifitseerimise kohustus on kogumisteenusel, kelle
-   ülesanne on veenduda vastuvõetavate häälte korrektses allkirjastatuses. Kuna
-   e-hääletamise perioodil on koormus seotud teenustele kõrge, võimaldab
-   kogumisteenuse poolt juhitud kvalifitseerimine tagada paremat teenuse
-   kvaliteeti.
+   The digital signing of an electronic vote differs from the usual digital
+   signing of documents, where all actions necessary for qualifying the
+   signature are initiated directly on the signer's device. The obligation to
+   qualify the electronic vote lies with the collection service, whose task
+   is to verify the correct signing of accepted votes. Since the load on
+   related services is high during the e-voting period, qualification
+   managed by the collection service allows for better service quality.
 
-#. Valija võib kasutada kontrollrakendust veendumaks oma hääle korrektses
-   käitlemises kogumisteenuse poolt;
+#. The voter may use the verification application to verify the correct
+   handling of their vote by the collection service;
 
-#. Hääletamisperioodi lõppedes väljastab kogumisteenus valimise korraldajale
-   e-valimiskasti ning registreerimisteenus väljavõtte kogumisteenuse poolt
-   registreeritud häältest;
+#. At the end of the voting period, the collection service issues the
+   e-ballot box to the election organizer, and the registration service
+   issues an extract of the votes registered by the collection service;
 
-   #. e-valimiskasti koosseisus antakse valimise korraldajale üle:
+   #. as part of the e-ballot box, the following are handed over to the
+      election organizer:
 
-      #. valija krüpteeritud tahteavaldus koos signatuuriga;
+      #. the voter's encrypted expression of will together with the signature;
 
-      #. registreerimisteenuse kinnitus hääle registreerimisest;
+      #. the registration service's confirmation of vote registration;
 
-      #. ajatempliteenuse poolt väljastatud digitaalne ajatempel
-         elektroonilisele häälele;
+      #. the digital timestamp issued by the timestamping service for the
+         electronic vote;
 
-      #. kehtivuskinnitusteenuse poolt väljastatud kinnitus valija sertifikaadi
-         kehtivuse kohta;
+      #. the confirmation issued by the validity confirmation service
+         regarding the validity of the voter's certificate;
 
-      #. registreerimisteenuse väljavõtte koosseisus antakse valimise korraldajale üle:
+      #. as part of the registration service extract, the following are
+         handed over to the election organizer:
 
-         #. kõik e-hääletamise perioodil kogumisteenuse poolt
-            registreerimisteenusele saadetud päringud elektrooniliste häälte
-            registreerimiseks.
+         #. all requests sent by the collection service to the registration
+            service during the e-voting period for registering electronic
+            votes.
 
-#. Valimise korraldaja arvutab hääletamistulemuse:
+#. The election organizer calculates the voting result:
 
-   #. kontrollitaks üle antud elektrooniliste häälte allkirjade kehtivust
+   #. the validity of signatures on the handed-over electronic votes is
+      verified;
 
-   #. kontrollitakse, et kõik registreerimisteenuses registreeritud hääled on
-      e-valimiskasti koosseisus üle antud;
+   #. it is verified that all votes registered in the registration service
+      have been handed over as part of the e-ballot box;
 
-   #. eraldatakse krüpteeritud hääled ja digitaalallkirjad;
+   #. the encrypted votes and digital signatures are separated;
 
-   #. anonüümitakse krüpteeritud hääled krüptograafiliselt;
+   #. the encrypted votes are cryptographically anonymized;
 
-   #. dekrüpteeritakse krüpteeritud hääled;
+   #. the encrypted votes are decrypted;
 
-   #. dekrüpteeritud häälte põhjal arvutatakse hääletamistulemus.
+   #. the voting result is calculated based on the decrypted votes.
 
-Protokoll on analoogne paberil posti teel hääletamise protokolliga, kus valija
-tahe liigub valimiskomisjonini kahes ümbrikus – välimise ümbriku sees on
-sisemine ümbrik, mis omakorda sisaldab valija tahteavaldusega hääletussedelit.
-Välimine ümbrik kannab valijat identifitseerivat infot ning võimaldab
-mh. kontrollida valija õigust hääletada. Sisemine ümbrik on anonüümne ning
-kaitseb hääle salajasust. Enne häälte kokkulugemist eraldatakse sisemised
-ümbrikud välimistest.
+The protocol is analogous to the postal voting protocol on paper, where the
+voter's intent reaches the election commission in two envelopes – inside the
+outer envelope is an inner envelope, which in turn contains the ballot with
+the voter's expression of will. The outer envelope carries information
+identifying the voter and enables, among other things, verification of the
+voter's right to vote. The inner envelope is anonymous and protects vote
+secrecy. Before counting the votes, the inner envelopes are separated from
+the outer ones.
 
-Elektroonilise hääletamise kontekstis on sisemine ümbrik vormistatud
-krüpteeritud häälena ning välimine ümbrik digitaalselt allkirjastatud
-dokumendina.
+In the context of electronic voting, the inner envelope is formalized as an
+encrypted vote and the outer envelope as a digitally signed document.
