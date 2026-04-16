@@ -773,6 +773,8 @@ func (c *Client) GetVotesCount(ctx context.Context) (count uint64, err error) {
 	}
 }
 
+// VoteOrder holds the fields of a vote ordering record used for tracking
+// the sequence of votes per voter.
 type VoteOrder struct {
 	SeqNo      string
 	IDCode     string

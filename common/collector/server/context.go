@@ -101,10 +101,12 @@ func AuthenticatedClient(ctx context.Context) *pkix.Name {
 	return nil
 }
 
+// WithAuthMethod returns a copy of ctx with the authentication method name stored as a value.
 func WithAuthMethod(ctx context.Context, auth string) context.Context {
 	return context.WithValue(ctx, authMethod, auth)
 }
 
+// AuthMethod returns the authentication method name stored in ctx by WithAuthMethod.
 func AuthMethod(ctx context.Context) (string, error) {
 	auth, ok := ctx.Value(authMethod).(string)
 	if !ok {

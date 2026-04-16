@@ -1,3 +1,7 @@
+/*
+Package token defines interfaces for token-based authentication, including
+certificate retrieval, token parsing, and serialization.
+*/
 package token
 
 import (

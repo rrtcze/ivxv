@@ -175,6 +175,9 @@ func ReEncodeECDSASignature(signature []byte) (recode []byte, err error) {
 	return
 }
 
+// IsECDSAASN1EncodedSignature checks whether the given signature is a valid
+// ASN.1 DER-encoded ECDSA signature. Returns nil if it is, or an error
+// describing why it is not.
 func IsECDSAASN1EncodedSignature(signature []byte) error {
 	type ecdsaRawSig struct {
 		R *big.Int
