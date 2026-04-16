@@ -2,7 +2,7 @@
 
 left to right direction
 
-package "Kogumisteenus" {
+package "Collector Service" {
     [Storage] as collector
     [Log] as log
     [Eligibility] as elig
@@ -10,14 +10,14 @@ package "Kogumisteenus" {
     [Admin] as adminc
 
 
-interface "Valimise defineerimine" as i_define
-interface "Ümbrikute väljastamine" as i_export
-interface "Hääletamine" as i_vote
-interface "Kontrollimine" as i_verify
-interface "Valikute nimekiri" as i_cls
-interface "Käsurida" as i_localadmin
-interface "Kaughaldus" as i_remoteadmin
-interface "Monitooring" as i_monitor
+interface "Election definition" as i_define
+interface "Ballot export" as i_export
+interface "Voting" as i_vote
+interface "Verification" as i_verify
+interface "Choice list" as i_cls
+interface "Command line" as i_localadmin
+interface "Remote management" as i_remoteadmin
+interface "Monitoring" as i_monitor
 interface "Helpdesk" as i_helpdesk
 
 
@@ -31,14 +31,14 @@ verif ..> log
 elig ..> log
 collector ..> log
 
-package "Keskkonnateenused" {
-    [Registreerimisteenus] as tsa
-    [Autentimisteenus] as auth
-    [Allkirjateenus] as sign
+package "Environment Services" {
+    [Registration Service] as tsa
+    [Authentication Service] as auth
+    [Signing Service] as sign
 }
 
-[Nimekirjad] as voterlist
-[Varundamine] as backup
+[Lists] as voterlist
+[Backup] as backup
 
 
 collector ..> tsa
@@ -46,8 +46,8 @@ collector ..> tsa
 i_vote ..> sign
 i_cls ..> auth
 
-interface "Varundamine" as i_backup
-interface "Nimekirjade uuendused" as i_voterlist
+interface "Backup" as i_backup
+interface "List updates" as i_voterlist
 
 elig -up- i_cls
 elig -up- i_vote

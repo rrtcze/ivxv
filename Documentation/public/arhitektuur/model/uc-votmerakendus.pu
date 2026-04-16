@@ -1,32 +1,32 @@
 
 @startuml
 
-title "Võtmerakendus"
+title "Key Application"
 
-    usecase (Verifitseerimiskonfiguratsiooni import)
-    usecase (Kandidaatide ja ringkondade nimekirja import)
-    usecase (Krüpteeritud häälte import)
-    usecase (E-häälte dekrüpteerimine)
-    usecase (E-häälte kokkulugemine)
-    usecase (Sisendinfo verifitseerimine)
-    usecase (Väljundinfo signeerimine)
-    usecase (E-hääletamise tulemuste eksport)
-    usecase (Kehtetute sedelite loendi eksport)
-    usecase (Dekrüptimistõestuse eksport)
-    usecase (Tegevuslogi eksport)
-    usecase (Hääle olekulogi)
+    usecase (Verification configuration import)
+    usecase (Import of candidate and district lists)
+    usecase (Import of encrypted votes)
+    usecase (Decryption of e-votes)
+    usecase (Tallying of e-votes)
+    usecase (Verification of input info)
+    usecase (Signing of output info)
+    usecase (Export of e-voting results)
+    usecase (Export of invalid ballot list)
+    usecase (Export of decryption proof)
+    usecase (Export of activity log)
+    usecase (Vote status log)
 
-    usecase (Võtmepaari genereerimine)
-    usecase (Juhuslikkuse lisamine)
-    usecase (Juhuslikkuse mõõtmine)
-    usecase (Sertifikaadi allkirjastamine)
-    usecase (Privaatvõtme aktiveerimine)
-    usecase (Privaatvõtme ja koopiate hävitamine)
+    usecase (Key pair generation)
+    usecase (Adding randomness)
+    usecase (Measuring randomness)
+    usecase (Certificate signing)
+    usecase (Activation of private key)
+    usecase (Destruction of private key and copies)
 
 @enduml
 
 
-' Rakenduse konfigureerimine
-' Võtme genereerimine
-' Sertifikaadi väljastamine
-' Hääletamistulemuse väljastamine
+' Application configuration
+' Key generation
+' Certificate issuance
+' Voting result issuance

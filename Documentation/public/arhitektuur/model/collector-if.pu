@@ -2,42 +2,42 @@
 
 left to right direction
 
-[Kogumisteenus] as collector
+[Collector Service] as collector
 
 
-package "Keskkonnateenused" {
-    [Registreerimisteenus] as tsa
-    [Autentimisteenus] as auth
-    [Allkirjateenus] as sign
+package "Environment Services" {
+    [Registration Service] as tsa
+    [Authentication Service] as auth
+    [Signing Service] as sign
 }
 
-[Nimekirjad] as voterlist
-[Varundamine] as backup
+[Lists] as voterlist
+[Backup] as backup
 
 
-actor Omanik as owner
-actor Töötleja as offline
+actor Owner as owner
+actor Processor as offline
 
-actor Klienditeenindaja as helpdesk
+actor Helpdesk as helpdesk
 
-actor Hääletaja as voter
+actor Voter as voter
 
-actor :Kogumisteenuse admin: as admin
-actor :Kogumisteenuse kaugadmin: as radmin
+actor :Collector Service admin: as admin
+actor :Collector Service remote admin: as radmin
 
 
-interface "Valimise defineerimine" as i_define
-interface "Ümbrikute väljastamine" as i_export
-interface "Hääletamine" as i_vote
-interface "Kontrollimine" as i_verify
-interface "Valikute nimekiri" as i_cls
-interface "Käsurida" as i_localadmin
-interface "Kaughaldus" as i_remoteadmin
-interface "Monitooring" as i_monitor
+interface "Election definition" as i_define
+interface "Ballot export" as i_export
+interface "Voting" as i_vote
+interface "Verification" as i_verify
+interface "Choice list" as i_cls
+interface "Command line" as i_localadmin
+interface "Remote management" as i_remoteadmin
+interface "Monitoring" as i_monitor
 interface "Helpdesk" as i_helpdesk
 
-interface "Varundamine" as i_backup
-interface "Nimekirjade uuendused" as i_voterlist
+interface "Backup" as i_backup
+interface "List updates" as i_voterlist
 
 collector -down- i_cls
 collector -down- i_vote

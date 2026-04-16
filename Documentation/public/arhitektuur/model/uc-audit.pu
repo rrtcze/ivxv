@@ -1,12 +1,12 @@
 
 @startuml
 
-title "Auditirakendus - offline"
+title "Audit Application - offline"
 
-usecase (Kogumisteenuse auditimaterjali import)
-usecase (Lugemisteenuse auditimaterjali import)
-usecase (Miksimisteenuse auditimaterjali import)
-usecase (Ajatembeldusteenuse auditimaterjali import)
-usecase (Auditi läbiviimine)
+usecase (Collector Service audit material import)
+usecase (Counting Service audit material import)
+usecase (Mixing Service audit material import)
+usecase (Timestamping Service audit material import)
+usecase (Conducting audit)
 
 @enduml

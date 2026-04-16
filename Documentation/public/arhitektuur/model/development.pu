@@ -403,7 +403,7 @@ package "TR_P_COLLECTOR()" as p_collector {
 
 /'
  '
- ' VÕTMERAKENDUS
+ ' KEY APPLICATION
  '
  '/
 
@@ -437,7 +437,7 @@ a_owner -> i_key_gui
 
 /'
  '
- ' TÖÖTLEMISRAKENDUS
+ ' PROCESSING APPLICATION
  '
  '/
 
@@ -473,7 +473,7 @@ a_offline_processor -> i_processor_gui
 
 /'
  '
- ' AUDITIRAKENDUS
+ ' AUDIT APPLICATION
  '
  '/
 
@@ -510,7 +510,7 @@ a_auditor -> i_audit_gui
 
 /'
  '
- ' SEADISTUSRAKENDUS
+ ' CONFIGURATION APPLICATION
  '
  '/
 

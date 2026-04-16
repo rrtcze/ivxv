@@ -2,8 +2,8 @@
 
 left to right direction
 
-[X-tee teenus(xroad-service)] as xservice
-[X-tee turvaserver] as xsec
+[X-Road service(xroad-service)] as xservice
+[X-Road security server] as xsec
 [IVXV1] as ivxv1
 [IVXV2] as ivxv2
 [IVXV3] as ivxv3

@@ -1,99 +1,99 @@
 @startuml
 
-title "Ettevalmistusfaas kontoris"
+title "Preparation Phase in office"
 
 usecase (*) as UC0
 
 note left  of UC0
-Mujal menetlemata nüansid
-* Võimekus mitme samaaegse eritüübilise valimise korraldamiseks
-* Võimekus null-autentimismeetodite ja nimekirjade kasutamiseks
-* Andmevormingute spetsifikatsioon
-* Väliste liideste ja sõltuvuste spetsifikatsioon
+Nuances not addressed elsewhere
+* Capability to organize multiple simultaneous elections of different types
+* Capability to use null authentication methods and lists
+* Data format specification
+* External interface and dependency specification
 end note
 
-actor Omanik
-actor Hääletaja
-actor Koguja
-actor Töötleja
-actor Audiitor
+actor Owner
+actor Voter
+actor Collector
+actor Processor
+actor Auditor
 actor IDP
 actor ATO
 actor STO
-actor Klienditugi
+actor Helpdesk
 
 
 
 
-package "Konfiguratsiooni haldamine" {
-    usecase (Tekstide haldus) as UC1.5
-    usecase (Valimisinfo laadimine) as UC1.1
-    usecase (Tehniliste parameetrite haldus) as UC1.4
-    usecase (Autentimisteenuse seadistamine) as UC1.6
-    usecase (Kehtivuskinnitusteenuse seadistamine) as UC1.7
-    usecase (Ajatempliteenuse seadistamine) as UC1.8
-    usecase (Konfiguratsiooni valideerimine) as UC1.9
-    usecase (Konfiguratsiooni allkirjastamine) as UC1.10
-    usecase (Konfiguratsiooni eksport) as UC1.11
+package "Configuration management" {
+    usecase (Text management) as UC1.5
+    usecase (Loading election info) as UC1.1
+    usecase (Technical parameter management) as UC1.4
+    usecase (Authentication service configuration) as UC1.6
+    usecase (Validity confirmation service configuration) as UC1.7
+    usecase (Timestamping service configuration) as UC1.8
+    usecase (Configuration validation) as UC1.9
+    usecase (Configuration signing) as UC1.10
+    usecase (Configuration export) as UC1.11
 
-    usecase (Allkirja moodustamine, ajatempli saamine, kehtivuses veendumine meetodite määramine)
+    usecase (Defining signature creation, timestamping, and validity verification methods)
 
-    usecase (Algoritmi ja votme määramine)
+    usecase (Defining algorithm and key)
 
 note bottom of UC1.11
-Komponentide põhiste allkirjastatud konfipakkide loomine
+Creation of signed configuration packages per component
 endnote
 
 note bottom of UC1.1
-* Valimine
-* Reeglid
-* Valijad
-* Valikud
-* Jaoskonnad
+* Election
+* Rules
+* Voters
+* Choices
+* Districts
 endnote
 
 }
 
-Omanik -> UC1.10
-Koguja -> UC1.5
+Owner -> UC1.10
+Collector -> UC1.5
 
 note left of UC1.9
-* Olemasolu kontroll
-* Vormingu kontroll
-* Kooskõlalisuse kontroll
+* Existence check
+* Format check
+* Consistency check
 endnote
 
 note top of UC1.5
-* Kontrollrakendus
-* Valijarakendus
+* Verification application
+* Voting application
 endnote
 
 
-package "Võtmehaldus" {
-    usecase (Võtmepaari ja PIN-ide genereerimine) as UC2.1
-    usecase (Võtmepaari varukoopia loomine) as UC2.2
-    usecase (Avaliku komponendi transport valijarakendusele) as UC2.3
-    usecase (Valijarakenduse ettevalmistamine) as UC2.4
+package "Key management" {
+    usecase (Key pair and PIN generation) as UC2.1
+    usecase (Key pair backup creation) as UC2.2
+    usecase (Transport of public component to voting application) as UC2.3
+    usecase (Preparation of voting application) as UC2.4
 
-    ' osad pinniga osad mitte
+    ' some with PIN some without
 
     note left of UC2.1
     * MofN
-    * kiipkaart vs. HSM
+    * smart card vs. HSM
     endnote
 
 }
 
-package "Keskkonna ettevalmistamine" {
-    usecase (Paigalduspakkide haldamine) as UC3.1
-    usecase (Süsteemi paigaldamine) as UC3.2
-    usecase (Usaldusnimekiri) as UC3.3
-    usecase (Volitatud isikute sertifikaatide haldus)
-    usecase (Konfiguratsiooni laadmine) as UC3.4
+package "Environment preparation" {
+    usecase (Installation package management) as UC3.1
+    usecase (System installation) as UC3.2
+    usecase (Trust list) as UC3.3
+    usecase (Management of authorized person certificates)
+    usecase (Loading configuration) as UC3.4
 }
 
-package "Laua peal testimine" {
-    usecase (Võtmepaari kontroll, testhääletamine) as UC4.1
+package "Desktop testing" {
+    usecase (Key pair verification, test voting) as UC4.1
 }
 
 @enduml

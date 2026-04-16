@@ -29,9 +29,9 @@ actor Auditor
 
 == Voting phase ==
 
-VA -> CLS: Valija identifikaator, id
+VA -> CLS: Voter identifier, id
 
-alt Võimalik autentimine
+alt Possible authentication
   CLS --> VA
   VA --> AuthProxy
   AuthProxy --> Auth
@@ -42,17 +42,17 @@ alt Võimalik autentimine
   VA --> CLS: AUTH(id)
 end
 
-CLS -> VA: Valikute nimekiri, C_id
+CLS -> VA: Choice list, C_id
 
-VA -> Voter: Valikute kuvamine, C_id
-Voter -> VA: Valiku tegemine, choice_id
+VA -> Voter: Display choices, C_id
+Voter -> VA: Make choice, choice_id
 
 VA -> VA: r = GEN()
 VA -> VA: ballot_id = ENC(choice_id;r)
 
-alt Allkirjastamine lokaalselt
+alt Signing locally
   VA --> VA: vote_id = SIGN(ballot_id, id)
-else Allkirjastamine läbi proksi
+else Signing through proxy
   VA --> SignProxy
   SignProxy --> Sign
   Sign --> Voter

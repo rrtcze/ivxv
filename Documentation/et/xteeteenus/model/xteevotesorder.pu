@@ -3,11 +3,11 @@
 left to right direction
 
 package "IVXV" {
-    [Järjekorrateenus] as votesorder
+    [Queue service] as votesorder
 }
 
-[X-tee teenus(xroad-service)] as xservice
-[X-tee turvaserver] as xsec
+[X-Road service(xroad-service)] as xservice
+[X-Road security server] as xsec
 
 xsec --> xservice
 xservice--> votesorder

@@ -1,71 +1,71 @@
 
 @startuml
 
-title "Hääletamisfaas hostingus"
+title "Voting Phase in hosting"
 
 usecase (*) as UC0
 
 note left of UC0
-* Ainult talletamiskomponent ja ajatembeldus säilitavad olekut
-* Muud komponendid on stateless - loadbalancing on võimalik
-* Talletamiskomponendi veakindlus - HadoopFSi või byzantine?
-* On-line komponentide väliste liideste definitsioon ja valideerimine
-* Nõue TLSi kasutamiseks ja 443 pordiga piirdumiskes
-* HTTP ei ole hädavajalik kuid võib aidata
+* Only the storage component and timestamping preserve state
+* Other components are stateless - load balancing is possible
+* Storage component fault tolerance - HadoopFS or byzantine?
+* Definition and validation of external interfaces of online components
+* Requirement for TLS usage and limiting to port 443
+* HTTP is not essential but may help
 endnote
 
 package "Support" {
-    usecase (Varundamine hääletamisperioodi peatamata)
-    usecase (Taastamine puhtale süsteemile)
-    usecase (Logimine monitooringusüsteemi)
-    usecase (Süsteemi seisundi kaugvaatlus)
-    usecase (Süsteemi seisundi vaatlus käsurealt) as UC1.5
+    usecase (Backup without stopping the voting period)
+    usecase (Recovery to a clean system)
+    usecase (Logging to monitoring system)
+    usecase (Remote observation of system state)
+    usecase (Observation of system state from command line) as UC1.5
     note left of UC1.5
-    * pseudograafika asemel git laadne käsustik
-    * võimalusel süsteemsete lahenduste kasutamine iseleiutamise asemel
+    * git-style command set instead of pseudographics
+    * use system solutions where possible instead of reinventing
     endnote
 }
 
-package "Hääletamisperioodi eelne" {
-    usecase (Proovihääletamine ühenduste testimiseks)
-    usecase (Hääletamisperioodi kaugkäivitamine)
+package "Pre-voting period" {
+    usecase (Test voting for connection testing)
+    usecase (Remote start of voting period)
 }
 
-package "Hääletamisperiood" {
-    usecase (Valijate nimekirja perioodiline uuendamine)
-    usecase (Häälte talletamine) as UC2.2
-    usecase (Kontrollpäringutele vastamine)
-    usecase (Vaheaudit)
-    usecase (Serverite ühtsuse kontroll)
-    usecase (Hääletamisperioodi järkjärguline kaugpeatamine)
+package "Voting period" {
+    usecase (Periodic update of voter lists)
+    usecase (Vote storage) as UC2.2
+    usecase (Responding to verification queries)
+    usecase (Interim audit)
+    usecase (Server consistency check)
+    usecase (Gradual remote stopping of voting period)
 
     note left of UC2.2
-    * isikute autentimine
-    * valimisõigus(t)e tuvastamine
-    * valikute väljastamine
-    * häälte vastu võtmine ja talletamine
-    * kontrollidentifikaatorite väljastamine
+    * authentication of persons
+    * determination of voting right(s)
+    * issuing choices
+    * receiving and storing votes
+    * issuing verification identifiers
     endnote
 
 }
 
-' osa vähemalt häältest eesti pinnal vähemalt 1 kord päevas, võib ka logiandmed
-' eesti pinnal olev backup peab olema loetav
+' at least part of the votes on Estonian soil at least once per day, may also include log data
+' backup on Estonian soil must be readable
 
-package "Hääletamisperioodi järgne" {
-    usecase (E-hääletanute nimekirja koostamine valimisjaoskondade kaupa)
-    usecase (Häälte eksport kogumisteenusest)
-    usecase (Auditimaterjali eksport kogumisteenusest)
-'    usecase (Auditimaterjali eksport ajatempliteenusest)
-    usecase (Logi eksport kogumisteenusest)
+package "Post-voting period" {
+    usecase (Compilation of i-voter list by polling districts)
+    usecase (Export of votes from Collector Service)
+    usecase (Export of audit material from Collector Service)
+'    usecase (Export of audit material from timestamping service)
+    usecase (Export of logs from Collector Service)
 }
 
 
-package "Valija tegevused" {
-    usecase (Valijarakenduse paigaldamine autentsest allikast)
-    usecase (Kontrollrakenduse paigaldamine autentsest allikast)
-    usecase (E-hääletamine)
-    usecase (E-hääle kontrollimine)
+package "Voter activities" {
+    usecase (Installing voting application from authentic source)
+    usecase (Installing verification application from authentic source)
+    usecase (E-voting)
+    usecase (E-vote verification)
 }
 
 @enduml

@@ -1,8 +1,8 @@
 @startuml
 
-title "Hääletamisfaas"
+title "Voting Phase"
 
-actor Valija as Voter
+actor Voter as Voter
 participant VER
 participant VA
 
@@ -19,11 +19,11 @@ box "Collector Service"
   participant VSS
 end box
 
-== Hääletamine ==
+== Voting ==
 
-VA -> CLS: Valija identifikaator, id
+VA -> CLS: Voter identifier, id
 
-alt Võimalik autentimine
+alt Possible authentication
   CLS --> VA
   VA --> AuthProxy
   AuthProxy --> Auth
@@ -32,17 +32,17 @@ alt Võimalik autentimine
   VA --> CLS: AUTH(id)
 end
 
-CLS -> VA: Valikute nimekiri, C_id
+CLS -> VA: Choice list, C_id
 
-VA -> Voter: Valikute kuvamine, C_id
-Voter -> VA: Valiku tegemine, choice_id
+VA -> Voter: Display choices, C_id
+Voter -> VA: Make choice, choice_id
 
 VA -> VA: r = GEN()
 VA -> VA: ballot_id = ENC(choice_id;r)
 
-alt Allkirjastamine lokaalselt
+alt Signing locally
   VA --> VA: vote_id = SIGN(ballot_id, id)
-else Allkirjastamine läbi proksi
+else Signing through proxy
   VA --> SignProxy
   SignProxy --> Sign
   Sign --> Voter
@@ -64,7 +64,7 @@ VSS -> VA: tok_id, vote_ref
 VA -> VA: VerTimestamp(tok_id)
 VA -> Voter: vote_ref, r
 
-== Hääle kontroll ==
+== Vote verification ==
 
 Voter -> VER: vote_ref, r
 

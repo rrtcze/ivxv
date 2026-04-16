@@ -1,15 +1,15 @@
 
 @startuml
 
-  :Omanik: as Omanik <<Human>>
-  actor Hääletaja <<Human>>
-  actor Töötleja <<Human>>
-  actor Andmeaudiitor <<Human>>
-  actor Klienditugi <<Human>>
-  actor Kogumisteenus <<Server>>
-  actor Registreerimisteenus <<Server>>
-  actor Autentimisteenus <<Server>>
-  actor Allkirjateenus <<Server>>
+  :Owner: as Owner <<Human>>
+  actor Voter <<Human>>
+  actor Processor <<Human>>
+  actor Data_Auditor <<Human>>
+  actor Helpdesk <<Human>>
+  actor Collection_Service <<Server>>
+  actor Registration_Service <<Server>>
+  actor Authentication_Service <<Server>>
+  actor Signing_Service <<Server>>
 
 
 
